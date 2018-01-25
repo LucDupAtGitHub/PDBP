@@ -102,64 +102,63 @@ Our library is also about *computation descriptions*, and, by slight abuse of no
 
 ### Descriptions
 
-In the previous sections we have mentioned that programs (program descriptions) can have many meanings. In this section we present some `Dotty` code to illustrate the difference between a *description* and it's *meaning*. The `Dotty` code does not deal with programming capabilities or computational capabilities at all. Instead it simply deals with *element* related capabilities. Below are some consecutive `Dotty` REPL (Read-Eval-Print-Loop) sessions
+In the previous sections we have mentioned that programs (program descriptions) can have many meanings. In this section we present some `Dotty` REPL (Read-Eval-Print-Loop) sessions to illustrate the difference between a *description* and it's *meaning*. The `Dotty` code does not deal with programming capabilities or computational capabilities at all. Instead it simply deals with *element* related capabilities.
 
 ```scala
-scala> trait HasElement[M] {
+scala> trait Element[M] {
          val element: M
        }   
-defined trait HasElement
-scala> trait HasFunction[M] {
+defined trait Element
+scala> trait Function[M] {
          def function(m: M): M
        }   
-defined trait HasFunction
+defined trait Function
 ```
 
 Above are two `Dotty` *type classes* for a type `M` declaring element related capabilities.
 
- - `trait HasElement[M]` declares `M`s capability to have an element `element`
- - `trait HasFunction[M]` declares `M`'s capability to have an function `function` that transforms an argument `m` to yield an result element `function(m)`
+ - `trait Element[M]` declares `M`s capability to have an element `element`.
+ - `trait Function[M]` declares `M`'s capability to have an function `function` that transforms an argument `m` to yield a result element `function(m)`.
 
 Given those *declarations* we can already start *defining* some *element descriptions* as illustrated below
 
 ```scala
-scala> trait SomeElement[M : HasElement : HasFunction] {
-         val hasFunction = implicitly[HasFunction[M]]
-         import hasFunction._
+scala> trait SomeElement[M : Element : Function] {
+         val implicitFunction = implicitly[Function[M]]
+         import implicitFunction._
          
-         val hasElement = implicitly[HasElement[M]]
-         import hasElement._
+         val implicitElement = implicitly[Element[M]]
+         import implicitElement._
          
          val someElement = function(element)  
        }   
 defined trait SomeElement 
 ```
 
-The code above defines an element description `someElement` as a `val`.
-It is a member of `trait SomeElement[M : HasElement : HasFunction]`, that declares `M` to *implicitly* have the capabilities that are needed to define `someElement`. The element description `someElement` is defined in terms of those capabilities: `element` and `function`. Think of the description as a *recipe* for making some element:
+The code above defines `trait SomeElement[M : Element : Function]`, that declares `M` to *implicitly* have the element related capabilities above. The code defines an element description `someElement` in terms of those capabilities. Think of the element description as a *recipe*:
 
-*Take `element` and apply `function` to it to make `someElement`*
+ - Take `element` and apply `function` to it to make `someElement`.
 
 At this moment there is *no definition* of the declared capabilities available yet. Let's go ahead and introduce an *implicit definition* of those declared capabilities for the type `Int`:
 
 ```scala
-scala> implicit object intHasElementAndFunction extends
-         HasElement[Int] with HasFunction[Int] {
+scala> implicit object intElementAndFunction extends
+         Element[Int] with Function[Int] {
          
          override val element: Int = 0
          
          override def function(i: Int): Int = i + 1
          
        }   
-defined module intHasElementAndFunction
+defined module intElementAndFunction
 scala> object someIntElement extends SomeElement[Int]() 
 defined module someIntElement
-scala> import someIntElement._ 
-import someIntElement._
+scala> import someIntElement.someElement
+import someIntElement.someElement
 ```
 
-First, the code above introduces `implicit object intHasElementAndFunction`.
-As long as we keep `Dotty`'s type system happy, we have the full flexibility to define `element` and `function` in *any* way we want. Second, the code above makes `someElement`, an element of type `Int` available using a technique, *dependency injection by `import`*, that will be used a lot in this book. For *type classes*, dependency injection in `Dotty` is as simple as doing an appropriate `import`. Now that we have *defined* `M` to be `Int`, we write *element*. When `M` was *declared* we wrote *element description*. Rememer that for program descriptions our notation is *not* going to be so precise. Let's go ahead and make use of `someElement`
+First, the code above introduces `implicit object intElementAndFunction`.
+As long as we keep `Dotty`'s type system happy, we have the *full flexibility* to define `element` and `function` in *any* way we want. Second, the code above makes `someElement`, an element of type `Int` available using a technique, *dependency injection by* `import`, that will be used a lot in this book. For *type classes*, dependency injection in `Dotty` is as simple as doing an appropriate `import`. Now that we have *defined* `M` to be `Int`, we write *element*. When `M` was *declared* we wrote *element description*. Rememer that for program descriptions our notation is *not* going to be so precise: we write program is both for program descriptions and their meaings. Let's go ahead and make use of `someElement`
 
 ```scala
 scala> someElement 
