@@ -70,17 +70,17 @@ trait Program[>-->[- _, + _]]
 
 The `FP` forms map one-to-one to `trait`'s that are mixed-in by `trait Program`. There is an important difference between `FP` programs and `Dotty` program descriptions.
 
- - `FP` programs are *language* based
- - `Dotty` program descriptions are *library* based 
+ - `FP` programs are *language* based.
+ - `Dotty` program descriptions are *library* based.
 
 Therefore
 
  - in `FP`
-   - programs have only *one* meaning
-   - forms cannot be extended
+   - programs have only *one* meaning,
+   - forms cannot be extended.
  - in `Dotty`
-   - program descriptions can have *many* meanings (cfr. `trait Execution`)
-   - `trait Program` can be extended
+   - program descriptions can have *many* meanings (cfr. `trait Execution`),
+   - `trait Program` can be extended.
 
 Exploiting the flexibility that comes with those differences is one of the most important themes of this project. 
 
@@ -88,12 +88,12 @@ For example:
 
  - One and the same program description for, say, `factorial` can have both a *non tail recursive* and a *tail recursive* meaning.
  - *extra programming capabilities* can be added such as
-   - input reading
-   - output writing
-   - state manipulation
-   - failure handling
-   - latency handling (using parallelism)
-   - advanced control beyond conditional control
+   - input reading,
+   - output writing,
+   - state manipulation,
+   - failure handling,
+   - latency handling (using parallelism),
+   - advanced control beyond conditional control (using delimited continuations),
    - ...
 
 Our library is all about *program descriptions*, and, by slight abuse of notation, we are going to simply refer to them as *programs*. In a way programs generalize *functions*. A *function call* (*function call expression evaluation*) transforms *function arguments* to yield a *function result*. A *program execution* also, *somehow*, transforms *program arguments* to yield a *program result*. When there is no danger of confusion we are simply going to write *arguments* and *result*.
@@ -165,9 +165,24 @@ scala> someElement
 val res0: Int = 1
 ```
 
+### Pointfree versus Pointful
+
+The `FP` programming language imposes a *pointfree programming style* (think of *function level* and *pointfree* as synonyms).
+
+The programming capabilities of `trait Program` also impose apointfree programming style.
+The computational capabilities `trait Computation` allow a *pointful programming style*(think of *object level*, *value level* and *pointful* as synonyms).
+
+Our library promotes a pointfree programming style. Therefore
+
+ - We declare the members of the `trait Program` to be `public`.
+ - We declare the members of the `trait Computation` to be `package` `private`.
+
+
+<!--
 
 
 
+-->
 
 
 
