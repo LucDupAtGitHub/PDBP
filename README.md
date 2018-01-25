@@ -213,12 +213,44 @@ Below are both an `FP` example and a `Dotty` example illustrating difference in 
 
 ![](Dotty_Factorial.png)
 
-Of course, elegance of use is a highly subjective concept. Maybe, if you are mathematically inclined, you may consider the `FP` example below to be more elegant. However, if you are a mainstream programmer, you most probably consider the `Dotty` example below to be more elegant.
+Of course, elegance of use is a highly subjective concept. Maybe, if you are mathematically inclined, you may consider the `FP` example below to be more elegant. However, if you are a mainstream programmer, you, most probably, consider the `Dotty` example below to be more elegant.
+
+### Main goal of the library
+
+The main *goal* of the library is to illustrate that program description based programming using a pointfree style in `Dotty` is 
+
+ - *powerful* : you can use the full expressive power of monads
+ - *elegant* : you can use a concise `Dotty` DSL syntax
+ - *flexible* : you can define many meanings
+ - *extendible* : you can introduce extra capabilities by need
+
+We claim that program description based programming using a pointfree style
+*naturally leads to deep insights into the nature of programming and computation*
+since it requires you to reason at an *appropriate level of abstraction*. 
+
+### More about descriptions
+
+Below is a comparision between the universe of *programs* and the universe of *paintings*.
+
+Program descriptions *are* programs (code that is written using a programming language), and 
+giving a *meaning* to program descriptions happens in the universe of programs.
+
+What is figure below all about?
+
+![](Pipe.png)
+
+René Magritte, the painter of [*Ceci n'est pas une pipe*](https://en.wikipedia.org/wiki/The_Treachery_of_Images) was right. His painting *is not a pipe* : it *description of a pipe*. Note that, giving a *meaning* to paintings happens in a universe that is totally different from the universe of paintings : it happens in the universe of human minds.
+
+### Summary
+
+For some of you this introduction may have touched upon a lot of frightening stuff.
+But, really, for now you only have to concentrate on *power of expression*,
+*elegance of use* and *flexibility meaning* of program descriptions.
+Hopefully this will sound exiting to both programmers *with* and programmers *without*
+a background in computer science.
 
 
 <!--
-
- 
 
 -->
 
