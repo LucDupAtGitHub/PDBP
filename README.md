@@ -102,7 +102,7 @@ Our library is also about *computation descriptions*, and, by slight abuse of no
 
 ### Descriptions
 
-In the previous sections we have mentioned that programs (program descriptions) can have many meanings In this section we present some `Dotty` code to illustrate the difference between a *description* and it's *meaning*. The `Dotty` code does not deal with programming capabilities or computational capabilities at all. Instead it simply deals with *element* related capabilities. Below are some consecutive \ttb{Dotty} REPL (Read-Eval-Print-Loop) sessions
+In the previous sections we have mentioned that programs (program descriptions) can have many meanings. In this section we present some `Dotty` code to illustrate the difference between a *description* and it's *meaning*. The `Dotty` code does not deal with programming capabilities or computational capabilities at all. Instead it simply deals with *element* related capabilities. Below are some consecutive `Dotty` REPL (Read-Eval-Print-Loop) sessions
 
 ```scala
 scala> trait HasElement[M] {
@@ -159,12 +159,14 @@ import someIntElement._
 ```
 
 First, the code above introduces `implicit object intHasElementAndFunction`.
-As long as we keep `Dotty`'s type system happy, we have the full flexibility to define `element` and `function` in *any* way we want. Second, the code above makes `someElement`, an element of type `Int` available using a technique, *dependency injection by `import`*, that will be used a lot in this book.For {\em type classes}, dependency injection in `Dotty` is as simple as doing an appropriate `import`. Now that we have *defined* `M` to be `Int`, we write *element*. When `M` was *declared* we wrote *element description*. Rememer that for program descriptions our notation is *not* going to be so precise. Let's go ahead and make use of `someElement`
+As long as we keep `Dotty`'s type system happy, we have the full flexibility to define `element` and `function` in *any* way we want. Second, the code above makes `someElement`, an element of type `Int` available using a technique, *dependency injection by `import`*, that will be used a lot in this book. For *type classes*, dependency injection in `Dotty` is as simple as doing an appropriate `import`. Now that we have *defined* `M` to be `Int`, we write *element*. When `M` was *declared* we wrote *element description*. Rememer that for program descriptions our notation is *not* going to be so precise. Let's go ahead and make use of `someElement`
 
 ```scala
 scala> someElement 
 val res0: Int = 1
 ```
+
+
 
 
 
