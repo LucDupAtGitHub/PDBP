@@ -76,10 +76,10 @@ The `FP` forms map one-to-one to `trait`'s that are mixed-in by `trait Program`.
 Therefore
 
  - in `FP`
-   - programs have only one meaning
+   - programs have only *one* meaning
    - forms cannot be extended
  - in `Dotty`
-   - programs can have many meanings
+   - programs can have *many* meanings (cfr. `trait Execution`)
    - `Program` can be extended
 
 Exploiting the flexibility that comes with those differences is one of the most important themes of this documentation. 
