@@ -235,11 +235,11 @@ Below is a comparision between the universe of *programs* and the universe of *p
 Program descriptions *are* programs (code that is written using a programming language), and 
 giving a *meaning* to program descriptions happens in the universe of programs.
 
-What is figure below all about?
-
 ![](Pipe.png)
 
-René Magritte, the painter of [*Ceci n'est pas une pipe*](https://en.wikipedia.org/wiki/The_Treachery_of_Images) was right. His painting *is not a pipe* : it *description of a pipe*. Note that, giving a *meaning* to paintings happens in a universe that is totally different from the universe of paintings : it happens in the universe of human minds.
+What is figure above all about?
+
+René Magritte, the painter of [*Ceci n'est pas une pipe*](https://en.wikipedia.org/wiki/The_Treachery_of_Images) was right. His painting *is not a pipe* : it is a painting that is a *description of a pipe*. Note that, giving a *meaning* to paintings happens in a universe that is totally different from the universe of paintings : it happens in the universe of human minds.
 
 ### Summary
 
