@@ -195,14 +195,30 @@ In 2008, Conor McBride and Ross Paterson introduced *applicatives* (a.k.a. *idio
 In 2008, Sam Lindley, Philip Wadler and Jeremy Yallop compared the *power of expression* of those three foundations in [*Idioms are oblivious, arrows are meticulous,
 monads are promiscuous*](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.187.6750&rep=rep1&type=pdf). Monads have most power of expression. Applicatives have least power of expression. 
 
-Monads naturally lead to a pointful programming style. Monad based computations can use a pointfree programming style by making use of [*Kleisli functions*](https://en.wikipedia.org/wiki/Kleisli_category).
-
-Arrows naturally lead to a pointfree programming style. Arrow based programs can use a pointful programming style by making use of [*The arrow calculus*](http://homepages.inf.ed.ac.uk/slindley/papers/arrow-calculus.pdf).
+Monads naturally lead to a pointful programming style. Monad based computations can use a pointfree programming style by making use of [*Kleisli functions*](https://en.wikipedia.org/wiki/Kleisli_category). Arrows naturally lead to a pointfree programming style. Arrow based programs can use a pointful programming style by making use of [*The arrow calculus*](http://homepages.inf.ed.ac.uk/slindley/papers/arrow-calculus.pdf).
 
 Our library goes for programming monads in a pointfree style using Kleisli functions.
 
+### Why `Dotty`
+
+Program description based programming is not only about *power of expression*, it is also, and probably even more, about *elegance of use*. Traditionally, the pointfree style has *not* been considered to be very elegant. Luckily, the `Dotty` programming language comes to the rescue! `Dotty` is a *strongly typed*, *scalable* programming language. It is possible to *extend the language* in a *type safe* way at the *library* level with *internal domain specific languages*. By making use of a domain specific language for the domain of *programs*, program description based programming can be done in a very *concise* way.
+
+Below are both an `FP` example and a `Dotty` example illustrating difference in elegance of use.
+
+#### `FP factorial`
+
+![](FP_Factorial.png)
+
+#### `Dotty factorial`
+
+![](Dotty_Factorial.png)
+
+Of course, elegance of use is a highly subjective concept. Maybe, if you are mathematically inclined, you may consider the `FP` example below to be more elegant. However, if you are a mainstream programmer, you most probably consider the `Dotty` example below to be more elegant.
+
+
 <!--
 
+ 
 
 -->
 
