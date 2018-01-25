@@ -2,7 +2,7 @@
 
 ## Introduction
 
-When writing the first of a series of blog posts it is challenging to find the right balance between providing *too many details* or *too few details*. This introduction provides many details. It is perfectly fine to read it diagonally.
+When writing an introduction it is challenging to find the right balance between providing *too many details* or *too few details*. This introduction provides many details. It is perfectly fine to read it diagonally.
 
 Before starting, let's present a bit of history.
 
@@ -12,7 +12,7 @@ In 1977, John Backus was an [ACM A.M. Turing Award](http://amturing.acm.org/) wi
 
 *Can programming be liberated from the von Neumann style? A functional style and it's algebra of programs.*
 
-This series of blog posts builds upon the ideas of this influential lecture.
+This documentation builds upon the ideas of this influential lecture.
 
 
 ### `FP`
@@ -37,7 +37,7 @@ The `FP` forms are
 
 ### `Dotty`
 
-In this series of blog posts, we describe a *program description library* that is written in the [`Dotty` *programming language*](http://dotty.epfl.ch/). The main `trait` of the library is the `Program` *type class* that closely resembles `FP`.
+In this documentation, we describe a *program description library* that is written in the [`Dotty` *programming language*](http://dotty.epfl.ch/). The main `trait` of the library is the `Program` *type class* that closely resembles `FP`.
 
 Below is the logo of the library
 
@@ -82,7 +82,7 @@ Therefore
    - programs can have many meanings
    - `Program` can be extended
 
-Exploiting the flexibility that comes with those differences is one of the most important themes of this series of blog posts. 
+Exploiting the flexibility that comes with those differences is one of the most important themes of this documentation. 
 
 For example:
 
