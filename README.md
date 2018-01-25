@@ -15,7 +15,7 @@ In 1977, John Backus was an [ACM A.M. Turing Award](http://amturing.acm.org/) wi
 This series of blog posts builds upon the ideas of this influential lecture.
 
 
-### FP
+### `FP`
 
 In his Turing Award winning lecture, John Backus describes a [*function level programming language* `FP`](https://en.wikipedia.org/wiki/FP_%28programming_language). 
 
@@ -35,10 +35,66 @@ The `FP` forms are
 
 `FP` does not really have an aggregation form. It does have objects that are *sequences* of objects. We included aggregation since it consists of, somehow, reducing objects of a structure of objects (for example a sequence of objects) to a single object.
 
-### Dotty
+### `Dotty`
 
 In this series of blog posts, we describe a *program description library* that is written in the [`Dotty` *programming language*](http://dotty.epfl.ch/). The main `trait` of the library is the `Program` *type class* that closely resembles `FP`.
 
+Below is the logo of the library
 
+```scala
+    //       _______         __    __        _______
+    //      / ___  /\       / /\  / /\      / ___  /\
+    //     / /__/ / / _____/ / / / /_/__   / /__/ / /
+    //    / _____/ / / ___  / / / ___  /\ /____  / /
+    //   / /\____\/ / /__/ / / / /__/ / / \___/ / /
+    //  /_/ /      /______/ / /______/ /     /_/ /
+    //  \_\/       \______\/  \______\/      \_\/
+    //                                           v1.0
+    //  Program Description Based Programming Library
+    //  author        Luc Duponcheel        2017-2018
+```
 
+### Mapping from `FP` to `Dotty`
+
+Consider
+
+```scala
+trait Program[>-->[- _, + _]]
+    extends Function[>-->]
+    with Composition[>-->]
+    with Construction[>-->]
+    with Condition[>-->]
+    with Aggregation[>-->]
+    with Execution[>-->]
+```
+
+The `FP` forms map one-to-one to `trait`'s that are mixed-in by `trait Program`. There is an important difference between `FP` programs and `Dotty` program descriptions.
+
+ - `FP` programs are *language* based
+ - `Dotty` program descriptions are *library* based 
+
+Therefore
+
+ - in `FP`
+   - programs have only one meaning
+   - forms cannot be extended
+ - in `Dotty`
+   - programs can have many meanings
+   - `Program` can be extended
+
+Exploiting the flexibility that comes with those differences is one of the most important themes of this series of blog posts. 
+
+For example:
+
+ - One and the same program description for, say, `factorial` can have both a *non tail recursive* and a *tail recursive* meaning.
+ - *extra programming capabilities* can be added such as
+   - input reading
+   - output writing
+   - state manipulation
+   - failure handling
+   - latency handling (using parallelism)
+   - advanced control beyond conditional control
+   - ...
+
+    
 
