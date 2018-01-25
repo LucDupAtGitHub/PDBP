@@ -80,7 +80,7 @@ Therefore
    - forms cannot be extended
  - in `Dotty`
    - programs can have *many* meanings (cfr. `trait Execution`)
-   - `Program` can be extended
+   - `trait Program` can be extended
 
 Exploiting the flexibility that comes with those differences is one of the most important themes of this documentation. 
 
@@ -96,5 +96,12 @@ For example:
    - advanced control beyond conditional control
    - ...
 
-    
+Our library is all about *program descriptions*, and, by slight abuse of notation, we are going to simply refer to them as *programs*. In a way programs generalize *functions*. A *function call evaluation* transforms *function arguments* to yield a *function result*. A *program execution* also, *somehow*, transforms *program arguments* to yield a *program result*.
+When there is no danger of confusion we are going to use *arguments* and *result*.
+
+Our library is also about *computation descriptions*, and, by slight abuse of notation, we are going to simply refer to them as *computations*. In a way computations generalize *expressions*. An *expression evaluation* yields an *expression result*. A *computation execution* also, *somehow*, yields a *computation result*. When there is no danger of confusion we are going to use *result*.
+
+
+
+
 
