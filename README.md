@@ -746,7 +746,8 @@ trait FactorialTrait[>-->[- _, + _]: Program] {
       one
     }
 
-    // add helper programs here
+  // add helper programs here
+
 }    
 ```
 Where `isPositive`, `subtractOne`, `multiply` and `one` are what you expect. Add them to the file,
