@@ -408,7 +408,7 @@ trait Composition[>-->[- _, + _]] {
 
 }
 ```
-The program `` composition(`z>-->y`, `y>-->x`) `` is the *sequential composition* of the program `` `z>-->y` `` and the program `` `y>-->x` ``. the result of program `` `z>-->y` `` is the argument of the *subsequent* program `` `y>-->x` ``. Also note that `` `y>-->x` `` is a *call-by-name parameter*. Program `` `z>-->y` `` may *fail*. 
+The program `` composition(`z>-->y`, `y>-->x`) `` is the *sequential composition* of the program `` `z>-->y` `` and the program `` `y>-->x` ``. The result of program `` `z>-->y` `` is the argument of the *subsequent* program `` `y>-->x` ``. Note that `` `y>-->x` `` is a *call-by-name parameter*. Program `` `z>-->y` `` may *fail*. 
 
 Consider
 
@@ -426,7 +426,7 @@ object compositionOperator {
 }
 ```
 
-Put `compositionOperator` code above in the same file as the one of the `Composition` code. `compose` comes with an *operator* equivalent `>-->`. Note that in
+Put the `compositionOperator` code above in the same file as the one of the `Composition` code. `compose` comes with an *operator* equivalent `>-->`. Note that in
 
 ```scala
 scala> import pdbp.program.Program
