@@ -71,7 +71,7 @@ trait Program[>-->[- _, + _]]
 ```
 The `FP` forms to `trait`'s that are mixed-in by `trait Program`.
 
-*Program descriptions* are defined in terms of the *programming capabilities* that are *declared* in `trait Program`. A *meaning* of a program description is defined by defining an `implicit object` that *defines* the programming capabilities that are declared in `trait Program`. A specific meaning can be made available using a technique, *dependency injection by* `import`, that will be used a lot in this book. For *type classes*, dependency injection in `Dotty` is as simple as doing an appropriate `import`. 
+*Program descriptions* are defined in terms of the *programming capabilities* that are *declared* in `trait Program`. A *meaning* of a program description is defined by defining an `implicit object` that *defines* the programming capabilities that are declared in `trait Program`. A specific meaning can be made available using a technique, *dependency injection by* `import`, that will be used a lot in our library. For *type classes*, dependency injection in `Dotty` is as simple as doing an appropriate `import`. 
 
 By abuse of notation, we are often going to refer to both *program descriptions* and their *meaning* them as *programs*. We hope that this will not lead to any confusion (especially since *program* is, generally, used to refer to *code written in some programming language*). 
 
@@ -558,17 +558,15 @@ trait ProductInTermsOfLetAndIn[
 
 }
 ```
-This exercise is an example of a recurring theme of this book: defining a program description, or programming capability, often boils down to *getting the types right puzzle*. Ofthe there is only *one meaningful way* to get them right. Let's have a look at some of the details of the puzzle for this exercise.
+This exercise is an example of a recurring theme of our library: defining a program description, or programming capability, often boils down to a *getting the types right puzzle*. Often there is only *one meaningful way* to get them right. Let's have a look at some of the details of the puzzle for this exercise.
 
-The outer `` `let` `` creates, using `` `z>-->y` ``, a new argument for the outer `` `in` `` (which has an argument of type `Z && Y` available, representing two arguments, one of type `Z` and one of type `Y`). The main difference between `` `let` `` and `compose` is that `` `let` `` does loose the original argument of type `Z`. The inner `` `let` `` creates, using `` `(z&&y)>-->z` >--> `z>-->x` ``, the composition of `` `(z&&y)>-->z` `` and `` `z>-->x` ``, new argument for the inner `` `in` `` (which has an argument of type `(Z && Y) && X` available, representing three arguments, one of type `Z`, one of type `Y`, and one of type `X`). The inner `` `in` `` simply gets rid of the original argument of type `Z` using `` `((z&&y)&&x)>-->(y&&x)` ``.
+The outer `` `let` `` creates, using `` `z>-->y` ``, a new argument for the outer `` `in` `` (which has an argument of type `Z && Y` available, representing two arguments, one of type `Z` and one of type `Y`). The main difference between `` `let` `` and `compose` is that `` `let` `` does *not* loose the original argument of type `Z`. The inner `` `let` `` creates, using `` `(z&&y)>-->z` >--> `z>-->x` ``, the composition of `` `(z&&y)>-->z` `` and `` `z>-->x` ``, a new argument for the inner `` `in` `` (which has an argument of type `(Z && Y) && X` available, representing three arguments, one of type `Z`, one of type `Y`, and one of type `X`). The inner `` `in` `` simply gets rid of the original argument of type `Z` using `` `((z&&y)&&x)>-->(y&&x)` ``.
 
 The programs `` `(z&&y)>-->z` `` and `((z&&y)&&x)>-->(y&&x)` are the ones you expect. Add the latter one (and corresponding function) to the appropriate files.
 
 Note that generic backtick names help to understand the puzzle. In the composition `` `(z&&y)>-->z` >--> `z>-->x` ``, the matching `z`'s reflect the type involved. In the name `` `((z&&y)&&x)>-->(y&&x)` ``, both `((z&&y)&&x)` and `(y&&x)` reflect the type involved. 
 
-One challenge that comes with pointfree programming is getting the *arguments that are needed* out of the *all arguments*. One way to deal with this challenge is to keep programs, and therefore, the arguments that come with them, relatively small. After all, small programs can be combined to larger ones by making use of programming capabilities, most notably, sequential composition. [*Erik Meijer*](https://en.wikipedia.org/wiki/Erik_Meijer_(computer_scientist)) refers to this programming paradigm in a somewhat funny way as *good programmers write baby-code.*
-
-Erik Meijer is so famous that he does not need an introduction. I was very lucky to be able to do research with him, on monads and related stuff, at the Univeristy of Utrecht back in the ninetees.
+One challenge that comes with pointfree programming is getting the *arguments that are needed* out of *all arguments*. One way to deal with this challenge is to keep programs, and therefore, the arguments that come with them, relatively small. After all, small programs can be combined to larger ones by making use of programming capabilities, most notably, sequential composition. [*Erik Meijer*](https://en.wikipedia.org/wiki/Erik_Meijer_(computer_scientist)) refers to this programming paradigm in a somewhat funny way as *good programmers write baby-code.* Erik Meijer is so famous that he does not need an introduction. I was very lucky to be able to do research with him, on monads and related stuff, at the Univeristy of Utrecht back in the ninetees.
 
 
 <!--
