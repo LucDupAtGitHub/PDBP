@@ -302,8 +302,50 @@ $ sbt
 [success] Total time: 3 s, completed Jan 26, 2018 11:11:50 AM
 ```
 
-<!--
+`trait Program` is a *type class* that will gradually be explained later in this document. `trait Function`, `trait Composition`, `trait Construction`, `trait Condition` and `trait Execution` will be explained later in this section. `trait Aggregation` will be explained later in this document. `trait Program` declares *programming capabilities* of *program descriptions*. The programming capabilities of `Function`, `Composition` and `Construction` correspond to *arrows*. 
 
+Note that we were a bit sloppy by not showing `[>-->]`
+
+Recall that we are often going to write *program* instead of *program description*.
+
+A *program* is an `object` of type `Z >--> Y`.
+
+ - `>-->` is a *binary type constructor*,
+ - `Z` is the *parameter* (or *argument*) type of `>-->`,
+ - `Y` is the *return* (or *result*) type of `>-->`.
+
+We'll write *parameter* resp. *return* at the *delaration* (or *definition*) site and we will write *argument* resp. *result* at the *usage* site.
+
+Note that `>-->` is
+
+ - *contravariant* in its parameter type,
+ - *covariant* in its return type.
+
+This is consistent with
+
+ - The [*Liskov Substitution Principle*](https://en.wikipedia.org/wiki/Liskov_substitution_principle) which allows *require less* and *provide more*. 
+ - [*Internet Robustness principle Principle*](https://en.wikipedia.org/wiki/Robustness_principle) which states *be conservative in what you send, be liberal in what you accept*.
+
+ Below we illustrate this for *functions*
+
+ ```scala
+scala> trait SuperZ  
+defined trait SuperZ
+scala> trait Z extends SuperZ 
+defined trait Z
+scala> trait Y 
+defined trait Y
+scala> trait SubY extends Y 
+defined trait SubY
+scala> val z2y: Function[Z, Y] = new Function[SuperZ, SubY] { override def apply(superZ: SuperZ): SubY = ??? } 
+val z2y: Z => Y = <function1>
+```
+
+Note that a program has *one* parameter (or argument). In the section about `trait Construction` we explain how we deal with *many* parameters (or arguments).
+
+
+
+<!--
 
 
 -->
