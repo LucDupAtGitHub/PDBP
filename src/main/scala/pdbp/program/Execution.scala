@@ -11,4 +11,8 @@ package pdbp.program
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-trait Execution[>-->[- _, + _]]
+trait Execution[>-->[- _, + _]] {
+
+  def execute(`u>-->u`: Unit >--> Unit): Unit
+
+}

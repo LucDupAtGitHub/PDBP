@@ -697,6 +697,30 @@ trait SumInTermsOfIfAndElse[>-->[- _, + _]: Function: Composition: Condition] {
 
 The programs `` `(y||x)>-->y` `` and `` `(y||x)>-->x` `` are the ones you expect. Add them (and corresponding function) to the appropriate files. The program `` `(y||x)>-->b` `` is the one you expect. There are two natural implementations, choose the one where `Left` corresponds to `true` and  `Right` corresponds to `false`. Add it (and the corresponding function) to the appropriate files.
 
+### `Execution`
+
+Consider
+
+```scala
+package pdbp.program
+
+trait Execution[>-->[- _, + _]] {
+
+  def execute(`u>-->u`: Unit >--> Unit): Unit
+
+}
+```
+
+A program `` `z>-->y` `` of type `Z >--> Y` can be composed
+
+ - at the left with a *producer* `` `u>-->z` `` of type `Unit >--> Z`,
+ - at the right with a *consumer* `` `y>-->u` `` of type `Y >--> Unit`.
+
+to obtain a program `` `u>-->z` >--> `z>-->y` >--> `y>-->u` `` of type `Unit >--> Unit`. It is a program of that type that \ttb{execute} expects as an argument. Producers and consumers do the *input/output* work. For example, a producer can read from a file and a consumer can write to a socket.
+
+### `factorial` example
+
+
 
 <!--
 
