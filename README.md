@@ -512,10 +512,10 @@ Think of one object of type `Y && X` as both an object `y` of type `Y` and an ob
 
 Note that
 
- - `product[Z, Y, X]` can be defined in terms of `product[Z, Y, X, W]` by making use of `` `(y&&x)>-->(y&&x)` ``,
+ - `product[Z, Y, X]` can be defined in terms of `product[Z, Y, X, W]` and `` `(y&&x)>-->(y&&x)` ``,
  - `product[Z, Y, X, W]` can be defined in terms of `product[Z, Y, X]` and `compose`,
- - `and[Z, Y, X, W]` can be defined in terms of `product[Z, Y, X]` by making use of `` `(z&&y)>-->z` ``, `` `(z&&y)>-->y` `` and `compose`,
- - `` `let`[Z, Y, X] `` and `` `in` `` can be defined in terms of `product` by making use of `` `z>-->z` `` and `compose`.
+ - `and[Z, Y, X, W]` can be defined in terms of `product[Z, Y, X]`, `` `(z&&y)>-->z` ``, `` `(z&&y)>-->y` `` and `compose`,
+ - `` `let`[Z, Y, X] `` and `` `in` `` can be defined in terms of `product`, `` `z>-->z` `` and `compose`.
 
 `` `let` { /* ... */ } `in` { /* ... */ } `` is a first example where `Dotty` comes to the rescue to spice *pointfree programming* with some *domain specific language* flavor.
 
@@ -645,7 +645,7 @@ Put the programs above in `trait Function` and put the corresponding *sum utilit
 
 Put the program above in `trait Function` and put the corresponding *product and sum utility* in `object productAndSumUtils` in `package pdbp.utils`.
 
-`` sum(`y>-->z`, `x>-->z`) `` uses a *left or right* *condition* to define *complex programs* in terms of *simpler* ones.
+`` sum(`y>-->z`, `x>-->z`) `` uses a *"left or right"* *condition* to define *complex programs* in terms of *simpler* ones.
 
  - `sum[Z, Y, X, W]` is a more complex version of `sum[Z, Y, X]`,
  - `or[Z, X, Y, W]` is yet another more complex version of `sum[Z, Y, X]`,
@@ -653,12 +653,14 @@ Put the program above in `trait Function` and put the corresponding *product and
 
 Note that
 
- - `sum[Z, Y, X]` can be defined in terms of `sum[Z, Y, X, W]` by making use of `` `(y||x)>-->(y||x)` ``,
+ - `sum[Z, Y, X]` can be defined in terms of `sum[Z, Y, X, W]` and `` `(y||x)>-->(y||x)` ``,
  - `sum[Z, Y, X, W]` can be defined in terms of `sum[Z, Y, X]` and `compose`,
- - `and[Z, Y, X, W]` can be defined in terms of `product[Z, Y, X]` by making use of `` `(z&&y)>-->z` ``, `` `(z&&y)>-->y` `` and `compose`,
- - `` `if`[W, Z] `` and `` `else` `` can be defined in terms of `sum` by making use of `` `let` `` and `` `in` ``.
+ - `and[Z, Y, X, W]` can be defined in terms of `product[Z, Y, X]`, `` `(z&&y)>-->z` ``, `` `(z&&y)>-->y` `` and `compose`,
+ - `` `if`[W, Z] `` and `` `else` `` can be defined in terms of `sum`, `` `let` `` and `` `in` ``.
 
-`` `if`('/* ... */) { /* ... */ } `else` { /* ... */ } `` is a second example where `Dotty` comes to the rescue to spice *pointfree programming* with some *domain specific language* flavor. This syntax is syntactic sugar for `` `if`('/* ... */) apply { /* ... */ } `else` { /* ... */ } ``.
+`` `if`('/* ... */) { /* ... */ } `else` { /* ... */ } `` is a second example where `Dotty` comes to the rescue to spice *pointfree programming* with some *domain specific language* flavor. 
+
+Note that this syntax is syntactic sugar for `` `if`('/* ... */) apply { /* ... */ } `else` { /* ... */ } ``.
 
 #### Example
 
