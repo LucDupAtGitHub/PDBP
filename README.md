@@ -568,6 +568,28 @@ Note that generic backtick names help to understand the puzzle. In the compositi
 
 One challenge that comes with pointfree programming is getting the *arguments that are needed* out of *all arguments*. One way to deal with this challenge is to keep programs, and therefore, the arguments that come with them, relatively small. After all, small programs can be combined to larger ones by making use of programming capabilities, most notably, sequential composition. [*Erik Meijer*](https://en.wikipedia.org/wiki/Erik_Meijer_(computer_scientist)) refers to this programming paradigm in a somewhat funny way as *good programmers write baby-code.* Erik Meijer is so famous that he does not need an introduction. I was very lucky to be able to do research with him, on monads and related stuff, at the Univeristy of Utrecht back in the ninetees.
 
+Consider
+
+```scala
+object constructionOperators {
+
+  implicit class ConstructionOperators[>-->[- _, + _]: Construction, -Z, +Y](
+      `z>-->y`: Z >--> Y) {
+
+    def &[ZZ <: Z, X](`zz>-->x`: => ZZ >--> X) =
+      implicitly.product(`z>-->y`, `zz>-->x`)
+
+    def &&[X, W](`x>-->w`: => X >--> W) =
+      implicitly.and(`z>-->y`, `x>-->w`)
+
+  }
+
+}
+```
+
+`product[Z, Y, X]` comes with an *operator* equivalent `&`, and `and[Z, Y, X, W]` comes with an *operator* equivalent `&&`. Put the `object constructionOperators` code above in the same file as the one of the `trait Construction` code. 
+
+
 
 <!--
 
