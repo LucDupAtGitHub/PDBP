@@ -11,4 +11,8 @@ package pdbp.program
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-trait Function[>-->[- _, + _]]
+trait Function[>-->[- _, + _]] {
+
+  def function[Z, Y](`z=>y`: Z => Y): Z >--> Y
+
+}

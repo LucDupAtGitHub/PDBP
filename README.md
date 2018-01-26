@@ -259,6 +259,8 @@ But, really, for now you only have to concentrate on *power of expression*,
 
 This document contains a lot of code. When reading it in sequential order, you will often be confronted with the word *Consider* followed by code that has not been explained yet. Do not worry, the code will be explained in the paragraph immediately below it. 
 
+### `Program`
+
 Consider
 
 ```scala
@@ -343,6 +345,28 @@ val z2y: Z => Y = <function1>
 
 Note that a program has *one* parameter (or argument). In the section about `trait Construction` we explain how we deal with *many* parameters (or arguments).
 
+### Function
+
+Consider
+
+```scala
+trait Function[>-->[- _, + _]] {
+
+  def function[Z, Y](`z=>y`: Z => Y): Z >--> Y
+
+}
+```
+
+`` function(`z=>y`) `` is a program that behaves as function `` `z=>y` ``. Function `` `z=>y` `` is supposed to be a *pure function* doing nothing else than transforming argument `z` of type `Z` to a result `` y == `z=>y`(z) `` of type `Y`.
+
+For *generic function names*, we use *mixed alphabetic and symbolic characters within backticks*, like \ttb{`z=>y`} to, hopefully, improve readability. We agree that this is an unusual naming convention. We know programers who hate it, we know programmers who love it. Let's explain the reason of this naming convention with some examples that are special cases of [Theorems for free!](http://homepages.inf.ed.ac.uk/wadler/papers/free/free.dvi), as explained by Philip Wadler.
+
+ - There is really only *one* function of type `Z => Z` *for all* `Z`: the *identity function*. The name `` `z=>z` ``, hopefully, suggests this function.
+ - There is really only *one* function of type `(Z, Y) => Z` *for all* `Z` and `Y`: the *left projection function*. The name `` `(z,y)=>z` ``, hopefully, suggests this function.
+ - There is really only *one* function of type `(Z, Y) => Y` *for all* `Z` and `Y`: the *right projection function*. The name `` `(z,y)=>y` ``, hopefully, suggests this function.
+ - There is really only *one* function of type `(Z => Y, Z) => Y` *for all* `Z` and `Y`: the *function application function*. The name `` `(z=>y,z)=>y` ``, hopefully, suggests this function.
+
+Ok, we could have called those functions `identity`, `leftProjection`, `rightProjection`, `functionApplication` or something similar. Sometimes you simply run out of meaningful generic names. The main benefit of the *backtick names* comes when trying to understand the type of *complex* expressions. `` `z=>y`(z) `` is an example of a *simple* expression where, hopefully, it should be clear that it has type `Y`. When dealing with more complex expressions having nested expressions, the usefulness of those backtick names becomes more apparent. For all this to work, we'll introduce synonyms like \ttb{`y=>y`}, \ttb{`x=>x`}, etc. by need (when types `Y`, `X`, etc. are involved).
 
 
 <!--
