@@ -408,6 +408,9 @@ trait Composition[>-->[- _, + _]] {
 
 }
 ```
+
+`` composition(`z>-->y`, `y>-->x`) `` *composes complex programs* from *simpler* ones.
+
 The program `` composition(`z>-->y`, `y>-->x`) `` is the *sequential composition* of the program `` `z>-->y` `` and the program `` `y>-->x` ``. The result of program `` `z>-->y` `` is the argument of the *subsequent* program `` `y>-->x` ``. Note that `` `y>-->x` `` is a *call-by-name parameter*. Program `` `z>-->y` `` may *fail*. 
 
 Consider
@@ -426,7 +429,7 @@ object compositionOperator {
 }
 ```
 
-Put the `compositionOperator` code above in the same file as the one of the `Composition` code. `compose` comes with an *operator* equivalent `>-->`. Note that in
+`compose` comes with an *operator* equivalent `>-->`. Put the `object compositionOperator` code above in the same file as the one of the `trait Composition` code. Note that in
 
 ```scala
 scala> import pdbp.program.Program
@@ -447,6 +450,71 @@ scala> trait Example[>-->[- _, + _] : Program] {
 
 Hopefully this illustrates the usefulness of appropriate generic backtick names.
 
+
+### Construction
+
+Consider
+
+```scala
+package pdbp.program
+
+import pdbp.utils.productUtils._
+
+trait Construction[>-->[- _, + _]] {
+  this: Function[>-->] & Composition[>-->] =>
+
+  def product[Z, Y, X](`z>-->y`: Z >--> Y,
+                       `z>-->x`: => Z >--> X): Z >--> (Y && X) =
+    product(`z>-->y`, `z>-->x`, `(y&&x)>-->(y&&x)`)
+
+  def product[Z, Y, X, W](`z>-->y`: Z >--> Y,
+                          `z>-->x`: => Z >--> X,
+                          `(y&&x)>-->w`: => (Y && X) >--> W): Z >--> W =
+    compose(product(`z>-->y`, `z>-->x`), `(y&&x)>-->w`)
+
+  def and[Z, X, Y, W](`z>-->x`: Z >--> X,
+                      `y>-->w`: => Y >--> W): (Z && Y) >--> (X && W) =
+    product(compose(`(z&&y)>-->z`, `z>-->x`), compose(`(z&&y)>-->y`, `y>-->w`))
+
+  def `let`[Z, Y, X](`z>-->y`: Z >--> Y): In[Z, Y, X] =
+    new In[Z, Y, X] {
+      def `in`(`(z&&y)>-->x`: => (Z && Y) >--> X): Z >--> X =
+        compose(product(`z>-->z`, `z>-->y`), `(z&&y)>-->x`)
+    }
+
+  trait In[Z, Y, X] {
+    def `in`(`(z&&y)>-->x`: => (Z && Y) >--> X): Z >--> X
+  }
+
+}
+```
+
+where
+
+ - `` `(y&&x)>-->(y&&x)` `` is the program you expect (put it in `object productUtils` in `package pdbp.utils`)
+ - `` `(z&&y)>-->z` `` is the program you expect (put it in `object productUtils`)
+ - `` `(z&&y)>-->y` `` is the program you expect (put it in `object productUtils`)
+
+Think of one object of type `Y && X` as both an object `y` of type `Y` and an object `z` of type `Z`. This is the way we deal with *two* results of a program and *two* arguments of subsequent programs.
+
+`` product(`z>-->y`, `z>-->x`) `` *constructs complex program results* from *simpler* ones.
+
+If `` `z>-->y` `` yields a result `y` of type `Y`, and `` `z>-->x` `` yields a result `x` of type `X`, then `` product(`z>-->y`, `z>-->x`) `` yields a result `(y, x)` of type `Y && X`.
+
+`trait Construction` has three other members
+
+ - `product[Z, Y, X, W]` is a more complex, version of `product[Z, Y, X]`,
+ - `and[Z, Y, X, W]` is yet another more version of `product[Z, Y, X]`,
+ - `` `let`[Z, Y, X] `` has a parameter that is a program that *creates a new result*, and `` `in` `` has a parameter that can use that new result as an *extra argument*.
+
+Note that
+
+ - `product[Z, Y, X]` can be defined in terms of `product[Z, Y, X, W]` by making use of `` `(y&&x)>-->(y&&x)` ``,
+ - `product[Z, Y, X, W]` can be defined in terms of `product[Z, Y, X]` and `compose`,
+ - `and[Z, Y, X, W]` can be defined in terms of `product[Z, Y, X]` by making use of `` `(z&&y)>-->z` ``, `` `(z&&y)>-->y` `` and `compose`,
+ - `` `let`[Z, Y, X] ``, and `` `in` `` can be defined in terms of `product[Z, Y, X]` by making use of `` `z>-->z` `` and `compose`.
+
+`` `let` { /* ... */ } `in` { /* ... */ } `` is a first example where `Dotty` comes to the rescue to spice *pointfree programming* with some *domain specific language* flavor.
 
 <!--
 

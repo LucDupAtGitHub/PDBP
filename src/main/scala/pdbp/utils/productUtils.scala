@@ -1,4 +1,4 @@
-package pdbp.program
+package pdbp.utils
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,23 +11,19 @@ package pdbp.program
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.utils.functionUtils._
-import pdbp.utils.productUtils._
+object productUtils {
+  type &&[+Z, +Y] = (Z, Y)
 
-trait Function[>-->[- _, + _]] {
+  def `(y&&x)=>(y&&x)`[Y, X]: (Y && X) => (Y && X) = { `y&&x` =>
+    `y&&x`
+  }  
 
-  def function[Z, Y](`z=>y`: Z => Y): Z >--> Y
+  def `(z&&y)=>z`[Z, Y]: (Z && Y) => Z = { (z, _) =>
+    z
+  }
 
-  def `z>-->z`[Z]: Z >--> Z =
-    function(`z=>z`)  
-
-  def `(y&&x)>-->(y&&x)`[Y, X]: (Y && X) >--> (Y && X) =
-    function(`(y&&x)=>(y&&x)`)
-
-  def `(z&&y)>-->z`[Z, Y]: (Z && Y) >--> Z =
-    function(`(z&&y)=>z`)
-
-  def `(z&&y)>-->y`[Z, Y]: (Z && Y) >--> Y =
-    function(`(z&&y)=>y`)
+  def `(z&&y)=>y`[Z, Y]: (Z && Y) => Y = { (_, y) =>
+    y
+  }
 
 }
