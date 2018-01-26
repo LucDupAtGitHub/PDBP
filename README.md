@@ -253,8 +253,124 @@ For some of you this introduction may have touched upon a lot of frightening stu
 But, really, for now you only have to concentrate on *power of expression*,
 *elegance of use* and *flexibility of meaning*. Hopefully this will sound exiting to both programmers *with* and programmers *without* a background in computer science.
 
+## `Program`
+
+### Warning
+
+This document contains a lot of code. When reading it in sequential order, you will often be confronted with the word *Consider* followed by code that has not been explained yet. Do not worry, the code will be explained in the paragraph immediately below it. 
+
+Consider
+
+```scala
+package pdbp.program
+
+trait Program[>-->[- _, + _]]
+    extends Function[>-->]
+    with Composition[>-->]
+    with Construction[>-->]
+    with Condition[>-->]
+    with Aggregation[>-->]
+    with Execution[>-->]
+```
+where
+
+```scala
+trait Function[>-->]
+
+trait Composition[>-->]
+
+trait Construction[>-->]
+
+trait Condition[>-->]
+
+trait Aggregation[>-->]
+
+trait Execution[>-->]
+```
+
+belong to the same `package pdbp.program`.
+
+We strongly suggest you to write the code yourself to get a feeling of the development of the library. At this moment the code can be compiled (I recommend to use [`sbt`](https://www.scala-sbt.org/)).
+
+```
+$ sbt
+[info] Loading global plugins from /home/lucd/.sbt/0.13/plugins
+[info] Loading project definition from /opt/home/blog/ProgramDescriptionBasedProgramming/pdbp/project
+[info] Set current project to pdbp (in build file:/opt/home/blog/ProgramDescriptionBasedProgramming/pdbp/)
+> compile
+[info] Compiling 7 Scala sources to /opt/home/blog/ProgramDescriptionBasedProgramming/pdbp/target/scala-0.6/classes...
+[success] Total time: 3 s, completed Jan 26, 2018 11:11:50 AM
+```
 
 <!--
+
+
+
+\section{Introduction}\label{section:ProgramIntroduction}
+
+Consider
+
+\input{generated/Program}
+
+\ttb{Program}\index{\ttb{Program}} is a {\em type class}\index{type class} that will gradually be explained later in this book.
+The \ttb{trait}'s \ttb{Function}, \ttb{Composition}, \ttb{Construction}, \ttb{Condition} and \ttb{Execution} will be explained later in this chapter.
+The \ttb{trait} \ttb{Aggregation} will be explained later in this book.
+The \ttb{trait} \ttb{Program} declares the {\em programming capabilities}\index{programming capability} of {\em program descriptions}\index{program description}.
+The programming capabilities of \ttb{Function}, \ttb{Composition} and \ttb{Construction} correspond to {\em arrows}\index{arrow} in~\cite{bib:IdiomsArrowsMonads}.
+
+A program description is an {\em object}\index{object} of type\index{type} \ttb{Z >--> Y}.
+
+\begin{itemize}
+\item \ttb{>-->} is a {\em binary type constructor}\index{binary type constructor},
+\item \ttb{Z} is the {\em parameter type}\index{parameter type} of \ttb{>-->},
+\item \ttb{Y} is the {\em return type}\index{return type} of \ttb{>-->},
+\end{itemize}
+
+where
+
+\begin{itemize}
+\item {\em parameter}\index{parameter}~\ref{vocabulary:parameter}, corresponding to parameter type, is the declaration counterpart of {\em argument}\index{result}~\ref{vocabulary:argument},
+\item {\em return value}\index{return value}~\ref{vocabulary:return}, corresponding to return type, is the declaration counterpart of {\em result}\index{result}~\ref{vocabulary:result}.
+\end{itemize}
+
+A {\em meaning}\index{meaning} of a program description, abbreviated as a {\em program}\index{program} in this book, {\em somehow}, when {\em executed}\index{execution}, 
+transforms an {\em argument} of {\em type}\index{type} \ttb{Z} to yield a {\em result}\index{result} of {\em type}\index{type} \ttb{Y}.
+
+Think of program descriptions as generalizations of {\em functions}\index{function}.
+ 
+Note that \ttb{>-->} is
+\begin{itemize}
+\item {\em contravariant}\index{contravariant} in its parameter type,
+\item {\em covariant}\index{covariant} in its return type.
+\end{itemize}
+The \href{https://en.wikipedia.org/wiki/Liskov_substitution_principle}{Liskov Substitution Principle} allows to {\em require less}\index{require less} and {\em provide more}\index{provide more}, 
+as illustrated below with {\em functions}\index{function}
+
+\scriptsize
+{\color{blue}
+\begin{verbatim} 
+    scala> :paste
+    // Entering paste mode (ctrl-D to finish)
+
+    trait SuperZ
+    trait Z extends SuperZ
+    trait Y
+    trait SubY extends Y
+    val z2y: Function[Z, Y] = new Function[SuperZ,SubY] { override def apply(superZ: SuperZ): SubY = ??? }
+
+    // Exiting paste mode, now interpreting.
+
+    defined trait SuperZ
+    defined trait Z
+    defined trait Y
+    defined trait SubY
+    z2y: Function[Z,Y] = <function1>
+\end{verbatim}
+}
+\normalsize
+
+Note that a program description has {\em one} parameter (and corresponding argument). In the preface chapter~\ref{chapter:Preface} we often mentioned {\em many} arguments.
+In section~\ref{section:ProgramTraitConstruction} we explain how \ttb{trait}~\ttb{Construction} deals with this difference. 
 
 -->
 
