@@ -445,13 +445,13 @@ scala> trait Example[>-->[- _, + _] : Program] {
 // defined trait Example
 ```
 
- - the expression `` `z>-->y` >--> `y>-->x` ``, especially it's matching `y`'s, reflects the types involved 
+ - the expression `` `z>-->y` >--> `y>-->x` ``, especially it's matching `y`'s, reflects the type involved, 
  - the program `` `z>-->x` `` has type `Z >--> X`. 
 
 Hopefully this illustrates the usefulness of appropriate generic backtick names.
 
 
-### Construction
+### `Construction`
 
 Consider
 
@@ -491,15 +491,18 @@ trait Construction[>-->[- _, + _]] {
 
 where
 
- - `` `(y&&x)>-->(y&&x)` `` is the program you expect (put it in `object productUtils` in `package pdbp.utils`)
- - `` `(z&&y)>-->z` `` is the program you expect (put it in `object productUtils`)
- - `` `(z&&y)>-->y` `` is the program you expect (put it in `object productUtils`)
+ - `type &&[+Z, +Y] = (Z, Y)` is a type alias
+ - `` `(y&&x)>-->(y&&x)` `` is the program you expect,
+ - `` `(z&&y)>-->z` `` is the program you expect,
+ - `` `(z&&y)>-->y` `` is the program you expect.
 
-Think of one object of type `Y && X` as both an object `y` of type `Y` and an object `z` of type `Z`. This is the way we deal with *two* results of a program and *two* arguments of subsequent programs.
+Put the programs above in `trait Function` and put the corresponding *product utilities* and the type alias in `object productUtils` in `package pdbp.utils`
 
 `` product(`z>-->y`, `z>-->x`) `` *constructs complex program results* from *simpler* ones.
 
-If `` `z>-->y` `` yields a result `y` of type `Y`, and `` `z>-->x` `` yields a result `x` of type `X`, then `` product(`z>-->y`, `z>-->x`) `` yields a result `(y, x)` of type `Y && X`.
+If `` `z>-->y` `` has a result `y` of type `Y`, and `` `z>-->x` `` has a result `x` of type `X`, then `` product(`z>-->y`, `z>-->x`) `` has a result `(y, x)` of type `Y && X`.
+
+Think of one object of type `Y && X` as both an object `y` of type `Y` and an object `z` of type `Z`. This is the way we deal with *two* results of a program and *two* arguments of subsequent programs.
 
 `trait Construction` has three other members
 
@@ -516,7 +519,63 @@ Note that
 
 `` `let` { /* ... */ } `in` { /* ... */ } `` is a first example where `Dotty` comes to the rescue to spice *pointfree programming* with some *domain specific language* flavor.
 
+Finally, note that the definitions are *left biased*. The argument for the first by-value parameter is always evaluated. The argument for the second by-name parameter may not be evaluated. 
+
+#### Example
+
+Define `product[Z, Y, X]` in terms of `` `let` `` and `` `in` ``.
+
+```scala
+package examples
+
+import pdbp.utils.productUtils._
+
+import pdbp.program.Function
+import pdbp.program.Composition
+import pdbp.program.Construction
+
+import pdbp.program.compositionOperator._
+
+trait ProductInTermsOfLetAndIn[
+    >-->[- _, + _]: Function: Composition: Construction] {
+  val implicitFunction     = implicitly[Function[>-->]]
+  val implicitConstruction = implicitly[Construction[>-->]]
+
+  import implicitFunction._
+  import implicitConstruction._
+
+  def product[Z, Y, X](`z>-->y`: Z >--> Y,
+                       `z>-->x`: => Z >--> X): Z >--> (Y && X) =
+    `let` {
+      `z>-->y`
+    } `in` {
+      `let` {
+        `(z&&y)>-->z` >--> `z>-->x`
+      } `in` {
+        `((z&&y)&&x)>-->(y&&x)`
+      }
+    }
+
+}
+```
+This exercise is an example of a recurring theme of this book: defining a program description, or programming capability, often boils down to *getting the types right puzzle*. Ofthe there is only *one meaningful way* to get them right. Let's have a look at some of the details of the puzzle for this exercise.
+
+The outer `` `let` `` creates, using `` `z>-->y` ``, a new argument for the outer `` `in` `` (which has an argument of type `Z && Y` available, representing two arguments, one of type `Z` and one of type `Y`). The main difference between `` `let` `` and `compose` is that `` `let` `` does loose the original argument of type `Z`. The inner `` `let` `` creates, using `` `(z&&y)>-->z` >--> `z>-->x` ``, the composition of `` `(z&&y)>-->z` `` and `` `z>-->x` ``, new argument for the inner `` `in` `` (which has an argument of type `(Z && Y) && X` available, representing three arguments, one of type `Z`, one of type `Y`, and one of type `X`). The inner `` `in` `` simply gets rid of the original argument of type `Z` using `` `((z&&y)&&x)>-->(y&&x)` ``.
+
+The programs `` `(z&&y)>-->z` `` and `((z&&y)&&x)>-->(y&&x)` are the ones you expect. Add the latter one (and corresponding function) to the appropriate files.
+
+Note that generic backtick names help to understand the puzzle. In the composition `` `(z&&y)>-->z` >--> `z>-->x` ``, the matching `z`'s reflect the type involved. In the name `` `((z&&y)&&x)>-->(y&&x)` ``, both `((z&&y)&&x)` and `(y&&x)` reflect the type involved. 
+
+One challenge that comes with pointfree programming is getting the *arguments that are needed* out of the *all arguments*. One way to deal with this challenge is to keep programs, and therefore, the arguments that come with them, relatively small. After all, small programs can be combined to larger ones by making use of programming capabilities, most notably, sequential composition. [*Erik Meijer*](https://en.wikipedia.org/wiki/Erik_Meijer_(computer_scientist)) refers to this programming paradigm in a somewhat funny way as *good programmers write baby-code.*
+
+Erik Meijer is so famous that he does not need an introduction. I was very lucky to be able to do research with him, on monads and related stuff, at the Univeristy of Utrecht back in the ninetees.
+
+
 <!--
+
+
+
+
 
 
 
