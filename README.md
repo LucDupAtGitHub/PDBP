@@ -373,13 +373,6 @@ Ok, we could have named those functions `identity`, `leftProjection`, `rightProj
 Consider
 
 ```scala
-  def `z>-->z`[Z]: Z >--> Z =
-    function(`z=>z`)  
-```
-
-where
-
-```scala
 package pdbp.utils
 
 object functionUtils {
@@ -389,10 +382,16 @@ object functionUtils {
   }
 
 }
-```
-Add the former code fragment to `trait Function`. Do not forget to do an appropriate `import`. Check if your code compiles.
 
-Above we defined `` `z>-->z` `` in terms of `function` and `` `z=>z` ``.For programs, we use backtick names like `` `z>-->y` `` to, hopefully, improve readability. You may have doubts about the usefulness of `` `z>-->z` ``. It turns out that, when defining more complex *composite programs*, composed from *program components* , replacing one or more of the components by `` `z>-->z` `` results in interesting programs of their own.
+and
+
+```scala
+  def `z>-->z`[Z]: Z >--> Z =
+    function(`z=>z`)  
+```
+
+```
+Add the definition of `` `z>-->z` `` to `trait Function`. Do not forget to do an appropriate `import`. Check if your code compiles. We defined `` `z>-->z` `` in terms of `function` and `` `z=>z` ``. For programs, we use backtick names like `` `z>-->y` `` to, hopefully, improve readability. You may have doubts about the usefulness of `` `z>-->z` ``. It turns out that, when defining more complex *composite programs*, composed from *program components* , replacing one or more of the components by `` `z>-->z` `` results in interesting programs of their own.
 
 
 
