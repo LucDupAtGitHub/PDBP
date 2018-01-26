@@ -523,7 +523,7 @@ Finally, note that the definitions are *left biased*. The argument for the first
 
 #### Example
 
-Define `product[Z, Y, X]` in terms of `` `let` `` and `` `in` ``.
+`product[Z, Y, X]` in terms of `` `let` `` and `` `in` ``.
 
 ```scala
 package examples
@@ -664,7 +664,7 @@ Note that this syntax is syntactic sugar for `` `if`('/* ... */) apply { /* ... 
 
 #### Example
 
-Define `sum[Z, Y, X]` in terms of `` `if` `` and `` `else` ``.
+`sum[Z, Y, X]` in terms of `` `if` `` and `` `else` ``.
 
 ```scala
 package examples
@@ -720,6 +720,37 @@ to obtain a program `` `u>-->z` >--> `z>-->y` >--> `y>-->u` `` of type `Unit >--
 
 ### `factorial` example
 
+`factorial` program in terms of `` `let` `` and `` `in` ``.
+
+```scala
+package examples.program
+
+import pdbp.program.Program
+
+trait FactorialTrait[>-->[- _, + _]: Program] {
+
+  val implicitProgram = implicitly[Program[>-->]]
+
+  import implicitProgram._
+
+  import pdbp.program.compositionOperator._
+
+  val factorial: BigInt >--> BigInt =
+    `if`(isPositive) {
+      `let` {
+        subtractOne >-->
+          factorial
+      } `in`
+        multiply
+    } `else` {
+      one
+    }
+
+    // add helper programs here
+}    
+```
+Where `isPositive`, `subtractOne`, `multiply` and `one` are what you expect. Add them to the file,
+and add the corresponding functions to `object functionUtils` in `package examples.utils`.
 
 
 <!--

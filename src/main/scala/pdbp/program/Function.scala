@@ -15,6 +15,7 @@ import pdbp.utils.functionUtils._
 import pdbp.utils.productUtils._
 import pdbp.utils.sumUtils._
 import pdbp.utils.productAndSumUtils._
+import pdbp.utils.runUtils._
 
 trait Function[>-->[- _, + _]] {
 
@@ -55,5 +56,11 @@ trait Function[>-->[- _, + _]] {
 
   def `(y||x)>-->x`[Y, X]: (Y || X) >--> X =
     function(`(y||x)=>x`)          
+
+  def readInt(message: String): Unit >--> BigInt =
+    function(readIntFunction(message))
+
+  def write[Y](message: String): Y >--> Unit =
+    function(writeFunction(message))
 
 }
