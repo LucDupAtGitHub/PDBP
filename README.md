@@ -350,6 +350,8 @@ Note that a program has *one* parameter (or argument). In the section about `tra
 Consider
 
 ```scala
+package pdbp.program
+
 trait Function[>-->[- _, + _]] {
 
   def function[Z, Y](`z=>y`: Z => Y): Z >--> Y
@@ -367,6 +369,31 @@ For *generic function names*, we use *mixed alphabetic and symbolic characters w
  - There is really only *one* function of type `(Z => Y, Z) => Y` *for all* `Z` and `Y`: the *function application function*. The name `` `(z=>y,z)=>y` ``, hopefully, suggests this function.
 
 Ok, we could have named those functions `identity`, `leftProjection`, `rightProjection`, `functionApplication` or something similar. Sometimes you simply run out of meaningful generic names. The main benefit of the *backtick names* comes when trying to understand the type of *complex* expressions. `` `z=>y`(z) `` is an example of a *simple* expression where, hopefully, it should be clear that it has type `Y`. When dealing with more complex expressions having nested expressions, the usefulness of those backtick names becomes more apparent. For all this to work, we'll introduce synonyms like `` `y=>y` ``, `` `x=>x` ``, etc. by need (when types `Y`, `X`, etc. are involved).
+
+Consider
+
+```scala
+  def `z>-->z`[Z]: Z >--> Z =
+    function(`z=>z`)  
+```
+
+where
+
+```scala
+package pdbp.utils
+
+object functionUtils {
+
+  def `z=>z`[Z]: Z => Z = { z =>
+    z
+  }
+
+}
+```
+Add the former code fragment to `trait Function`. Do not forget to do an appropriate `import`. Check if your code compiles.
+
+Above we defined `` `z>-->z` `` in terms of `function` and `` `z=>z` ``.For programs, we use backtick names like `` `z>-->y` `` to, hopefully, improve readability. You may have doubts about the usefulness of `` `z>-->z` ``. It turns out that, when defining more complex *composite programs*, composed from *program components* , replacing one or more of the components by `` `z>-->z` `` results in interesting programs of their own.
+
 
 
 <!--
