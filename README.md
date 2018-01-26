@@ -345,7 +345,7 @@ val z2y: Z => Y = <function1>
 
 Note that a program has *one* parameter (or argument). In the section about `trait Construction` we explain how we deal with *many* parameters (or arguments).
 
-### Function
+### `Function`
 
 Consider
 
@@ -368,7 +368,7 @@ For *generic function names*, we use *mixed alphabetic and symbolic characters w
  - There is really only *one* function of type `(Z, Y) => Y` *for all* `Z` and `Y`: the *right projection function*. The name `` `(z,y)=>y` ``, hopefully, suggests this function.
  - There is really only *one* function of type `(Z => Y, Z) => Y` *for all* `Z` and `Y`: the *function application function*. The name `` `(z=>y,z)=>y` ``, hopefully, suggests this function.
 
-Ok, we could have named those functions `identity`, `leftProjection`, `rightProjection`, `functionApplication` or something similar. Sometimes you simply run out of meaningful generic names. The main benefit of the *backtick names* comes when trying to understand the type of *complex* expressions. `` `z=>y`(z) `` is an example of a *simple* expression where, hopefully, it should be clear that it has type `Y`. When dealing with more complex expressions having nested expressions, the usefulness of those backtick names becomes more apparent. For all this to work, we'll introduce synonyms like `` `y=>y` ``, `` `x=>x` ``, etc. by need (when types `Y`, `X`, etc. are involved).
+Ok, we could have named those functions `identity`, `leftProjection`, `rightProjection`, `functionApplication` or something similar. Sometimes you simply run out of meaningful generic names. The main benefit of the *generic backtick names* comes when trying to understand the type of *complex* expressions. `` `z=>y`(z) `` is an example of a *simple* expression where, hopefully, it should be clear that it has type `Y`. When dealing with more complex expressions having nested expressions, the usefulness of those generic backtick names becomes more apparent. For all this to work, we'll introduce synonyms like `` `y=>y` ``, `` `x=>x` ``, etc. by need (when types `Y`, `X`, etc. are involved).
 
 Consider
 
@@ -384,18 +384,72 @@ object functionUtils {
 }
 ```
 
-and
+The definition of the *generic function utility* `` `z=>z` `` is the one you expect. We will gradually add more generic function utilities.
+
+Consider
 
 ```scala
   def `z>-->z`[Z]: Z >--> Z =
     function(`z=>z`)  
 ```
 
-Add the definition of `` `z>-->z` `` to `trait Function`. Do not forget to do an appropriate `import`. Check if your code compiles. We defined `` `z>-->z` `` in terms of `function` and `` `z=>z` ``. For programs, we use backtick names like `` `z>-->y` `` to, hopefully, improve readability. You may have doubts about the usefulness of `` `z>-->z` ``. It turns out that, when defining more complex *composite programs*, composed from *program components* , replacing one or more of the components by `` `z>-->z` `` results in interesting programs of their own.
+Add the definition of `` `z>-->z` `` to `trait Function`. Do not forget to do an appropriate `import`. Check if your code compiles. We defined `` `z>-->z` `` in terms of `function` and `` `z=>z` ``. For programs, we use generic backtick names like `` `z>-->y` `` to, hopefully, improve readability. You may have doubts about the usefulness of `` `z>-->z` ``. It turns out that, when defining more complex *composite programs*, composed from *program components* , replacing one or more of the components by `` `z>-->z` `` results in interesting programs of their own.
 
+### `Composition`
+
+Consider
+
+```scala
+package pdbp.program
+
+trait Composition[>-->[- _, + _]] {
+
+  def compose[Z, Y, X](`z>-->y`: Z >--> Y, `y>-->x`: => Y >--> X): Z >--> X
+
+}
+```
+The program `` composition(`z>-->y`, `y>-->x`) `` is the *sequential composition* of the program `` `z>-->y` `` and the program `` `y>-->x` ``. the result of program `` `z>-->y` `` is the argument of the *subsequent* program `` `y>-->x` ``. Also note that `` `y>-->x` `` is a *call-by-name parameter*. Program `` `z>-->y` `` may *fail*. 
+
+Consider
+
+```scala
+object compositionOperator {
+
+  implicit class CompositionOperator[>-->[- _, + _]: Composition, -Z, +Y](
+      `z>-->y`: Z >--> Y) {
+
+    def >-->[X](`y>-->x`: => Y >--> X) =
+      implicitly.compose(`z>-->y`, `y>-->x`)
+
+  }
+
+}
+```
+
+Put `compositionOperator` code above in the same file as the one of the `Composition` code. `compose` comes with an *operator* equivalent `>-->`. Note that in
+
+```scala
+scala> import pdbp.program.Program
+scala> import pdbp.program.compositionOperator._
+scala> trait Example[>-->[- _, + _] : Program] {
+         type Z
+         type Y
+         type X
+         val `z>-->y`: Z >--> Y
+         val `y>-->x`: Y >--> X
+         val `z>-->x`: Z >--> X = `z>-->y` >--> `y>-->x`
+       }
+// defined trait Example
+```
+
+ - the expression `` `z>-->y` >--> `y>-->x` ``, especially it's matching `y`'s, reflects the types involved 
+ - the program `` `z>-->x` `` has type `Z >--> X`. 
+
+Hopefully this illustrates the usefulness of appropriate generic backtick names.
 
 
 <!--
+
 
 
 -->
