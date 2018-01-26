@@ -13,6 +13,8 @@ package pdbp.program
 
 import pdbp.utils.functionUtils._
 import pdbp.utils.productUtils._
+import pdbp.utils.sumUtils._
+import pdbp.utils.productAndSumUtils._
 
 trait Function[>-->[- _, + _]] {
 
@@ -31,6 +33,27 @@ trait Function[>-->[- _, + _]] {
     function(`(z&&y)=>y`)
 
   def `((z&&y)&&x)>-->(y&&x)`[Z, Y, X]: ((Z && Y) && X) >--> (Y && X) =
-    function(`((z&&y)&&x)=>(y&&x)`)    
+    function(`((z&&y)&&x)=>(y&&x)`)  
+
+  def `(y||x)>-->(y||x)`[Y, X]: (Y || X) >--> (Y || X) =
+    function(`(y||x)=>(y||x)`)
+    
+  def `z>-->(z||y)`[Z, Y]: Z >--> (Z || Y) =
+    function(`z=>(z||y)`)
+
+  def `y>-->(z||y)`[Z, Y]: Y >--> (Z || Y) =
+    function(`y=>(z||y)`)
+
+  def `(w&&b)>-->(w||w)`[W]: (W && Boolean) >--> (W || W) =
+    function(`(w&&b)=>(w||w)`)
+
+  def `(y||x)>-->b`[Y, X]: (Y || X) >--> Boolean =
+    function(`(y||x)=>b`)
+
+  def `(y||x)>-->y`[Y, X]: (Y || X) >--> Y =
+    function(`(y||x)=>y`)
+
+  def `(y||x)>-->x`[Y, X]: (Y || X) >--> X =
+    function(`(y||x)=>x`)          
 
 }

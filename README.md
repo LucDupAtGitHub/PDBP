@@ -496,7 +496,7 @@ where
  - `` `(z&&y)>-->z` `` is the program you expect,
  - `` `(z&&y)>-->y` `` is the program you expect.
 
-Put the programs above in `trait Function` and put the corresponding *product utilities* and the type alias in `object productUtils` in `package pdbp.utils`
+Put the programs above in `trait Function` and put the corresponding *product utilities* and the type in `object productUtils` in `package pdbp.utils`.
 
 `` product(`z>-->y`, `z>-->x`) `` *constructs complex program results* from *simpler* ones.
 
@@ -506,16 +506,16 @@ Think of one object of type `Y && X` as both an object `y` of type `Y` and an ob
 
 `trait Construction` has three other members
 
- - `product[Z, Y, X, W]` is a more complex, version of `product[Z, Y, X]`,
- - `and[Z, Y, X, W]` is yet another more version of `product[Z, Y, X]`,
- - `` `let`[Z, Y, X] `` has a parameter that is a program that *creates a new result*, and `` `in` `` has a parameter that can use that new result as an *extra argument*.
+ - `product[Z, Y, X, W]` is a more complex version of `product[Z, Y, X]`,
+ - `and[Z, Y, X, W]` is yet another more complex version of `product[Z, Y, X]`,
+ - `` `let`[Z, Y, X] `` has a parameter that is a program that *creates a new result*, and `` `in` `` has a parameter that has that result available as an *extra argument*.
 
 Note that
 
  - `product[Z, Y, X]` can be defined in terms of `product[Z, Y, X, W]` by making use of `` `(y&&x)>-->(y&&x)` ``,
  - `product[Z, Y, X, W]` can be defined in terms of `product[Z, Y, X]` and `compose`,
  - `and[Z, Y, X, W]` can be defined in terms of `product[Z, Y, X]` by making use of `` `(z&&y)>-->z` ``, `` `(z&&y)>-->y` `` and `compose`,
- - `` `let`[Z, Y, X] ``, and `` `in` `` can be defined in terms of `product[Z, Y, X]` by making use of `` `z>-->z` `` and `compose`.
+ - `` `let`[Z, Y, X] `` and `` `in` `` can be defined in terms of `product` by making use of `` `z>-->z` `` and `compose`.
 
 `` `let` { /* ... */ } `in` { /* ... */ } `` is a first example where `Dotty` comes to the rescue to spice *pointfree programming* with some *domain specific language* flavor.
 
@@ -562,7 +562,7 @@ This exercise is an example of a recurring theme of our library: defining a prog
 
 The outer `` `let` `` creates, using `` `z>-->y` ``, a new argument for the outer `` `in` `` (which has an argument of type `Z && Y` available, representing two arguments, one of type `Z` and one of type `Y`). The main difference between `` `let` `` and `compose` is that `` `let` `` does *not* loose the original argument of type `Z`. The inner `` `let` `` creates, using `` `(z&&y)>-->z` >--> `z>-->x` ``, the composition of `` `(z&&y)>-->z` `` and `` `z>-->x` ``, a new argument for the inner `` `in` `` (which has an argument of type `(Z && Y) && X` available, representing three arguments, one of type `Z`, one of type `Y`, and one of type `X`). The inner `` `in` `` simply gets rid of the original argument of type `Z` using `` `((z&&y)&&x)>-->(y&&x)` ``.
 
-The programs `` `(z&&y)>-->z` `` and `((z&&y)&&x)>-->(y&&x)` are the ones you expect. Add the latter one (and corresponding function) to the appropriate files.
+The programs `` `(z&&y)>-->z` `` and `((z&&y)&&x)>-->(y&&x)` are the ones you expect. Add the latter one (and the corresponding function) to the appropriate files.
 
 Note that generic backtick names help to understand the puzzle. In the composition `` `(z&&y)>-->z` >--> `z>-->x` ``, the matching `z`'s reflect the type involved. In the name `` `((z&&y)&&x)>-->(y&&x)` ``, both `((z&&y)&&x)` and `(y&&x)` reflect the type involved. 
 
@@ -589,15 +589,114 @@ object constructionOperators {
 
 `product[Z, Y, X]` comes with an *operator* equivalent `&`, and `and[Z, Y, X, W]` comes with an *operator* equivalent `&&`. Put the `object constructionOperators` code above in the same file as the one of the `trait Construction` code. 
 
+### `Condition`
+
+Consider 
+
+```scala
+import pdbp.utils.productUtils._
+import pdbp.utils.sumUtils._
+
+trait Condition[>-->[- _, + _]] {
+  this: Function[>-->] & Composition[>-->] & Construction[>-->] =>
+
+  def sum[Z, Y, X](`y>-->z`: => Y >--> Z,
+                   `x>-->z`: => X >--> Z): (Y || X) >--> Z =
+    sum(`(y||x)>-->(y||x)`, `y>-->z`, `x>-->z`)
+
+  def sum[Z, Y, X, W](`w>-->(y||x)`: W >--> (Y || X),
+                      `y>-->z`: => Y >--> Z,
+                      `x>-->z`: => X >--> Z): W >--> Z =
+    compose(`w>-->(y||x)`, sum(`y>-->z`, `x>-->z`))
+
+  def or[Z, X, Y, W](`x>-->z`: => X >--> Z,
+                     `w>-->y`: => W >--> Y): (X || W) >--> (Z || Y) =
+    sum(compose(`x>-->z`, `z>-->(z||y)`), compose(`w>-->y`, `y>-->(z||y)`))
+
+  def `if`[W, Z](`w>-->b`: W >--> Boolean): Apply[W, Z] =
+    new Apply[W, Z] {
+      override def apply(`w>-t->z`: => W >--> Z): Else[W, Z] =
+        new Else[W, Z] {
+          override def `else`(`w>-f->z`: => W >--> Z): W >--> Z =
+            sum(`let`(`w>-->b`) `in` `(w&&b)>-->(w||w)`, `w>-t->z`, `w>-f->z`)
+        }
+    }
+
+  trait Apply[W, Z] {
+    def apply(`w>-t->z`: => W >--> Z): Else[W, Z]
+  }
+
+  trait Else[W, Z] {
+    def `else`(`w>-f->z`: => W >--> Z): W >--> Z
+  }
+
+}
+```
+where
+
+ - `type ||[+Z, +Y] = Left[Z] | Right[Y]`, where `case class Left[+Z](z: Z)` and `case class Right[+Y](y: Y)`,
+ - `` `(y||x)>-->(y||x)` `` is the program you expect,
+ - `` `z>-->(z||y)` `` is the program you expect,
+ - `` `y>-->(z||y)` `` is the program you expect.
+
+Put the programs above in `trait Function` and put the corresponding *sum utilities* and the types in `object sumUtils` in `package pdbp.utils`.
+
+`` `(w&&b)>-->(w||w)` ``, where `b` corresponds to the type `Boolean` is also what you expect. There are two natural implementations, choose the one where `true` corresponds to `Left` and  `false` corresponds to `Right`.
+
+Put the program above in `trait Function` and put the corresponding *product and sum utility* in `object productAndSumUtils` in `package pdbp.utils`.
+
+`` sum(`y>-->z`, `x>-->z`) `` uses a *left or right* *condition* to define *complex programs* in terms of *simpler* ones.
+
+ - `sum[Z, Y, X, W]` is a more complex version of `sum[Z, Y, X]`,
+ - `or[Z, X, Y, W]` is yet another more complex version of `sum[Z, Y, X]`,
+ - `` `if`[W, Z]} `` has a parameter that is a program that has a result of type `Boolean` that is used to *choose* between the parameter of `apply` or the parameter of `` `else` ``.
+
+Note that
+
+ - `sum[Z, Y, X]` can be defined in terms of `sum[Z, Y, X, W]` by making use of `` `(y||x)>-->(y||x)` ``,
+ - `sum[Z, Y, X, W]` can be defined in terms of `sum[Z, Y, X]` and `compose`,
+ - `and[Z, Y, X, W]` can be defined in terms of `product[Z, Y, X]` by making use of `` `(z&&y)>-->z` ``, `` `(z&&y)>-->y` `` and `compose`,
+ - `` `if`[W, Z] `` and `` `else` `` can be defined in terms of `sum` by making use of `` `let` `` and `` `in` ``.
+
+`` `if`('/* ... */) { /* ... */ } `else` { /* ... */ } `` is a second example where `Dotty` comes to the rescue to spice *pointfree programming* with some *domain specific language* flavor. This syntax is syntactic sugar for `` `if`('/* ... */) apply { /* ... */ } `else` { /* ... */ } ``.
+
+#### Example
+
+Define `sum[Z, Y, X]` in terms of `` `if` `` and `` `else` ``.
+
+```scala
+package examples
+
+import pdbp.utils.sumUtils._
+
+import pdbp.program.Function
+import pdbp.program.Composition
+import pdbp.program.Condition
+
+import pdbp.program.compositionOperator._
+
+trait SumInTermsOfIfAndElse[>-->[- _, + _]: Function: Composition: Condition] {
+  val implicitFunction  = implicitly[Function[>-->]]
+  val implicitCondition = implicitly[Condition[>-->]]
+
+  import implicitFunction._
+  import implicitCondition._
+
+  def sum[Z, Y, X](`y>-->z`: => Y >--> Z,
+                   `x>-->z`: => X >--> Z): (Y || X) >--> Z =
+    `if`(`(y||x)>-->b`) {
+      `(y||x)>-->y` >--> `y>-->z`
+    } `else` {
+      `(y||x)>-->x` >--> `x>-->z`
+    }
+
+}
+```
+
+The programs `` `(y||x)>-->y` `` and `` `(y||x)>-->x` `` are the ones you expect. Add them (and corresponding function) to the appropriate files. The program `` `(y||x)>-->b` `` is the one you expect. There are two natural implementations, choose the one where `Left` corresponds to `true` and  `Right` corresponds to `false`. Add it (and the corresponding function) to the appropriate files.
 
 
 <!--
-
-
-
-
-
-
 
 -->
 
