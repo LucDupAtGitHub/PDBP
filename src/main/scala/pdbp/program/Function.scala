@@ -34,7 +34,16 @@ trait Function[>-->[- _, + _]] {
     function(`(z&&y)=>y`)
 
   def `((z&&y)&&x)>-->(y&&x)`[Z, Y, X]: ((Z && Y) && X) >--> (Y && X) =
-    function(`((z&&y)&&x)=>(y&&x)`)  
+    function(`((z&&y)&&x)=>(y&&x)`)      
+
+  def `(z&&(y&&x))>-->z`[Z, Y, X]: (Z && (Y && X)) >--> Z =
+    function(`(z&&(y&&x))=>z`) 
+
+  def `(z&&(y&&x))>-->y`[Z, Y, X]: (Z && (Y && X)) >--> Y =
+    function(`(z&&(y&&x))=>y`) 
+
+  def `(z&&(y&&x))>-->x`[Z, Y, X]: (Z && (Y && X)) >--> X =
+    function(`(z&&(y&&x))=>x`) 
 
   def `(y||x)>-->(y||x)`[Y, X]: (Y || X) >--> (Y || X) =
     function(`(y||x)=>(y||x)`)

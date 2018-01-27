@@ -1,4 +1,4 @@
-package pdbp.program
+package examples.program.main.function
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,20 +11,23 @@ package pdbp.program
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-trait Composition[>-->[- _, + _]] {
+import pdbp.types.function.functionTypes.`>-=->`
 
-  def compose[Z, Y, X](`z>-->y`: Z >--> Y, `y>-->x`: => Y >--> X): Z >--> X
+import pdbp.program.implicits.function.implicits.implicitFunctionProgram
 
-}
+import examples.program.FibonacciTrait
 
-object compositionOperator {
+object FibonacciMain {
 
-  implicit class CompositionOperator[>-->[- _, + _]: Composition, -Z, +Y](
-      `z>-->y`: Z >--> Y) {
+  object fibonacciObject extends FibonacciTrait[`>-=->`]()
 
-    def >-->[X](`y>-->x`: => Y >--> X) =
-      implicitly[Composition[>-->]].compose(`z>-->y`, `y>-->x`)
+  import fibonacciObject._
+
+  def main(args: Array[String]): Unit = {
+
+    executeFibonacciProgram
 
   }
+
 
 }

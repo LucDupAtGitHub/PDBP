@@ -19,14 +19,6 @@ object functionUtils {
     i > 0
   }
 
-  val isZeroFunction: BigInt => Boolean = { i =>
-    i == 0
-  }
-
-  val isOneFunction: BigInt => Boolean = { i =>
-    i == 1
-  }
-
   val subtractOneFunction: BigInt => BigInt = { i =>
     i - 1
   }
@@ -39,16 +31,24 @@ object functionUtils {
     1
   }
 
-  // val subtractTwoFunction: BigInt => BigInt = { i =>
-  //   i - 2
-  // }
+  val isZeroFunction: BigInt => Boolean = { i =>
+    i == 0
+  }
 
-  // val addFunction: (BigInt && BigInt) => BigInt = { (i, j) =>
-  //   i + j
-  // }
+  def zeroFunction[Z]: Z => BigInt = { z =>
+    0
+  }
 
-  // def zeroFunction[Z]: Z => BigInt = { z =>
-  //   1
-  // }
+  val isOneFunction: BigInt => Boolean = { i =>
+    i == 1
+  }  
+  
+  val subtractTwoFunction: BigInt => BigInt = { i =>
+    i - 2
+  }
+
+  val addFunction: (BigInt && BigInt) => BigInt = { (i, j) =>
+    i + j
+  }
 
 }

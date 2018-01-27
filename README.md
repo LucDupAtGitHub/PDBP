@@ -164,7 +164,7 @@ scala> import someIntElement.someElement
 import someIntElement.someElement
 ```
 
-The code above defines `implicit object naturalNumbers` (modeling *natural numbers*). Note that, a long as we keep `Dotty`'s type system happy, we have the *full flexibility* to define `element` and `function` in *any* way we want. We could have modeled *even natural numbers* by replacing `1` by `2`. The code above makes `someElement`, an element of type `Int` available using *dependency injection by* `import`. Now that we have *defined* `E` to be `Int`, we write *element*. When `E` was *declared* we wrote *element description*. Remember that for program descriptions and computation descriptions our notation is *not* going to be so precise. Let's go ahead and make use of `someElement`
+The code above defines `implicit object naturalNumbers` (modeling *natural numbers*). Note that, a long as we keep `Dotty`'s type system happy, we have the *full flexibility* to define `element` and `function` in *any* way we want. We could have modeled *even natural numbers* by replacing `1` by `2`. The code above makes `someElement`, an element of type `Int` available using *dependency injection by* `import`. Now that we have *defined* `E` to be `Int`, we write *element*. When `E` was *declared* we wrote *element description*. Remember that for program descriptions and computation descriptions our notation is *not* going to be so precise. Let's go ahead and use `someElement`
 
 ```scala
 scala> someElement 
@@ -206,7 +206,7 @@ Monads naturally lead to a pointful programming style. Monad based computations 
 
 ### Why `Dotty`
 
-Program description based programming is not only about *power of expression*, it is also, and probably even more, about *elegance of use*. Traditionally, the pointfree style has *not* been considered to be very elegant. Luckily, the `Dotty` programming language comes to the rescue! `Dotty` is a *strongly typed*, *scalable* programming language. It is possible to *extend the language* in a *type safe* way at the *library* level with *internal domain specific languages*. By making use of a domain specific language for the domain of *programs*, program description based programming can be done in a very *concise* way.
+Program description based programming is not only about *power of expression*, it is also, and probably even more, about *elegance of use*. Traditionally, the pointfree style has *not* been considered to be very elegant. Luckily, the `Dotty` programming language comes to the rescue! `Dotty` is a *strongly typed*, *scalable* programming language. It is possible to *extend the language* in a *type safe* way at the *library* level with *internal domain specific languages*. By using a domain specific language for the domain of *programs*, program description based programming can be done in a very *concise* way.
 
 Below are both an `FP` example and a `Dotty` example illustrating difference in elegance of use.
 
@@ -294,7 +294,7 @@ belong to the same `package pdbp.program`.
 
 We strongly suggest you to write the code yourself to get a feeling of the development of the library. At this moment the code can be compiled (I recommend to use [`sbt`](https://www.scala-sbt.org/)).
 
-```
+```scala
 $ sbt
 [info] Loading global plugins from /home/lucd/.sbt/0.13/plugins
 [info] Loading project definition from /opt/home/blog/ProgramDescriptionBasedProgramming/pdbp/project
@@ -429,7 +429,7 @@ object compositionOperator {
 }
 ```
 
-`compose` comes with an *operator* equivalent `>-->`. Put the `object compositionOperator` code above in the same file as the one of the `trait Composition` code. Note that in
+`compose` comes with an *operator* equivalent `>-->`. Put `object compositionOperator` in the same file as `trait Composition`. Note that in
 
 ```scala
 scala> import pdbp.program.Program
@@ -496,7 +496,7 @@ where
  - `` `(z&&y)>-->z` `` is the program you expect,
  - `` `(z&&y)>-->y` `` is the program you expect.
 
-Put the programs above in `trait Function` and put the corresponding *product utilities* and the type in `object productUtils` in `package pdbp.utils`.
+Add the programs above to `trait Function` and put the corresponding *product utilities* and the type `&&` in `object productUtils` in `package pdbp.utils`.
 
 `` product(`z>-->y`, `z>-->x`) `` *constructs complex program results* from *simpler* ones.
 
@@ -566,7 +566,7 @@ The programs `` `(z&&y)>-->z` `` and `((z&&y)&&x)>-->(y&&x)` are the ones you ex
 
 Note that generic backtick names help to understand the puzzle. In the composition `` `(z&&y)>-->z` >--> `z>-->x` ``, the matching `z`'s reflect the type involved. In the name `` `((z&&y)&&x)>-->(y&&x)` ``, both `((z&&y)&&x)` and `(y&&x)` reflect the type involved. 
 
-One challenge that comes with pointfree programming is getting the *arguments that are needed* out of *all arguments*. One way to deal with this challenge is to keep programs, and therefore, the arguments that come with them, relatively small. After all, small programs can be combined to larger ones by making use of programming capabilities, most notably, sequential composition. [*Erik Meijer*](https://en.wikipedia.org/wiki/Erik_Meijer_(computer_scientist)) refers to this programming paradigm in a somewhat funny way as *good programmers write baby-code.* Erik Meijer is so famous that he does not need an introduction. I was very lucky to be able to do research with him, on monads and related stuff, at the Univeristy of Utrecht back in the ninetees.
+One challenge that comes with pointfree programming is getting the *arguments that are needed* out of *all arguments*. One way to deal with this challenge is to keep programs, and therefore, the arguments that come with them, relatively small. After all, small programs can be combined to larger ones by using programming capabilities, most notably, sequential composition. [*Erik Meijer*](https://en.wikipedia.org/wiki/Erik_Meijer_(computer_scientist)) refers to this programming paradigm in a somewhat funny way as *good programmers write baby-code.* Erik Meijer is so famous that he does not need an introduction. I was very lucky to be able to do research with him, on monads and related stuff, at the Univeristy of Utrecht back in the ninetees.
 
 Consider
 
@@ -587,7 +587,7 @@ object constructionOperators {
 }
 ```
 
-`product[Z, Y, X]` comes with an *operator* equivalent `&`, and `and[Z, Y, X, W]` comes with an *operator* equivalent `&&`. Put the `object constructionOperators` code above in the same file as the one of the `trait Construction` code. 
+`product[Z, Y, X]` comes with an *operator* equivalent `&`, and `and[Z, Y, X, W]` comes with an *operator* equivalent `&&`. Put `object constructionOperators` in the same file as `trait Construction`. 
 
 ### `Condition`
 
@@ -639,11 +639,11 @@ where
  - `` `z>-->(z||y)` `` is the program you expect,
  - `` `y>-->(z||y)` `` is the program you expect.
 
-Put the programs above in `trait Function` and put the corresponding *sum utilities* and the types in `object sumUtils` in `package pdbp.utils`.
+Add the programs above to `trait Function` and put the corresponding *sum utilities* and the types `||`, `Left` and `Right` in `object sumUtils` in `package pdbp.utils`.
 
 `` `(w&&b)>-->(w||w)` ``, where `b` corresponds to the type `Boolean` is also what you expect. There are two natural implementations, choose the one where `true` corresponds to `Left` and  `false` corresponds to `Right`.
 
-Put the program above in `trait Function` and put the corresponding *product and sum utility* in `object productAndSumUtils` in `package pdbp.utils`.
+Add the program above to `trait Function` and put the corresponding *product and sum utility* in `object productAndSumUtils` in `package pdbp.utils`.
 
 `` sum(`y>-->z`, `x>-->z`) `` uses a *"left or right"* *condition* to define *complex programs* in terms of *simpler* ones.
 
@@ -737,7 +737,7 @@ trait FactorialTrait[>-->[- _, + _]: Program] {
 
   // add helper programs here
 
-  val factorial: BigInt >--> BigInt =
+  lazy val factorial: BigInt >--> BigInt =
     `if`(isPositive) {
       `let` {
         subtractOne >-->
@@ -753,12 +753,12 @@ trait FactorialTrait[>-->[- _, + _]: Program] {
 Where the helper programs `isPositive`, `subtractOne`, `multiply` and `one` are what you expect. Add the helper programs to `trait FactorialTrait`, and add the corresponding functions to `object functionUtils` in `package examples.utils`.
 
 The definition above is, perhaps, the most concise *pointfree* definition of `factorial` one can think of. Remember that `` `let` `` creates a new result, 
-`factorial(i-1)`, so that `multiply` can work with `(i, factorial(i-1))`. Note that, in the explanation above, we introduced a *name* for the *point* `i` to explain what is going on behind the *pointfree* scenes. The `Dotty` definition above describes `factorial` at a somewhat higher level. Hopefully, after fully understanding the used programming capabilities, you will, eventually, agree that the pointfree program description of `factorial` above is as readable as the factorial programs that you are used to.
+`factorial(i-1)`, so that `multiply` can apply itself to `(i, factorial(i-1))`. Note that, in the explanation above, we introduced a *name* for the *point* `i` to explain what is going on behind the *pointfree* scenes. The `Dotty` definition above describes `factorial` at a somewhat higher level. Hopefully, after fully understanding the used programming capabilities, you will, eventually, agree that the pointfree program description of `factorial` above is as readable as the factorial programs that you are used to.
 
 For those who want to be more *verbose*, it is perfectly possible to, *somehow*, be *pointful* as well. The definition below is *not* pointful. Although it *looks* like being pointful, there is one important difference: the local `val`'s are *programs*.
 
 ```scala
-  val pointfulFactorial: BigInt >--> BigInt = {
+  lazy val pointfulFactorial: BigInt >--> BigInt = {
     val i: BigInt >--> BigInt =
       `z>-->z`
     `if`(i >--> isPositive) {
@@ -787,7 +787,7 @@ For those wo love both backticks and underscores , it is possible to be even mor
 ```scala
   // add helper programs here
 
-  val backtickFactorial: BigInt >--> BigInt =
+  lazy val backtickFactorial: BigInt >--> BigInt =
     `if`(`_ > 0`) {
       `let` {
         `_ - 1` >-->
@@ -801,12 +801,12 @@ For those wo love both backticks and underscores , it is possible to be even mor
 
 Where the helper programs `` `_ > 0` ``, `` `_ - 1` ``, `` `_ * _` `` and `` `1` `` are what you expect. Add the definition above and the helper programs to `trait FactorialTrait`.
 
-It is also possible to define `factorial` by making use of the *product operators*.
+It is also possible to define `factorial` by using the *product operators*.
 
 ```scala
   import pdbp.program.constructionOperators._
 
-  val productFactorial: BigInt >--> BigInt =
+  lazy val productFactorial: BigInt >--> BigInt =
     `if`(isPositive) {
       val i: BigInt >--> BigInt =
         `z>-->z`
@@ -821,7 +821,7 @@ Add the definition above to `trait FactorialTrait`.
 
 #### making `factorial` ready for `Execution`
 
-To make `factorial` ready for `Execution` we need a *producer* and a *consumer*. The simplest ones one can probably think of are *console* based ones. They make use of the functions below. They are *not* pure functions because they perform *console input/output*. Note that we pushed the *impure* console input/output to the *boundaries* of our programs. 
+To make `factorial` ready for `Execution` we need a *producer* and a *consumer*. The simplest ones one can probably think of are *console* based ones. They use the functions below. They are *not* pure functions because they perform *console input/output*. Note that we pushed the *impure* console input/output to the *boundaries* of our programs. 
 
 ```scala
 package pdbp.utils
@@ -843,7 +843,7 @@ object runUtils {
 }
 ```
 
-Put corresponding `readInt` and `write` programs in `trait Function`.
+Add the corresponding `readInt` and `write` programs to `trait Function`.
 
 The code below makes `factorial` (it might as well have been `pointfulFactorial`, `backtickFactorual` or `productFactorial`) ready for `Execution`
 
@@ -859,7 +859,7 @@ The code below makes `factorial` (it might as well have been `pointfulFactorial`
       factorial >-->
       consumer
 
-  lazy val executeFactorialProgram: Unit =
+  def executeFactorialProgram: Unit =
     execute(factorialProgram)  
 ```
 
@@ -869,7 +869,7 @@ We are close to being able to execute our `factorial` program *without having de
 
 ###  `functionProgram`
 
-The simplest program instance one can probably think of is the *function* instance. Let's first define a type alias. This not nexessary, but we do it to for uniformity reasons because other program instances make use of similar type aliases.
+The simplest program instance one can probably think of is the *function* instance. Let's first define a type alias. This not nexessary, but we do it to for uniformity reasons because other program instances use similar type aliases.
 
 ```scala
 package pdbp.types.function
@@ -936,7 +936,7 @@ For `object functionProgram`, the definitions of the members of `trait Program` 
 
 ###  `FactorialMain`
 
-We already stated that, for *type classes*, we are going to make use of the *dependency injection by* `import` technique. Type classes need imported `val`'s to be `implicit`. So let's move on and define an `implicit val` that we can `import` later on. 
+We already stated that, for *type classes*, we are going to use the *dependency injection by* `import` technique. Type classes need imported `val`'s to be `implicit`. So let's move on and define an `implicit val` that we can `import` later on. 
 
 ```scala
 package pdbp.program.implicits.function
@@ -976,17 +976,18 @@ object FactorialMain {
 }
 ```
 
-The code above mainly consists of bringing the necessary artifacts in scope, either using an appropriate `import` or using an appropriate `object`.
+The code above mainly consists of bringing the necessary artifacts in scope, using
 
+ - an appropriate `import` of an `implicit`,
+ - using an appropriate `object` and an `import` that comes with it.
 
 ####  executing `FactorialMain`
 
-Ok, so let's *execute* our executable program.  Note: we use *execute* here as an alias for *sbt run*.
+Ok, so let's *execute* our program.  Note: we use *execute* here as an alias for *sbt run*.
 
 Let's try `100`.
 
-```
-> run
+```scala
 [info] Running examples.program.main.function.FactorialMain
 please type an integer
 100
@@ -994,11 +995,11 @@ it's factorial value is 93326215443944152681699238856266700490715968264381621468
 [success] Total time: 2 s, completed Jan 27, 2018 1:09:21 PM
 ```
 
-Note that the `2 s` is related to *console input* rather than to `factorial` itself.
+Note that the time *is not* related to `factorial` itself. It is related to *console input*.
 
 Let's try `1000`.
 
-```
+```scala
 [info] Running examples.program.main.function.FactorialMain
 please type an integer
 1000
@@ -1007,6 +1008,284 @@ java.lang.StackOverflowError
 ```
 
 We have a problem here. The function program instance is not *stack safe*. The good news is that the function instance is just *one* way to define a meaning for `factorial`. We are going to solve this problem later with *another* program instance that is just *another* way to define a meaning for `factorial`.
+
+### `fibonacci` example
+
+`fibonacci` program in terms of the construction operators `&` and `&&`.
+
+```scala
+package examples.program
+
+import pdbp.program.Program
+
+trait FibonacciTrait[>-->[- _, + _]: Program] {
+
+  val implicitProgram = implicitly[Program[>-->]]
+
+  import implicitProgram._
+
+  import pdbp.program.compositionOperator._
+  import pdbp.program.constructionOperators._
+
+  import pdbp.utils.productUtils._
+
+  import examples.utils.functionUtils._  
+
+  // add helper programs here
+  
+  lazy val fibonacci: BigInt >--> BigInt =
+    `if`(isZero) {
+      zero
+    } `else` {
+      `if`(isOne) {
+        one
+      } `else` {
+        (subtractOne & subtractTwo) >-->
+          (fibonacci && fibonacci) >-->
+          add
+      }
+    }
+
+}    
+```
+
+Where the helper programs `isZero`, `zero`, `isOne`, `one`, `subtractOne`, `subtractTwo` and `add` are what you expect. Add the helper programs to `trait FibonacciTrait`, and add the corresponding functions to `object functionUtils` in `package examples.utils` (if not there already).
+
+`subtractOne & subtractTwo` constructs `(i-1, i-2)` and `fibonacci && fibonacci` constructs `(fibonacci(i-1), fibonacci(i-2))` where `add` can apply itself to.
+
+#### making `fibonacci` ready for `Execution`
+
+To make `fibonacci` ready for `Execution` we define, again, a *console* based *producer* and *consumer*.
+
+The code below makes `fibonacci` ready for `Execution`
+
+```scala
+  val producer: Unit >--> BigInt =
+    readInt("please type an integer")
+
+  val consumer: BigInt >--> Unit =
+    write(s"it's fibonacci value is")
+
+  val fibonacciProgram: Unit >--> Unit =
+    producer >-->
+      fibonacci >-->
+      consumer
+
+  def executeFibonacciProgram: Unit =
+    execute(fibonacciProgram)  
+```
+
+Add the definitions above to `trait FibonacciTrait`.
+
+###  `FibonacciMain`
+
+We already stated that, for *type classes*, we are going to use the *dependency injection by* `import` technique. Type classes need imported `val`'s to be `implicit`. So let's move on and define an `implicit val` that we can `import` later on. 
+
+```scala
+package pdbp.program.implicits.function
+
+object implicits {
+
+  import pdbp.program.instances.function.functionProgram
+
+  implicit val implicitFunctionProgram: functionProgram.type = functionProgram
+
+}
+```
+
+Finally we can define an *executable program*. Note: we use *program* here as code written using the `Dotty` programming language, and we use *executable* here as having an object with a *main* method.
+
+```scala
+package examples.program.main.function
+
+import pdbp.types.function.functionTypes.`>-=->`
+
+import pdbp.program.implicits.function.implicits.implicitFunctionProgram
+
+import examples.program.FibonacciTrait
+
+object FibonacciMain {
+
+  object fibonacciObject extends FibonacciTrait[`>-=->`]()
+
+  import fibonacciObject._
+
+  def main(args: Array[String]): Unit = {
+
+    executeFibonacciProgram
+
+  }
+
+}
+```
+
+The code above mainly consists of bringing the necessary artifacts in scope, using
+
+ - an appropriate `import` of an `implicit`,
+ - using an appropriate `object` and an `import` that comes with it.
+
+####  executing `FibonacciMain`
+
+Ok, so let's *execute* our program.  Note: we use *execute* here as an alias for *sbt run*.
+
+Let's try `10`, `20`, `30`, `35`, `40` ... .
+
+```scala
+[info] Running examples.program.main.function.FibonacciMain
+please type an integer
+10
+it's fibonacci value is 55
+[success] Total time: 2 s, completed Jan 27, 2018 8:54:45 PM
+```
+
+```scala
+[info] Running examples.program.main.function.FibonacciMain
+please type an integer
+20
+it's fibonacci value is 6765
+[success] Total time: 5 s, completed Jan 27, 2018 8:56:12 PM
+```
+
+```scala
+[info] Running examples.program.main.function.FibonacciMain
+please type an integer
+20
+it's fibonacci value is 6765
+[success] Total time: 3 s, completed Jan 27, 2018 8:56:55 PM
+```
+
+```scala
+[info] Running examples.program.main.function.FibonacciMain
+please type an integer
+30
+it's fibonacci value is 832040
+[success] Total time: 4 s, completed Jan 27, 2018 8:57:21 PM
+```
+
+```scala
+[info] Running examples.program.main.function.FibonacciMain
+please type an integer
+35
+it's fibonacci value is 9227465
+[success] Total time: 16 s, completed Jan 27, 2018 8:58:00 PM
+```
+
+```scala
+[info] Running examples.program.main.function.FibonacciMain
+please type an integer
+40
+^C
+```
+
+Note that the time *is* related to `fibonacci` itself.
+
+We have a problem here. 
+
+`fibonacci` can be *optimized* much in the same way as optimized fibonacci programs that you are used to.
+
+```scala
+  val optimizedFibonacci =
+    `let` {
+      (zero & one)
+    } `in` {
+      lazy val optimizedFibonacciHelper
+        : (BigInt && (BigInt && BigInt)) >--> BigInt = {
+        val argument: (BigInt && (BigInt && BigInt)) >--> BigInt =
+          `(z&&(y&&x))>-->z`
+        val current: (BigInt && (BigInt && BigInt)) >--> BigInt =
+          `(z&&(y&&x))>-->y`
+        val next: (BigInt && (BigInt && BigInt)) >--> BigInt =
+          `(z&&(y&&x))>-->x`
+        `if`(argument >--> isZero) {
+          current
+        } `else` {
+          `if`(argument >--> isOne) {
+            next
+          } `else` {
+            val current: (BigInt && BigInt) >--> BigInt =
+              `(z&&y)>-->y`
+            val next =
+              add
+            (subtractOne && (current & next)) >-->
+              optimizedFibonacciHelper
+          }
+        }
+      }
+      optimizedFibonacciHelper
+    }
+```
+
+Where `` `(z&&(y&&x))>-->z` ``, `` `(z&&(y&&x))>-->y` ``,  and `` `(z&&(y&&x))>-->x` `` are what you expect. Add the programs above to `trait Function` and add the corresponding *product utilities* to `object productUtils` in `package pdbp.utils`.
+
+Ok, so let's *execute* our optimized program.  Note: we use *execute* here as an alias for *sbt run*.
+
+Let's try `100`.
+
+```scala
+[info] Running examples.program.main.function.FibonacciMain
+please type an integer
+100
+it's fibonacci value is 354224848179261915075
+[success] Total time: 4 s, completed Jan 27, 2018 9:18:35 PM
+```
+
+Note that the time *is not* related to `fibonacci` itself. It is related to *console input*.
+
+Let's try `1000`.
+
+```scala
+[info] Running examples.program.main.function.FibonacciMain
+please type an integer
+1000
+it's fibonacci value is 43466557686937456435688527675040625802564660517371780402481729089536555417949051890403879840079255169295922593080322634775209689623239873322471161642996440906533187938298969649928516003704476137795166849228875
+[success] Total time: 6 s, completed Jan 27, 2018 9:21:54 PM
+```
+
+Not too bad. Let's push the limits and try `10000`.
+
+```scala
+[info] Running examples.program.main.function.FibonacciMain
+please type an integer
+10000
+[error] (run-main-0) java.lang.StackOverflowError
+java.lang.StackOverflowError
+```
+
+We also have a problem here. The function program instance is not *stack safe*. The good news is that the function instance is just *one* way to define a meaning for `fibonacci`. We are going to solve this problem later with *another* program instance that is just *another* way to define a meaning for `fibonacci`.
+
+It is also possible to define `fibonacci` by using the `` `let` `` and `` `in` ``.
+
+```scala
+  lazy val letAndInFibonacci: BigInt >--> BigInt =
+    `if`(isZero) {
+      zero
+    } `else` {
+      `if`(isOne) {
+        one
+      } `else` {
+        `let` {
+          subtractOne >-->
+            letAndInFibonacci
+        } `in` {
+          val i: (BigInt && BigInt) >--> BigInt =
+            `(z&&y)>-->z`
+          `let` {
+            i >-->
+              subtractTwo >-->
+              letAndInFibonacci
+          } `in` {
+            val `fibonacci(i-1)&&fibonacci(i-2)`
+              : ((BigInt && BigInt) && BigInt) >--> (BigInt && BigInt) =
+              `((z&&y)&&x)>-->(y&&x)`
+            `fibonacci(i-1)&&fibonacci(i-2)` >-->
+              add
+          }
+        }
+      }
+    }
+```
+
+Where `` `(z&&y)>-->z` `` and `` `((z&&y)&&x)>-->(y&&x)` `` are what you expect.
 
 
 

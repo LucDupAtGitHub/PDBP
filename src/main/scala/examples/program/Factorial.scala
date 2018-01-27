@@ -37,7 +37,7 @@ trait FactorialTrait[>-->[- _, + _]: Program] {
   def one[Z]: Z >--> BigInt =
     function(oneFunction)
 
-  val factorial: BigInt >--> BigInt =
+  lazy val factorial: BigInt >--> BigInt =
     `if`(isPositive) {
       `let` {
         subtractOne >-->
@@ -48,7 +48,7 @@ trait FactorialTrait[>-->[- _, + _]: Program] {
       one
     }
 
-  val pointfulFactorial: BigInt >--> BigInt = {
+  lazy val pointfulFactorial: BigInt >--> BigInt = {
     val i: BigInt >--> BigInt =
       `z>-->z`
     `if`(i >--> isPositive) {
@@ -80,7 +80,7 @@ trait FactorialTrait[>-->[- _, + _]: Program] {
   def `1`[Z]: Z >--> BigInt =
     function(oneFunction)
 
-  val backtickFactorial: BigInt >--> BigInt =
+  lazy val backtickFactorial: BigInt >--> BigInt =
     `if`(`_ > 0`) {
       `let` {
         `_ - 1` >-->
@@ -93,7 +93,7 @@ trait FactorialTrait[>-->[- _, + _]: Program] {
 
   import pdbp.program.constructionOperators._
 
-  val productFactorial: BigInt >--> BigInt =
+  lazy val productFactorial: BigInt >--> BigInt =
     `if`(isPositive) {
       val i: BigInt >--> BigInt =
         `z>-->z`
@@ -111,7 +111,7 @@ trait FactorialTrait[>-->[- _, + _]: Program] {
 
   val factorialProgram: Unit >--> Unit =
     producer >-->
-      productFactorial >-->
+      factorial >-->
       consumer
 
   def executeFactorialProgram: Unit =
