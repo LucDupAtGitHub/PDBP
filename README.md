@@ -934,8 +934,79 @@ Add `foldSum` to `object sumUtilities` if you did not yet defined it as a conven
 
 For `object functionProgram`, the definitions of the members of `trait Program` are trivial.
 
+###  `FactorialMain`
+
+We already stated that, for *type classes*, we are going to make use of the *dependency injection using* `import` technique. Type classes need imported `val`'s to be `implicit`. So let's move on and define an `implicit val` that we can `import` later on. 
+
+```scala
+package pdbp.program.implicits.function
+
+object implicits {
+
+  import pdbp.program.instances.function.functionProgram
+
+  implicit val implicitFunctionProgram: functionProgram.type = functionProgram
+
+}
+```
+
+Finally we can define an *executable program*. Note: we use *program* here as code written using the `Dotty` programming language, and we use *executable* here as having an object with a *main* method.
+
+```scala
+package examples.program.main.function
+
+import pdbp.types.function.functionTypes.`>-=->`
+
+import pdbp.program.implicits.function.implicits.implicitFunctionProgram
+
+import examples.program.FactorialTrait
+
+object FactorialMain {
+
+  object factorialObject extends FactorialTrait[`>-=->`]()
+
+  import factorialObject._
+
+  def main(args: Array[String]): Unit = {
+
+    executeFactorialProgram
+
+  }
+
+}
+```
+
+The code above mainly consists of bringing the necessary artifacts in scope, either using an appropriate `import` or using an appropriate `object` .
 
 
+####  executing `FactorialMain`
+
+Ok, so let's *execute* our executable program.  Note: we use *execute* here as an alias for *sbt run*.
+
+Let's try `100`.
+
+```
+> run
+[info] Running examples.program.main.function.FactorialMain
+please type an integer
+100
+it's factorial value is 93326215443944152681699238856266700490715968264381621468592963895217599993229915608941463976156518286253697920827223758251185210916864000000000000000000000000
+[success] Total time: 2 s, completed Jan 27, 2018 1:09:21 PM
+```
+
+Note that the `2 s` is related to *console input* rather than to `factorial` itself.
+
+Let's try `1000`.
+
+```
+[info] Running examples.program.main.function.FactorialMain
+please type an integer
+1000
+[error] (run-main-0) java.lang.StackOverflowError
+java.lang.StackOverflowError
+```
+
+We have a problem here. The function program instance is not *stack safe*. The good news is that the function instance is just one way to define a meaning for `factorial`. We are going to solve this problem later on using *another* program instance.
 
 
 
@@ -943,10 +1014,3 @@ For `object functionProgram`, the definitions of the members of `trait Program` 
 <!--
 
 -->
-
-
-
-
-
-
-
