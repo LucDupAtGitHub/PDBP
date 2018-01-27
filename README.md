@@ -865,9 +865,74 @@ The code below makes `factorial` (it might as well have been `pointfulFactorial`
 
 Add the definitions above to `trait FactorialTrait`.
 
-We are close to being able to execute our `factorial` program *without having defined any* `Program` *instance at all*! So let's move on and define such an instance.
+We are close to being able to execute our `factorial` program *without having defined any* `Program` *instance at all!* So let's move on and define such an instance.
 
 ###  `functionProgram`
+
+The simplest program instance one can probably think of is the *function* instance. Let's first define a type alias. This not nexessary, but we do it to for uniformity reasons because other program instances make use of similar type aliases.
+
+```scala
+package pdbp.types.function
+
+object functionTypes {
+
+  type `>-=->` = Function
+
+}
+```
+
+We are ready for our first program instance.
+
+```scala
+package pdbp.program.instances.function
+
+import pdbp.utils.productUtils._
+import pdbp.utils.sumUtils._
+
+import pdbp.program.Program
+
+import pdbp.types.function.functionTypes._
+
+object functionProgram extends Program[`>-=->`] {
+
+  override def function[Z, Y](`z>-=->y`: Z `>-=->` Y): Z `>-=->` Y =
+    `z>-=->y`
+
+  override def compose[Z, Y, X](`z>-=->y`: Z `>-=->` Y,
+                                `y>-=->x`: => Y `>-=->` X): Z `>-=->` X =
+    `z>-=->y` andThen `y>-=->x`
+
+  override def product[Z, Y, X](
+      `z>-=->y`: Z `>-=->` Y,
+      `z>-=->x`: => Z `>-=->` X): Z `>-=->` (Y && X) = { z =>
+    (`z>-=->y`(z), `z>-=->x`(z))
+  }
+
+  override def sum[Z, Y, X](`y>-=->z`: => Y `>-=->` Z,
+                            `x>-=->z`: => X `>-=->` Z): (Y || X) `>-=->` Z = {
+    foldSum(`y>-=->z`, `x>-=->z`)
+  }
+
+  override def execute(`u>-=->u`: Unit `>-=->` Unit): Unit =
+    `u>-=->u`(())
+
+}
+```
+
+where
+
+```scala
+  def foldSum[Z, Y, X](`y=>z`: => Y => Z, `x=>z`: => X => Z): (Y || X) => Z = {
+    case Left(y) =>
+      `y=>z`(y)
+    case Right(x) =>
+      `x=>z`(x)
+  }
+```
+
+Add `foldSum` to `object sumUtilities` if you did not yet defined it as a convenience member for other members.
+
+For `object functionProgram`, the definitions of the members of `trait Program` are trivial.
 
 
 
