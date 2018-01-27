@@ -114,4 +114,7 @@ trait FactorialTrait[>-->[- _, + _]: Program] {
       productFactorial >-->
       consumer
 
+  lazy val executeFactorialProgram: Unit =
+    execute(factorialProgram)   
+
 }

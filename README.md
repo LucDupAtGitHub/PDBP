@@ -750,7 +750,7 @@ trait FactorialTrait[>-->[- _, + _]: Program] {
 
 }    
 ```
-Where the helper programs `isPositive`, `subtractOne`, `multiply` and `one` are what you expect. Add the helper programs to the file, and add the corresponding functions to `object functionUtils` in `package examples.utils`.
+Where the helper programs `isPositive`, `subtractOne`, `multiply` and `one` are what you expect. Add the helper programs to `trait FactorialTrait`, and add the corresponding functions to `object functionUtils` in `package examples.utils`.
 
 The definition above is, perhaps, the most concise *pointfree* definition of `factorial` one can think of. Remember that `` `let` `` creates a new result, 
 `factorial(i-1)`, so that `multiply` can work with `(i, factorial(i-1))`. Note that, in the explanation above, we introduced a *name* for the *point* `i` to explain what is going on behind the *pointfree* scenes. The `Dotty` definition above describes `factorial` at a somewhat higher level. Hopefully, after fully understanding the used programming capabilities, you will, eventually, agree that the pointfree program description of `factorial` above is as readable as the factorial programs that you are used to.
@@ -778,7 +778,7 @@ For those who want to be more *verbose*, it is perfectly possible to, *somehow*,
     }
   }
 ```
-Add the definition above to the `trait FactorialTrait`.
+Add the definition above to `trait FactorialTrait`.
 
 Note that, in contrast with the local `val`'s in the factorial programs that you are used to, `i` and `` `i\&\&factorial(i-1)` `` are convenient *aliases* for \ttb{`z>-->z`}. You may argue that we contradict ourselves by first claiming that *generic backtick names* are useful and second defining convenient aliases. Note that they are *specific aliases* which, by the way, using backticks, we can also name in any way we like. 
 
@@ -799,7 +799,7 @@ For those wo love both backticks and underscores , it is possible to be even mor
     }    
 ```
 
-Where the helper programs `` `_ > 0` ``, `` `_ - 1` ``, `` `_ * _` `` and `` `1` `` are what you expect. Add the definition above to the `trait FactorialTrait` and add the helper programs to the file.
+Where the helper programs `` `_ > 0` ``, `` `_ - 1` ``, `` `_ * _` `` and `` `1` `` are what you expect. Add the definition above and the helper programs to `trait FactorialTrait`.
 
 It is also possible to define `factorial` by making use of the *product operators*.
 
@@ -817,7 +817,11 @@ It is also possible to define `factorial` by making use of the *product operator
     }    
 ```
 
-#### executing the `factorial` example
+Add the definition above to `trait FactorialTrait`.
+
+#### making the `factorial` example ready for `Execution`
+
+
 
 
 <!--
