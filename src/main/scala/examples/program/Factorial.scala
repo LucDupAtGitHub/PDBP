@@ -21,19 +21,8 @@ trait FactorialTrait[>-->[- _, + _]: Program] {
 
   import pdbp.program.compositionOperator._
 
-  val factorial: BigInt >--> BigInt =
-    `if`(isPositive) {
-      `let` {
-        subtractOne >-->
-          factorial
-      } `in`
-        multiply
-    } `else` {
-      one
-    }
-
   import pdbp.utils.productUtils._
-    
+
   import examples.utils.functionUtils._
 
   val isPositive: BigInt >--> Boolean =
@@ -47,6 +36,17 @@ trait FactorialTrait[>-->[- _, + _]: Program] {
 
   def one[Z]: Z >--> BigInt =
     function(oneFunction)
+
+  val factorial: BigInt >--> BigInt =
+    `if`(isPositive) {
+      `let` {
+        subtractOne >-->
+          factorial
+      } `in`
+        multiply
+    } `else` {
+      one
+    }
 
   val pointfulFactorial: BigInt >--> BigInt = {
     val i: BigInt >--> BigInt =

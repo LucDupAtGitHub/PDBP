@@ -735,6 +735,8 @@ trait FactorialTrait[>-->[- _, + _]: Program] {
 
   import pdbp.program.compositionOperator._
 
+  // add helper programs here
+
   val factorial: BigInt >--> BigInt =
     `if`(isPositive) {
       `let` {
@@ -746,12 +748,38 @@ trait FactorialTrait[>-->[- _, + _]: Program] {
       one
     }
 
-  // add helper programs here
-
 }    
 ```
-Where `isPositive`, `subtractOne`, `multiply` and `one` are what you expect. Add them to the file,
-and add the corresponding functions to `object functionUtils` in `package examples.utils`.
+Where the helper programs `isPositive`, `subtractOne`, `multiply` and `one` are what you expect. Add them to the file, and add the corresponding functions to `object functionUtils` in `package examples.utils`.
+
+The definition above is, perhaps, the most concise *pointfree* definition of `factorial` one can think of. Remember that `` `let` `` creates a new result, 
+`factorial(i-1)`, so that `multiply` can work with `(i, factorial(i-1))`. Note that, in the explanation above, we introduced a *name* for the *point* `i` to explain what is going on behind the *pointfree* scenes. The `Dotty` definition above describes `factorial` at a somewhat higher level. Hopefully, after fully understanding the used programming capabilities, you will, eventually, agree that the pointfree program description of `factorial` above is as readable as the factorial programs that you are used to.
+
+For those who want to be more *verbose*, it is perfectly possible to, *somehow*, be *pointful* as well. The definition below is *not* pointful. Although it *looks* like being pointful, there is one important difference: the local `val`'s are *programs*.
+
+```scala
+  val pointfulFactorial: BigInt >--> BigInt = {
+    val i: BigInt >--> BigInt =
+      `z>-->z`
+    `if`(i >--> isPositive) {
+      `let` {
+        i >-->
+          subtractOne >-->
+          pointfulFactorial
+      } `in` {
+        val `i&&factorial(i-1)` : (BigInt && BigInt) >--> (BigInt && BigInt) =
+          `z>-->z`
+        `i&&factorial(i-1)` >-->
+          multiply
+      }
+    } `else` {
+      i >-->
+        one
+    }
+  }
+```
+
+Note that, in contrast with the local `val`'s in the factorial programs that you are used to, `i` and `` `i\&\&factorial(i-1)` `` are convenient *aliases* for \ttb{`z>-->z`}. You may argue that we contradict ourselves by first claiming that *generic backtick names* are useful and second defining convenient aliases. Note that they are *specific aliases* which, by the way, using backticks, we can name in any way we like. 
 
 
 <!--
