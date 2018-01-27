@@ -936,7 +936,7 @@ For `object functionProgram`, the definitions of the members of `trait Program` 
 
 ###  `FactorialMain`
 
-We already stated that, for *type classes*, we are going to make use of the *dependency injection using* `import` technique. Type classes need imported `val`'s to be `implicit`. So let's move on and define an `implicit val` that we can `import` later on. 
+We already stated that, for *type classes*, we are going to make use of the *dependency injection by* `import` technique. Type classes need imported `val`'s to be `implicit`. So let's move on and define an `implicit val` that we can `import` later on. 
 
 ```scala
 package pdbp.program.implicits.function
@@ -976,7 +976,7 @@ object FactorialMain {
 }
 ```
 
-The code above mainly consists of bringing the necessary artifacts in scope, either using an appropriate `import` or using an appropriate `object` .
+The code above mainly consists of bringing the necessary artifacts in scope, either using an appropriate `import` or using an appropriate `object`.
 
 
 ####  executing `FactorialMain`
@@ -1006,7 +1006,7 @@ please type an integer
 java.lang.StackOverflowError
 ```
 
-We have a problem here. The function program instance is not *stack safe*. The good news is that the function instance is just one way to define a meaning for `factorial`. We are going to solve this problem later on using *another* program instance.
+We have a problem here. The function program instance is not *stack safe*. The good news is that the function instance is just *one* way to define a meaning for `factorial`. We are going to solve this problem later with *another* program instance that is just *another* way to define a meaning for `factorial`.
 
 
 
