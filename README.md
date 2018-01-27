@@ -819,7 +819,58 @@ It is also possible to define `factorial` by making use of the *product operator
 
 Add the definition above to `trait FactorialTrait`.
 
-#### making the `factorial` example ready for `Execution`
+#### making `factorial` ready for `Execution`
+
+To make `factorial` ready for `Execution` we need a *producer* and a *consumer*. The simplest ones one can probably think of are *console* based ones. They make use of the functions below. They are *not* pure functions because they perform *console input/output*. Note that we pushed the *impure* console input/output to the *boundaries* of our programs. 
+
+```scala
+package pdbp.utils
+
+object runUtils {
+
+  def readIntFunction(message: String): Unit => BigInt = { _ =>
+    println(s"$message")
+    val i = BigInt(scala.io.StdIn.readInt())
+    i
+  }
+
+  def writeFunction[Y](message: String): Y => Unit = { y =>
+    print(s"$message ")
+    val u = println(s"$y")
+    u
+  }
+
+}
+```
+
+Put corresponding `readInt` and `write` programs in `trait Function`.
+
+The code below makes `factorial` (it might as well have been `pointfulFactorial`, `backtickFactorual` or `productFactorial`) ready for `Execution`
+
+```scala
+  val producer: Unit >--> BigInt =
+    readInt("please type an integer")
+
+  val consumer: BigInt >--> Unit =
+    write(s"it's factorial value is")
+
+  val factorialProgram: Unit >--> Unit =
+    producer >-->
+      factorial >-->
+      consumer
+
+  lazy val executeFactorialProgram: Unit =
+    execute(factorialProgram)  
+```
+
+Add the definitions above to `trait FactorialTrait`.
+
+We are close to being able to execute our `factorial` program *without having defined any* `Program` *instance at all*! So let's move on and define such an instance.
+
+###  `functionProgram`
+
+
+
 
 
 
