@@ -979,7 +979,7 @@ object FactorialMain {
 The code above mainly consists of bringing the necessary artifacts in scope, using
 
  - an appropriate `import` of an `implicit`,
- - using an appropriate `object` and an `import` that comes with it.
+ - an appropriate `object` and an `import` that comes with it.
 
 ####  executing `FactorialMain`
 
@@ -1079,20 +1079,6 @@ Add the definitions above to `trait FibonacciTrait`.
 
 ###  `FibonacciMain`
 
-We already stated that, for *type classes*, we are going to use the *dependency injection by* `import` technique. Type classes need imported `val`'s to be `implicit`. So let's move on and define an `implicit val` that we can `import` later on. 
-
-```scala
-package pdbp.program.implicits.function
-
-object implicits {
-
-  import pdbp.program.instances.function.functionProgram
-
-  implicit val implicitFunctionProgram: functionProgram.type = functionProgram
-
-}
-```
-
 Finally we can define an *executable program*. Note: we use *program* here as code written using the `Dotty` programming language, and we use *executable* here as having an object with a *main* method.
 
 ```scala
@@ -1122,7 +1108,7 @@ object FibonacciMain {
 The code above mainly consists of bringing the necessary artifacts in scope, using
 
  - an appropriate `import` of an `implicit`,
- - using an appropriate `object` and an `import` that comes with it.
+ - an appropriate `object` and an `import` that comes with it.
 
 ####  executing `FibonacciMain`
 
