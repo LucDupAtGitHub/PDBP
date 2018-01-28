@@ -1,4 +1,4 @@
-package pdbp.utils
+package pdbp.binding
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,14 +11,17 @@ package pdbp.utils
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-object functionUtils {
+import pdbp.utils.functionUtils._
 
-  def `z=>z`[Z]: Z => Z = { z =>
-    z
-  }
+import pdbp.lifting.Lifting
 
-  def `mz=>mz`[M[+ _], Z]: M[Z] => M[Z] = { mz =>
-    mz
-  }  
+private[pdbp] trait Binding[M[+ _]] {
+  this: Lifting[M] =>
+
+  private[pdbp] def bind[Z, Y](mz: M[Z], `z=my`: Z => M[Y]): M[Y] =
+    flatten(liftFunction(`z=my`)(mz))
+
+  private[pdbp] def flatten[Z](mmz: M[M[Z]]): M[Z] =
+    bind(mmz, `mz=>mz`)
 
 }

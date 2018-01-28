@@ -1277,7 +1277,7 @@ Where `` `(z&&y)>-->z` `` and `` `((z&&y)&&x)>-->(y&&x)` `` are what you expect.
 
 ### Introduction
 
-In the `Program` section we have presented *programs*, defined in terms of *programming capabilities*. In this section we start presenting *computations* defined in terms of *computational capabilities*. In this section we present a limited amount of computational capabilities. The full amount of computational capabilities will be presented in the `Computation` section.
+In the `Program` section we have presented *programs*, defined in terms of *programming capabilities*. In this section we start presenting *computations* defined in terms of *computational capabilities*. In this section we present a limited amount of computational capabilities. The full amount of computational capabilities will be presented in the `Computation` section. All computational capabilities are defined as `private [pdbp]`. We do not want to expose pointful capabilies to the users of the library. We only expose pointfree capabilities to the users of the library. It is convenient to have pointful capabilies available in the library itself. For example: it is simpler to define instances since computations have less declared capabilities to be defined than programs.
 
 ### `Lifting`
 
@@ -1457,9 +1457,69 @@ object kleisliFunctionType {
 }
 ```
 
-A *Kleisli function* is a function of type `Z => M[Y]`. In the `Computation` section we show that, if `M` is a *computation*, then `Z => M[Y]` is a *program*. 
+A *Kleisli function* is a function of type `Z => M[Y]`. 
+
+In the `Computation` section we show that, if `M` is a *computation*, then `Z => M[Y]` is a *program*. 
+
+## Computation
+
+### Introduction
+
+In the `Lifting` section we have presented a limited amount of computational capabilities: the *lifting capabilities*. In this section we present the full amount of computational capabilities: we add the *binding capability*.
+
+### Computation
+
+Consider
+
+```scala
+package pdbp.binding
+
+import pdbp.utils.functionUtils._
+
+import pdbp.lifting.Lifting
+
+private[pdbp] trait Binding[M[+ _]] {
+  this: Lifting[M] =>
+
+  private[pdbp] def bind[Z, Y](mz: M[Z], `z=my`: Z => M[Y]): M[Y] =
+    flatten[Y](liftFunction(`z=my`)(mz))
+
+  private[pdbp] def flatten[Z](mmz: M[M[Z]]): M[Z] =
+    bind(mmz, `mz=>mz`)
+
+}
+```
+ - `bind` is function that *binds* the *result* of the *computation* `mz` of type `M[Z]` to the function `` `z=>my` `` to result in a *computation* of type `M[Y]`.
+ - `flatten` *lattens* a *nested computation* to a *computation* of type `M[M[Z]]` to a computation of type `M[Z]`.
+
+The *function utility* `` `mz=>mz` `` is the one you expect. Add it to `object functionUtils` in `package pdbp.utils`.
+
+ - `bind` can be defined in terms of `flatten` using `liftFunction`.
+ - \item `flatten` can be defined in terms of bind` using `` `mz=>mz` ``.
+
+Here is some intuition behind the types involved when binding the *computation* way. Lifting a function of type `Z => M[Z]` results in a function of type `M[Z] => M[M[Z]]`. Flattening the result of type `M[M[Z]]`, obtained by binding an argument of type `M[Z]` to that lifted results in an object of type `M[Z]`.
+
+Note that the functions of type `Z => M[Y]` involved are Kleisli functions. 
+
+ - When dealing with computations we annotate them with `Z => M[Y]`  
+ - When dealing with programs we annotate them with `Kleisli[M][Z, Y]]` or, `` Z `>=K=>` Y `` for some type alias `` `>=K=>` ``
 
 <!--
 
+Consider
+
+\input{generated/Binding}
+
+
+`trait Computation` is a *type class* that will gradually be explained later in this document. `trait Function`, `trait Composition`, `trait Construction`, `trait Condition` and `trait Execution` will be explained later in this section. `trait Aggregation` will be explained later in this document. `trait Program` declares *programming capabilities* of *program descriptions*. The programming capabilities of `Function`, `Composition` and `Construction` correspond to *arrows*. 
+
+All code in this chapter is \ttb{private [fbfp]}~: we do not expose computational capabilities (we only expose programming capabilities).
+
+\ttb{Computation}\index{\ttb{Computation}} is a {\em type class}\index{type class} that will gradually be explained later in this book.
+The \ttb{trait}'s \ttb{Program} resp. \ttb{Lifting} have been explained in chapter~\ref{chapter:Program} resp. chapter~\ref{chapter:Lifting}.
+The \ttb{trait} \ttb{Binding} will be explained later in this chapter.
+The \ttb{trait} \ttb{Sequencing} will be explained later in this book.
+The \ttb{trait} \ttb{Computation} declares all the {\em computational capabilities}\index{computational capability} of {\em computation descriptions}\index{computation description}.
+The computational capabilities \ttb{Lifting} and \ttb{Binding} correspond to {\em monads}\index{monad} in~\cite{bib:IdiomsArrowsMonads}.
 
 -->
