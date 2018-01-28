@@ -47,7 +47,7 @@ private[pdbp] trait Computation[M[+ _]]
     bind(mz, z => bind(my, y => result(`(z&&y)=>x`(z, y))))
   }
 
-  // Program  
+  // Program
 
   private type `>=K=>` = Kleisli[M]
 
@@ -68,7 +68,21 @@ private[pdbp] trait Computation[M[+ _]]
 
   override def sum[Z, Y, X](`y>=k=>z`: => Y `>=K=>` Z,
                             `x>=k=>z`: => X `>=K=>` Z): (Y || X) `>=K=>` Z =
-    foldSum(`y>=k=>z`, `x>=k=>z`) 
+    foldSum(`y>=k=>z`, `x>=k=>z`)
 
 }
 
+private trait ComputationWithApply[M[+ _]] extends Computation[M] {
+
+  import pdbp.utils.productUtils._
+
+  private type `>=K=>` = Kleisli[M]
+
+  // Application
+
+  private[pdbp] def apply[Z, Y]: (Z && (Z `>=K=>` Y)) `>=K=>` Y = {
+    (z, `z>=k=>y`) =>
+      bind(result(z), `z>=k=>y`)
+  }
+
+}

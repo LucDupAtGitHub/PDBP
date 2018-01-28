@@ -384,7 +384,7 @@ object functionUtils {
 }
 ```
 
-The definition of the *generic function utility* `` `z=>z` `` is the one you expect. We will gradually add more generic function utilities.
+The *generic function utility* `` `z=>z` `` is the one you expect. We will gradually add more generic function utilities.
 
 Consider
 
@@ -496,7 +496,7 @@ where
  - `` `(z&&y)>-->z` `` is the program you expect,
  - `` `(z&&y)>-->y` `` is the program you expect.
 
-Add the programs above to `trait Function` and put the corresponding *product utilities* and the type `&&` in `object productUtils` in `package pdbp.utils`.
+Add the programs above to `trait Function` and put the corresponding *generic product utilities* and the type `&&` in `object productUtils` in `package pdbp.utils`.
 
 `product` makes a *program* `` product(`z>-->y`, `z>-->x`) `` that *constructs a result from the results of simpler programs*, `` `z>-->y` `` and `` `z>-->x` `` .
 
@@ -562,7 +562,7 @@ This exercise is an example of a recurring theme of our library: defining a prog
 
 The outer `` `let` `` creates, using `` `z>-->y` ``, a new argument for the outer `` `in` `` (which has an argument of type `Z && Y` available, representing two arguments, one of type `Z` and one of type `Y`). The main difference between `` `let` `` and `compose` is that `` `let` `` does *not* loose the original argument of type `Z`. The inner `` `let` `` creates, using `` `(z&&y)>-->z` >--> `z>-->x` ``, the composition of `` `(z&&y)>-->z` `` and `` `z>-->x` ``, a new argument for the inner `` `in` `` (which has an argument of type `(Z && Y) && X` available, representing three arguments, one of type `Z`, one of type `Y`, and one of type `X`). The inner `` `in` `` simply gets rid of the original argument of type `Z` using `` `((z&&y)&&x)>-->(y&&x)` ``.
 
-The programs `` `(z&&y)>-->z` `` and  `` `((z&&y)&&x)>-->(y&&x)` `` are the ones you expect. Add the latter one (and the corresponding function) to the appropriate files.
+The programs `` `(z&&y)>-->z` `` and  `` `((z&&y)&&x)>-->(y&&x)` `` are the ones you expect. Add `` `((z&&y)&&x)>-->(y&&x)` `` to `trait Function` and add the corresponding generic product utility to `object productUtils` in `package pdbp.util`.
 
 Note that generic backtick names help to understand the puzzle. In the composition `` `(z&&y)>-->z` >--> `z>-->x` ``, the matching `z`'s reflect the type involved. In the name `` `((z&&y)&&x)>-->(y&&x)` ``, both `((z&&y)&&x)` and `(y&&x)` reflect the type involved. 
 
@@ -695,7 +695,7 @@ trait SumInTermsOfIfAndElse[>-->[- _, + _]: Function: Composition: Condition] {
 }
 ```
 
-The programs `` `(y||x)>-->y` `` and `` `(y||x)>-->x` `` are the ones you expect. Add them (and corresponding function) to the appropriate files. The program `` `(y||x)>-->b` `` is the one you expect. There are two natural implementations, choose the one where `Left` corresponds to `true` and  `Right` corresponds to `false`. Add it (and the corresponding function) to the appropriate files.
+The programs `` `(y||x)>-->y` `` and `` `(y||x)>-->x` `` are the ones you expect. Add them to `trait Function` and add the corresponding generic sum utilities to `object sumUtils` in `package pdbp.util`. The program `` `(y||x)>-->b` `` is the one you expect. There are two natural implementations, choose the one where `Left` corresponds to `true` and  `Right` corresponds to `false`. Add it to `trait Function` and add the corresponding generic sum utility to `object sumUtils` in `package pdbp.util`.
 
 ### `Execution`
 
@@ -750,7 +750,7 @@ trait FactorialTrait[>-->[- _, + _]: Program] {
 
 }    
 ```
-Where the helper programs `isPositive`, `subtractOne`, `multiply` and `one` are what you expect. Add the helper programs to `trait FactorialTrait`, and add the corresponding functions to `object functionUtils` in `package examples.utils`.
+Where the helper programs `isPositive`, `subtractOne`, `multiply` and `one` are what you expect. Add the helper programs to `trait FactorialTrait`, and add the corresponding specific functions to `object functionUtils` in `package examples.utils`.
 
 The definition above is, perhaps, the most concise *pointfree* definition of `factorial` one can think of. Remember that `` `let` `` creates a new result, 
 `factorial(i-1)`, so that `multiply` can apply itself to `(i, factorial(i-1))`. Note that, in the explanation above, we introduced a *name* for the *point* `i` to explain what is going on behind the *pointfree* scenes. The `Dotty` definition above describes `factorial` at a somewhat higher level. Hopefully, after fully understanding the used programming capabilities, you will, eventually, agree that the pointfree program description of `factorial` above is as readable as the factorial programs that you are used to.
@@ -1049,7 +1049,7 @@ trait FibonacciTrait[>-->[- _, + _]: Program] {
 }    
 ```
 
-Where the helper programs `isZero`, `zero`, `isOne`, `one`, `subtractOne`, `subtractTwo` and `add` are what you expect. Add the helper programs to `trait FibonacciTrait`, and add the corresponding functions to `object functionUtils` in `package examples.utils` (if not there already).
+Where the helper programs `isZero`, `zero`, `isOne`, `one`, `subtractOne`, `subtractTwo` and `add` are what you expect. Add the helper programs to `trait FibonacciTrait`, and add the corresponding specific functions to `object functionUtils` in `package examples.utils` (if not there already).
 
 `subtractOne & subtractTwo` constructs `(i-1, i-2)` and `fibonacci && fibonacci` constructs `(fibonacci(i-1), fibonacci(i-2))` where `add` can apply itself to.
 
@@ -1201,7 +1201,7 @@ We have a problem here.
     }
 ```
 
-Where `` `(z&&(y&&x))>-->z` ``, `` `(z&&(y&&x))>-->y` ``,  and `` `(z&&(y&&x))>-->x` `` are what you expect. Add the programs above to `trait Function` and add the corresponding *product utilities* to `object productUtils` in `package pdbp.utils`.
+Where `` `(z&&(y&&x))>-->z` ``, `` `(z&&(y&&x))>-->y` ``,  and `` `(z&&(y&&x))>-->x` `` are what you expect. Add them to `trait Function` and add the corresponding generic product utilities to `object productUtils` in `package pdbp.utils`.
 
 Ok, so let's *execute* our optimized program.  Note: we use *execute* here as an alias for *sbt run*.
 
@@ -1416,7 +1416,7 @@ private[pdbp] trait Lifting[M[+ _]]
     liftOperator(`(z&&y)=>(z&&y)`)
 ```
 
-The *product utility* `` `(z&&y)=>(z&&y)` `` is the one you expect. Add it to `object productUtils` in `package pdbp.utils`.
+Where `` `(z&&y)=>(z&&y)` `` is what you expect. Add the generic product utility to `object productUtils` in `package pdbp.utils`.
 
 `liftedApply` in terms of `liftOperator`.
 
@@ -1424,7 +1424,8 @@ The *product utility* `` `(z&&y)=>(z&&y)` `` is the one you expect. Add it to `o
   private[pdbp] def liftedApply[Z, Y]: (M[Z => Y] && M[Z]) => M[Y] =
     liftOperator(`((z=>y)&&z)=>y`)
 ```
-The *product utility* `` `((z=>y)&&z)=>y` `` is the one you expect. Add it to `object productUtils` in `package pdbp.utils`.
+
+Where `` `((z=>y)&&z)=>y` `` is what you expect. Add the generic product utility to `object productUtils` in `package pdbp.utils`.
 
 `liftFunction` can be defined in terms of `liftedApply` (and therefore in terms of `liftOperator`)
 
@@ -1441,7 +1442,7 @@ Lifting does not stop with *objects*, *unary functions* and *binary operators*. 
     `(z=>x)=>(z&&y)=>(x&&y)`(liftedAnd) andThen liftOperator(`((z&&y)&&x)=>w`)
 ```
 
-The *product utility* `` `(z=>x)=>(z&&y)=>(x&&y)` `` is the one you expect. Add it to `object productUtils` in `package pdbp.utils`.
+Where `` `(z=>x)=>(z&&y)=>(x&&y)` `` is what you expect. Add the generic product utility to `object productUtils` in `package pdbp.utils`.
 
 ### `Kleisli`
 
@@ -1481,8 +1482,8 @@ import pdbp.lifting.Lifting
 private[pdbp] trait Binding[M[+ _]] {
   this: Lifting[M] =>
 
-  private[pdbp] def bind[Z, Y](mz: M[Z], `z=my`: Z => M[Y]): M[Y] =
-    flatten[Y](liftFunction(`z=my`)(mz))
+  private[pdbp] def bind[Z, Y](mz: M[Z], `z=>my`: Z => M[Y]): M[Y] =
+    flatten[Y](liftFunction(`z=>my`)(mz))
 
   private[pdbp] def flatten[Z](mmz: M[M[Z]]): M[Z] =
     bind(mmz, `mz=>mz`)
@@ -1492,7 +1493,7 @@ private[pdbp] trait Binding[M[+ _]] {
  - `bind` is function that *binds* the *result* of the *computation* `mz` of type `M[Z]` to the function `` `z=>my` `` to result in a *computation* of type `M[Y]`.
  - `flatten` *flattens* a *nested computation* to a *computation* of type `M[M[Z]]` to a computation of type `M[Z]`.
 
-The *function utility* `` `mz=>mz` `` is the one you expect. Add it to `object functionUtils` in `package pdbp.utils`.
+Where `` `mz=>mz` `` is what you expect. Add the generic function utility to `object functionUtils` in `package pdbp.utils`.
 
  - `bind` can be defined in terms of `flatten` using `liftFunction`.
  - `flatten` can be defined in terms of `bind` using `` `mz=>mz` ``.
@@ -1596,6 +1597,49 @@ The *programming* capabilities `function`, `compose`, `product` and `sum` can be
 ```
 
 Add the code fragments above to `trait Computation`.
+
+The difference in *power of expression* between *computations* and *programs* boils down to having a programming capability of type 
+`(Z && (Z >--> Y)) >--> Y`, modeling *application* at the *program* level. Anyway, the idea of this book is not to stop at the programming capabilities presented so far, but to add *extra* programming capabilities by need.
+
+
+```scala
+private trait ProgramWithApply[>-->[- _, + _]] extends Program[>-->] {
+
+  import pdbp.utils.functionUtils._
+  import pdbp.utils.productUtils._
+
+  // Application
+
+  private[pdbp] def apply[Z, Y]: (Z && (Z >--> Y)) >--> Y
+
+  // Binding
+
+  private[pdbp] def bind[Z, Y](
+      `u>-->z`: Unit >--> Z,
+      `z=>(u>-->y)`: Z => (Unit >--> Y)): Unit >--> Y = {
+    val `z>-->(u>-->y)` : Z >--> (Unit >--> Y) = function(`z=>(u>-->y)`)
+    compose(`u>-->z`, compose(product(`z>-->u`, `z>-->(u>-->y)`), apply))
+  }
+
+}
+
+private trait ComputationWithApply[M[+ _]] extends Computation[M] {
+
+  import pdbp.utils.productUtils._
+
+  private type `>=K=>` = Kleisli[M]
+
+  // Application
+
+  private[pdbp] def apply[Z, Y]: (Z && (Z `>=K=>` Y)) `>=K=>` Y = {
+    (z, `z>=k=>y`) =>
+      bind(result(z), `z>=k=>y`)
+  }
+
+}
+```
+
+The program `` `z>-->u` `` (`u` stands for `Unit`) is the ones you expect. Add `` `z>-->u` `` to `trait Function` and add the corresponding generic function utility to `object functionUtils` in `package pdbp.util`.
 
 <!--
 

@@ -21,4 +21,8 @@ object functionUtils {
     mz
   }  
 
+  def `z=>u`[Z]: Z => Unit = { z =>
+    ()
+  }
+
 }

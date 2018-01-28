@@ -64,7 +64,10 @@ trait Function[>-->[- _, + _]] {
     function(`(y||x)=>y`)
 
   def `(y||x)>-->x`[Y, X]: (Y || X) >--> X =
-    function(`(y||x)=>x`)          
+    function(`(y||x)=>x`) 
+
+  def `z>-->u`[Z]: Z >--> Unit =
+    function(`z=>u`)           
 
   def readInt(message: String): Unit >--> BigInt =
     function(readIntFunction(message))
