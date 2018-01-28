@@ -1405,7 +1405,7 @@ private[pdbp] trait Lifting[M[+ _]]
     with LiftOperator[M] {
 
     // add capabilities here
-    
+
 }
 ```
 
@@ -1443,11 +1443,23 @@ Lifting does not stop with *objects*, *unary functions* and *binary operators*. 
 
 The *product utility* `` `(z=>x)=>(z&&y)=>(x&&y)` `` is the one you expect. Add it to `object productUtils` in `package pdbp.utils`.
 
+### `Kleisli`
 
+Consider
 
+```scala
+package pdbp.types.kleisli
 
+object kleisliFunctionType {
 
+  type Kleisli = [M[+ _]] => [-Z, + Y] => Z => M[Y]
+
+}
+```
+
+A *Kleisli function* is a function of type `Z => M[Y]`. In the `Computation` section we show that, if `M` is a *computation*, then `Z => M[Y]` is a *program*. 
 
 <!--
+
 
 -->
