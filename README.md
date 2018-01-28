@@ -1333,6 +1333,8 @@ scala>
 Consider
 
 ```scala
+package pdbp.lifting
+
 private[pdbp] trait LiftObject[M[+ _]] {
 
   private[pdbp] def liftObject[Z]: Z => M[Z]
@@ -1341,6 +1343,56 @@ private[pdbp] trait LiftObject[M[+ _]] {
 ```
 
 `liftObject` is a function that *lifts* an *object* `z` to a *computation* with *result* `z`.
+
+### `LiftFunction`
+
+Consider
+
+```scala
+package pdbp.lifting
+
+private[pdbp] trait LiftFunction[M[+ _]] {
+
+  private[pdbp] def liftFunction[Z, Y](`z=>y`: Z => Y): M[Z] => M[Y]
+
+}
+```
+
+`liftFunction` is a function that *lifts* an *object-level function* to a *computation-level function*.
+
+### `LiftOperator`
+
+Consider
+
+```scala
+package pdbp.lifting
+
+import pdbp.utils.productUtils._
+
+private[pdbp] trait LiftOperator[M[+ _]] {
+
+  private[pdbp] def liftOperator[Z, Y, X](
+      `(z&&y)=>x`: (Z && Y) => X): (M[Z] && M[Y]) => M[X] = { (mz, my) =>
+    liftOperator[Z, Y, X] { (z, y) =>
+      `(z&&y)=>x`(z, y)
+    }(mz, my)
+  }
+
+  private[pdbp] def liftOperator[Z, Y, X](
+      `(z,y)=>x`: (Z, Y) => X): (M[Z], M[Y]) => M[X] = { (mz, my) =>
+    liftOperator[Z, Y, X] { (z, y) =>
+      `(z,y)=>x`(z, y)
+    }(mz, my)
+  }
+
+}
+```
+
+`liftOperator` is a function that *lifts* an *object-level operator* to a *computation-level operator*. It comes in two flavors
+
+ - one with *one parameter* of type `Z && Y` resp. `M[Z] && M[Y]`,
+ - one with *two parameters* of type `Z` and `Y` resp. `M[Z]` and `M[Y]`.
+
 
 
 <!--
