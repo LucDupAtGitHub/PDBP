@@ -562,7 +562,7 @@ This exercise is an example of a recurring theme of our library: defining a prog
 
 The outer `` `let` `` creates, using `` `z>-->y` ``, a new argument for the outer `` `in` `` (which has an argument of type `Z && Y` available, representing two arguments, one of type `Z` and one of type `Y`). The main difference between `` `let` `` and `compose` is that `` `let` `` does *not* loose the original argument of type `Z`. The inner `` `let` `` creates, using `` `(z&&y)>-->z` >--> `z>-->x` ``, the composition of `` `(z&&y)>-->z` `` and `` `z>-->x` ``, a new argument for the inner `` `in` `` (which has an argument of type `(Z && Y) && X` available, representing three arguments, one of type `Z`, one of type `Y`, and one of type `X`). The inner `` `in` `` simply gets rid of the original argument of type `Z` using `` `((z&&y)&&x)>-->(y&&x)` ``.
 
-The programs `` `(z&&y)>-->z` `` and `((z&&y)&&x)>-->(y&&x)` are the ones you expect. Add the latter one (and the corresponding function) to the appropriate files.
+The programs `` `(z&&y)>-->z` `` and  `` `((z&&y)&&x)>-->(y&&x)` `` are the ones you expect. Add the latter one (and the corresponding function) to the appropriate files.
 
 Note that generic backtick names help to understand the puzzle. In the composition `` `(z&&y)>-->z` >--> `z>-->x` ``, the matching `z`'s reflect the type involved. In the name `` `((z&&y)&&x)>-->(y&&x)` ``, both `((z&&y)&&x)` and `(y&&x)` reflect the type involved. 
 
@@ -1392,6 +1392,48 @@ private[pdbp] trait LiftOperator[M[+ _]] {
 
  - one with *one parameter* of type `Z && Y` resp. `M[Z] && M[Y]`,
  - one with *two parameters* of type `Z` and `Y` resp. `M[Z]` and `M[Y]`.
+
+
+#### `Lifting` examples
+
+Lifting comes with some other interesting computational capabilities.
+
+`liftedAnd` in terms of `liftOperator`.
+
+```scala
+  private[pdbp] def liftedAnd[Z, Y]: (M[Z] && M[Y]) => M[Z && Y] =
+    liftOperator(`(z&&y)=>(z&&y)`)
+```
+
+The *product utility* `` `(z&&y)=>(z&&y)` `` is the one you expect. Add it to `object productUtils` in `package pdbp.utils`.
+
+`liftedApply` in terms of `liftOperator`.
+
+```scala
+  private[pdbp] def liftedApply[Z, Y]: (M[Z => Y] && M[Z]) => M[Y] =
+    liftOperator(`((z=>y)&&z)=>y`)
+```
+The *product utility* `` `((z=>y)&&z)=>y` `` is the one you expect. Add it to `object productUtils` in `package pdbp.utils`.
+
+`liftFunction` can be defined in terms of `liftedApply` (and therefore in terms of `liftOperator`)
+
+```scala
+  private[pdbp] override def liftFunction[Z, Y](`z=>y`: Z => Y): M[Z] => M[Y] =
+    liftedApply(liftObject(`z=>y`), _)
+```
+
+Lifting does not stop with *objects*, *unary functions* and *binary operators*. It is possible to define (many flavors of) lifting functions with *many* arguments. Below is a flavor of lifting  *ternary operators*.
+
+```scala
+  private[pdbp] def lift3[Z, Y, X, W](`((z&&y)&&x)=>w`: ((Z && Y) && X) => W)
+    : ((M[Z] && M[Y]) && M[X]) => M[W] =
+    `(z=>x)=>(z&&y)=>(x&&y)`(liftedAnd) andThen liftOperator(`((z&&y)&&x)=>w`)
+```
+
+The *product utility* `` `(z=>x)=>(z&&y)=>(x&&y)` `` is the one you expect. Add it to `object productUtils` in `package pdbp.utils`.
+
+
+
 
 
 
