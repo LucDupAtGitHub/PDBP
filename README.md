@@ -1461,13 +1461,13 @@ A *Kleisli function* is a function of type `Z => M[Y]`.
 
 In the `Computation` section we show that, if `M` is a *computation*, then `Z => M[Y]` is a *program*. 
 
-## Computation
+## `Computation`
 
 ### Introduction
 
 In the `Lifting` section we have presented a limited amount of computational capabilities: the *lifting capabilities*. In this section we present the full amount of computational capabilities: we add the *binding capability*.
 
-### Computation
+### `Computation`
 
 Consider
 
@@ -1490,14 +1490,14 @@ private[pdbp] trait Binding[M[+ _]] {
 }
 ```
  - `bind` is function that *binds* the *result* of the *computation* `mz` of type `M[Z]` to the function `` `z=>my` `` to result in a *computation* of type `M[Y]`.
- - `flatten` *lattens* a *nested computation* to a *computation* of type `M[M[Z]]` to a computation of type `M[Z]`.
+ - `flatten` *flattens* a *nested computation* to a *computation* of type `M[M[Z]]` to a computation of type `M[Z]`.
 
 The *function utility* `` `mz=>mz` `` is the one you expect. Add it to `object functionUtils` in `package pdbp.utils`.
 
  - `bind` can be defined in terms of `flatten` using `liftFunction`.
- - \item `flatten` can be defined in terms of bind` using `` `mz=>mz` ``.
+ - `flatten` can be defined in terms of `bind` using `` `mz=>mz` ``.
 
-Here is some intuition behind the types involved when binding the *computation* way. Lifting a function of type `Z => M[Z]` results in a function of type `M[Z] => M[M[Z]]`. Flattening the result of type `M[M[Z]]`, obtained by binding an argument of type `M[Z]` to that lifted results in an object of type `M[Z]`.
+Here is some intuition behind the types involved when binding the *computation* way. Lifting a function of type `Z => M[Z]` results in a function of type `M[Z] => M[M[Z]]`. Flattening the result of type `M[M[Z]]`, obtained by binding an argument of type `M[Z]` to that lifted function results in an object of type `M[Z]`.
 
 Note that the functions of type `Z => M[Y]` involved are Kleisli functions. 
 
