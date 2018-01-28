@@ -1547,11 +1547,9 @@ Recall that we are often going to write *computation* instead of *computation de
 
 #### `Computation` and `Lifting`
 
-The *lifting* capabilities `liftFunction` and `liftOperator` can be defined in terms of `bind`.
+The *lifting* capabilities `liftFunction` and `liftOperator` can be defined in terms of `bind` (and `result`).
 
 ```scala
-  // Lifting
-
   override private[pdbp] def liftObject[Z]: Z => M[Z] =
     result
 
@@ -1572,12 +1570,9 @@ Add the code fragments above to `trait Computation` (you'll need some `import`'s
 
 #### `Computation` and `Program`
 
-The *programming* capabilities `function` and `compose`, `product` and `sum` can be defined in terms of *computational* capabilities.
+The *programming* capabilities `function`, `compose`, `product` and `sum` can be defined in terms of *computational* capabilities.
 
 ```scala
-
-  // Program  
-
   private type `>=K=>` = Kleisli[M]
 
   override def function[Z, Y](`z=>y`: Z => Y): Z `>=K=>` Y = { z =>
