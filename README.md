@@ -1877,7 +1877,7 @@ We also have a problem here. The function program instance is not *stack safe*. 
 
 In the `Program` and `Computation` sections we have essentially worked with *functions*. If either we want to change the meaning of programs or extend them with extra capabilities, then one common technique for doing that is by using *transformers*. Monad transformers were introduced in [Monad Transformers and Modular Interpreters](http://haskell.cs.yale.edu/wp-content/uploads/2011/02/POPL96-Modular-interpreters.pdf). I have contributed to monad transformers myself by combining them with *catamorpisms* in [Using Catamorphisms, Subtypes and Monad Transformers for Writing Modular Functional Interpreters](http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=97555A49D9F56885C9EA225088EA73BA?doi=10.1.1.11.7093&rep=rep1&type=pdf).
 
-## `ProgramTransformer`
+### `ProgramTransformer`
 
 Consider
 
@@ -1895,11 +1895,13 @@ trait ProgramTransformer[`>-D->`[- _, + _]: Program, `>-U->`[- _, + _]] {
 }
 ```
 
-A *program transformer* `liftProgram` *lifts* a program `` `z>-d->y` `` of type `` Z `>-D->` Y `` to a program of type `` Z `>-U->` Y ``. 
+A *program transformer* has a member `liftProgram` that *lifts* a program `` `z>-d->y` `` of type `` Z `>-D->` Y `` to a program of type `` Z `>-U->` Y ``. 
 
 We added `val implicitProgram` since we need it in `trait`'s extending `trait ProgramTransformer`.
 
-## `ComputationTransformer`
+Frankly, a program transformer is more of a *program lifter*, lifting programs to a higher level.
+
+### `ComputationTransformer`
 
 ```scala
 package pdbp.computation.transformer
@@ -1916,7 +1918,7 @@ trait ComputationTransformer[D[+ _]: Computation, U[+ _]]
     extends ProgramTransformer[Kleisli[D], Kleisli[U]]
     with LiftObject[U] {
 
-  private[pdbp] def liftComputation[Z]: D[Z] => U[Z]
+  private[pdbp] def liftComputation[Z](dz: D[Z]): U[Z]
 
   private[pdbp] val implicitComputation = implicitly[Computation[D]]
 
@@ -1936,11 +1938,14 @@ trait ComputationTransformer[D[+ _]: Computation, U[+ _]]
 }
 ```
 
-A *computation transformer* `liftComputation` *lifts* a computation of type `D[Z]` to a computation of type `U[Z]`. 
+A *computation transformer* has a member `liftComputation` that *lifts* a computation `dz` of type `D[Z]` to a computation of type `U[Z]`. 
 
 We added `val implicitComputation` since we need it in `trait ComputationTransformer` as well as in `trait`'s extending `trait ComputationTransformer`.
 
 `trait ComputationTransformer` extends both `ProgramTransformer[Kleisli[D], Kleisli[U]]` and `LiftObject[U]`.
+
+Frankly, a computation transformer is more of a *computation lifter*, lifting computations to a higher level.
+
 
 
 

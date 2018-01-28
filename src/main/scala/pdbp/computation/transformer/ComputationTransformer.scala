@@ -23,7 +23,7 @@ trait ComputationTransformer[D[+ _]: Computation, U[+ _]]
     extends ProgramTransformer[Kleisli[D], Kleisli[U]]
     with LiftObject[U] {
 
-  private[pdbp] def liftComputation[Z]: D[Z] => U[Z]
+  private[pdbp] def liftComputation[Z](dz: D[Z]): U[Z]
 
   private[pdbp] val implicitComputation = implicitly[Computation[D]]
 
