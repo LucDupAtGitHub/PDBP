@@ -1877,6 +1877,70 @@ We also have a problem here. The function program instance is not *stack safe*. 
 
 In the `Program` and `Computation` sections we have essentially worked with *functions*. If either we want to change the meaning of programs or extend them with extra capabilities, then one common technique for doing that is by using *transformers*. Monad transformers were introduced in [Monad Transformers and Modular Interpreters](http://haskell.cs.yale.edu/wp-content/uploads/2011/02/POPL96-Modular-interpreters.pdf). I have contributed to monad transformers myself by combining them with *catamorpisms* in [Using Catamorphisms, Subtypes and Monad Transformers for Writing Modular Functional Interpreters](http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=97555A49D9F56885C9EA225088EA73BA?doi=10.1.1.11.7093&rep=rep1&type=pdf).
 
+## `ProgramTransformer`
+
+Consider
+
+```scala
+package pdbp.program.transformer
+
+import pdbp.program.Program
+
+trait ProgramTransformer[`>-D->`[- _, + _]: Program, `>-U->`[- _, + _]] {
+
+  private[pdbp] val implicitProgram = implicitly[Program[`>-D->`]]
+
+  private[pdbp] def liftProgram[Z, Y](`z>-d->y`: Z `>-D->` Y): Z `>-U->` Y
+
+}
+```
+
+A *program transformer* `liftProgram` *lifts* a program `` `z>-d->y` `` of type `` Z `>-D->` Y `` to a program of type `` Z `>-U->` Y ``. 
+
+We added `val implicitProgram` since we need it in `trait`'s extending `trait ProgramTransformer`.
+
+## `ComputationTransformer`
+
+```scala
+package pdbp.computation.transformer
+
+import pdbp.types.kleisli.kleisliFunctionType._
+
+import pdbp.lifting.LiftObject
+
+import pdbp.computation.Computation
+
+import pdbp.program.transformer.ProgramTransformer
+
+trait ComputationTransformer[D[+ _]: Computation, U[+ _]]
+    extends ProgramTransformer[Kleisli[D], Kleisli[U]]
+    with LiftObject[U] {
+
+  private[pdbp] def liftComputation[Z]: D[Z] => U[Z]
+
+  private[pdbp] val implicitComputation = implicitly[Computation[D]]
+
+  override private[pdbp] def liftObject[Z]: Z => U[Z] = { z =>
+    liftComputation(implicitComputation.liftObject(z))
+  }
+
+  private type `>-D->` = Kleisli[D]
+
+  private type `>-U->` = Kleisli[U]
+
+  override private[pdbp] def liftProgram[Z, Y](
+      `z>-d->y`: Z `>-D->` Y): Z `>-U->` Y = { z =>
+    liftComputation[Y](`z>-d->y`(z))
+  }
+
+}
+```
+
+A *computation transformer* `liftComputation` *lifts* a computation of type `D[Z]` to a computation of type `U[Z]`. 
+
+We added `val implicitComputation` since we need it in `trait ComputationTransformer` as well as in `trait`'s extending `trait ComputationTransformer`.
+
+`trait ComputationTransformer` extends both `ProgramTransformer[Kleisli[D], Kleisli[U]]` and `LiftObject[U]`.
 
 
 
