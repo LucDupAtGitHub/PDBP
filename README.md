@@ -1273,9 +1273,37 @@ It is also possible to define `fibonacci` by using the `` `let` `` and `` `in` `
 
 Where `` `(z&&y)>-->z` `` and `` `((z&&y)&&x)>-->(y&&x)` `` are what you expect.
 
+## `Lifting`
 
+### Introduction
 
+In the `Program` section we have presented *programs*, defined in terms of *programming capabilities*. In this section we start presenting *computations* defined in terms of *computational capabilities*. In this section we present a limited amount of computational capabilities. The full amount of computational capabilities will be presented in the `Computation` section.
+
+### `Lifting`
+
+Consider
+
+```scala
+package pdbp.lifting
+
+private[pdbp] trait Lifting[M[+ _]]
+    extends LiftObject[M]
+    with LiftFunction[M]
+    with LiftOperator[M]
+```
+
+`trait Lifting` is a *type class* that will gradually be explained later in this document. `trait LiftObject`, `trait LiftFunction`  and `trait LiftOperator` will be explained later in this section. `trait Lifting` declares *lifting capabilities* of *xomputational descriptions*. The programming capabilities of `Lifting` correspond to *applicaives* (a.k.a. *idioms*). 
+
+Note that we were a bit sloppy by not showing `[M]`
+
+Recall that we are often going to write *computation* instead of *computation description*.
+
+A *computation* is an `object` of type `M[Y]`.
+
+ - `M` is a *unary type constructor*,
+ - `Y` is the *return* (or *result*) type of `M`.
 
 <!--
+
 
 -->
