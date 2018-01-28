@@ -325,10 +325,10 @@ Note that `>-->` is
 
 This is consistent with
 
- - The [*Liskov Substitution Principle*](https://en.wikipedia.org/wiki/Liskov_substitution_principle) which allows *require less* and *provide more*. 
- - [*Internet Robustness principle Principle*](https://en.wikipedia.org/wiki/Robustness_principle) which states *be conservative in what you send, be liberal in what you accept*.
+ - The [*Liskov Substitution Principle*](https://en.wikipedia.org/wiki/Liskov_substitution_principle) which states: *require less* and *provide more*. 
+ - [*Internet Robustness principle Principle*](https://en.wikipedia.org/wiki/Robustness_principle) which states: *be conservative in what you send, be liberal in what you accept*.
 
- Below we illustrate this for *functions*
+Below we illustrate this for *functions* (recall that programs, somehow, generalize functions)
 
  ```scala
 scala> trait SuperZ  
@@ -409,7 +409,7 @@ trait Composition[>-->[- _, + _]] {
 }
 ```
 
-`` composition(`z>-->y`, `y>-->x`) `` *composes complex programs* from *simpler* ones.
+`composition` make a  *program* `` composition(`z>-->y`, `y>-->x`) `` that is *composed* from *simpler programs*, `` `z>-->y` `` and `` `y>-->x` ``.
 
 The program `` composition(`z>-->y`, `y>-->x`) `` is the *sequential composition* of the program `` `z>-->y` `` and the program `` `y>-->x` ``. The result of program `` `z>-->y` `` is the argument of the *subsequent* program `` `y>-->x` ``. Note that `` `y>-->x` `` is a *call-by-name parameter*. Program `` `z>-->y` `` may *fail*. 
 
@@ -498,7 +498,7 @@ where
 
 Add the programs above to `trait Function` and put the corresponding *product utilities* and the type `&&` in `object productUtils` in `package pdbp.utils`.
 
-`` product(`z>-->y`, `z>-->x`) `` *constructs complex program results* from *simpler* ones.
+`product` makes a *program* `` product(`z>-->y`, `z>-->x`) `` that *constructs a result from the results of simpler programs*, `` `z>-->y` `` and `` `z>-->x` `` .
 
 If `` `z>-->y` `` has a result `y` of type `Y`, and `` `z>-->x` `` has a result `x` of type `X`, then `` product(`z>-->y`, `z>-->x`) `` has a result `(y, x)` of type `Y && X`.
 
@@ -645,7 +645,7 @@ Add the programs above to `trait Function` and put the corresponding *sum utilit
 
 Add the program above to `trait Function` and put the corresponding *product and sum utility* in `object productAndSumUtils` in `package pdbp.utils`.
 
-`` sum(`y>-->z`, `x>-->z`) `` uses a *"left or right"* *condition* to define *complex programs* in terms of *simpler* ones.
+`sum` makes a *program* `` sum(`y>-->z`, `x>-->z`) `` that  uses a *"left or right" condition* to behave either as a *simpler program* `` `y>-->z` `` or as a *simpler program* `` `x>-->z` ``.
 
  - `sum[Z, Y, X, W]` is a more complex version of `sum[Z, Y, X]`,
  - `or[Z, X, Y, W]` is yet another more complex version of `sum[Z, Y, X]`,
@@ -1303,7 +1303,46 @@ A *computation* is an `object` of type `M[Y]`.
  - `M` is a *unary type constructor*,
  - `Y` is the *return* (or *result*) type of `M`.
 
-<!--
+We'll write *return* at the *delaration* (or *definition*) site and we will *result* at the *usage* site.
 
+Note that `M` is
+
+ - *covariant* in its return type.
+
+This is consistent with
+
+ - The [*Liskov Substitution Principle*](https://en.wikipedia.org/wiki/Liskov_substitution_principle) which, among others, states: *provide more*. 
+ - [*Internet Robustness principle Principle*](https://en.wikipedia.org/wiki/Robustness_principle) which, among others, states: *be conservative in what you send.
+
+ Below we illustrate this for *expressions* that are *functions without arguments*, encoded as arguments of type `Unit` (recall that computations, somehow, generalize expressions).
+
+ ```scala
+scala> type Expression[+Y] = Unit => Y  
+defined type alias Expression
+scala> trait Y 
+defined trait Y
+scala> trait SubY extends Y 
+defined trait SubY
+scala> val ey : Expression[Y] = new Expression[SubY] { override def apply(u: Unit): SubY = ??? } 
+val ey: Expression[Y] = <function1>
+scala> 
+```
+
+### `LiftObject`
+
+Consider
+
+```scala
+private[pdbp] trait LiftObject[M[+ _]] {
+
+  private[pdbp] def liftObject[Z]: Z => M[Z]
+
+}
+```
+
+`liftObject` is a function that *lifts* an *object* `z` to a *computation* with *result* `z`.
+
+
+<!--
 
 -->
