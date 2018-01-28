@@ -1973,7 +1973,7 @@ private[pdbp] object freeTransformer {
 }
 ```
 
-`trait Free` is an *abstract data type* that has a `case class LiftObject` and a `case class Bind` for the members `liftObject` and `bind` of `trait Computation`. Think of `Free[M, Z]` as a *free computation* wrapped around `M` as described in [Data types a la carte](http://www.cs.ru.nl/~W.Swierstra/Publications/DataTypesALaCarte.pdf). 
+`trait Free` is an *abstract data type* that has a `case class LiftObject` and a `case class Bind` for the members `liftObject` and `bind` of `trait Computation`. Think of `Free[M, Z]` as a *free computation* wrapped around `M` as described in [Data types a la carte](http://www.cs.ru.nl/~W.Swierstra/Publications/DataTypesALaCarte.pdf). We use the same vocabulary for corresponding programs.
 
 `type FreeTransformed[M]` is a *free transformed computation*. 
 
@@ -2049,7 +2049,7 @@ private[pdbp] trait FreeTransformer[M[+ _]: Computation]
  - `liftComputation` is used nowhere
  - `liftObject` is trivially defined using `LiftObject`
  - `bind` is trivially defined using `Bind`
- - `execute` is defined using `lowerProgram` that lowers a lifted program down
+ - `execute` is defined using `lowerProgram` that lowers a lifted free program back down the program it wraps
  - `lowerProgram` is a *tail recursive* `stepwise` *folding* of a of free computation of type `FreeTransformed[M][Z]` to a computation of type `M[Z]`
 
 Note that `step` is annotated with `@annotation.tailrec`.
