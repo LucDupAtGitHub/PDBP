@@ -1614,11 +1614,15 @@ private trait ProgramWithApply[>-->[- _, + _]] extends Program[>-->] {
 
   // Binding
 
-  private[pdbp] def bind[Z, Y](
-      `u>-->z`: Unit >--> Z,
-      `z=>(u>-->y)`: Z => (Unit >--> Y)): Unit >--> Y = {
-    val `z>-->(u>-->y)` : Z >--> (Unit >--> Y) = function(`z=>(u>-->y)`)
-    compose(`u>-->z`, compose(product(`z>-->u`, `z>-->(u>-->y)`), apply))
+  private type M[+Y] = Unit >--> Y
+
+  private[pdbp] def applyUnit[Z, Y]: (Unit && M[Y]) >--> Y =
+    apply[Unit, Y]
+    
+  private[pdbp] def bind[Z, Y](mz: M[Z], `z=>my`: Z => M[Y]): M[Y] = {
+    val `u>-->z`: Unit >--> Z = mz  
+    val `z>-->my`: Z >--> M[Y] = function(`z=>my`)
+    compose(`u>-->z`, compose(product(`z>-->u`, `z>-->my`), applyUnit))
   }
 
 }
