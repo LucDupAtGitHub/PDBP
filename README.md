@@ -1873,9 +1873,9 @@ We also have a problem here. The function program instance is not *stack safe*. 
 
 ## Transformers
 
-### Introcuction
+### Introduction
 
-In the `Program` and `Computation` sections we have essentially worked with *functions*. If either we want to change the meaning of programs or extend them with extra capabilities, then one common technique for doing that is by using *transformers*. Monad transformers were introduced in [Monad Transformers and Modular Interpreters](http://haskell.cs.yale.edu/wp-content/uploads/2011/02/POPL96-Modular-interpreters.pdf). I have contributed to monad transformers myself by combining them with *catamorpisms* [Using Catamorphisms, Subtypes and Monad Transformers for Writing Modular Functional Interpreters](http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=97555A49D9F56885C9EA225088EA73BA?doi=10.1.1.11.7093&rep=rep1&type=pdf).
+In the `Program` and `Computation` sections we have essentially worked with *functions*. If either we want to change the meaning of programs or extend them with extra capabilities, then one common technique for doing that is by using *transformers*. Monad transformers were introduced in [Monad Transformers and Modular Interpreters](http://haskell.cs.yale.edu/wp-content/uploads/2011/02/POPL96-Modular-interpreters.pdf). I have contributed to monad transformers myself by combining them with *catamorpisms* in [Using Catamorphisms, Subtypes and Monad Transformers for Writing Modular Functional Interpreters](http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=97555A49D9F56885C9EA225088EA73BA?doi=10.1.1.11.7093&rep=rep1&type=pdf).
 
 
 
