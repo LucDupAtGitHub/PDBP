@@ -1292,7 +1292,7 @@ private[pdbp] trait Lifting[M[+ _]]
     with LiftOperator[M]
 ```
 
-`trait Lifting` is a *type class* that will gradually be explained later in this document. `trait LiftObject`, `trait LiftFunction`  and `trait LiftOperator` will be explained later in this section. `trait Lifting` declares *lifting capabilities* of *xomputational descriptions*. The programming capabilities of `Lifting` correspond to *applicaives* (a.k.a. *idioms*). 
+`trait Lifting` is a *type class* that will gradually be explained later in this document. `trait LiftObject`, `trait LiftFunction`  and `trait LiftOperator` will be explained later in this section. `trait Lifting` declares *lifting capabilities* of *computational descriptions*. The programming capabilities of `Lifting` correspond to *applicatives* (a.k.a. *idioms*). 
 
 Note that we were a bit sloppy by not showing `[M]`
 
