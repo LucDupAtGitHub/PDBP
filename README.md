@@ -1639,7 +1639,7 @@ private trait ComputationWithApply[M[+ _]] extends Computation[M] {
 }
 ```
 
-The program `` `z>-->u` `` (`u` stands for `Unit`) is the ones you expect. Add `` `z>-->u` `` to `trait Function` and add the corresponding generic function utility to `object functionUtils` in `package pdbp.util`.
+The program `` `z>-->u` `` (`u` stands for `Unit`) is the one you expect. Add `` `z>-->u` `` to `trait Function` and add the corresponding generic function utility to `object functionUtils` in `package pdbp.util`.
 
 <!--
 
