@@ -1396,7 +1396,18 @@ private[pdbp] trait LiftOperator[M[+ _]] {
 
 #### `Lifting` examples
 
-Lifting comes with some other interesting computational capabilities.
+Lifting comes with some other interesting computational capabilities. Add all those capabilities to `trait Lifting`.
+
+```scala
+private[pdbp] trait Lifting[M[+ _]]
+    extends LiftObject[M]
+    with LiftFunction[M]
+    with LiftOperator[M] {
+
+    // add capabilities here
+    
+}
+```
 
 `liftedAnd` in terms of `liftOperator`.
 
