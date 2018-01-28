@@ -1,4 +1,4 @@
-package pdbp.utils
+package pdbp.program.implicits.active
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,24 +11,10 @@ package pdbp.utils
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-object functionUtils {
+object implicits {
 
-  def `z=>z`[Z]: Z => Z = { z =>
-    z
-  }
+  import pdbp.program.instances.active.activeProgram
 
-  def `mz=>mz`[M[+ _], Z]: M[Z] => M[Z] = { mz =>
-    mz
-  }  
-
-  def `z=>u`[Z]: Z => Unit = { z =>
-    ()
-  }
-
-  import pdbp.types.active.activeTypes._
-
-  def `z=>az`[Z]: Z => Active[Z] = { z =>
-    z
-  }  
+  implicit val implicitActiveProgram: activeProgram.type = activeProgram
 
 }

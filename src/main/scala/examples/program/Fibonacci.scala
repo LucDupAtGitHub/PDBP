@@ -127,7 +127,7 @@ trait FibonacciTrait[>-->[- _, + _]: Program] {
 
   val fibonacciProgram: Unit >--> Unit =
     producer >-->
-      fibonacci >-->
+      optimizedFibonacci >-->
       consumer
 
   def executeFibonacciProgram: Unit =

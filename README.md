@@ -934,7 +934,7 @@ Add `foldSum` to `object sumUtilities` if you did not yet defined it as a conven
 
 For `object functionProgram`, the definitions of the members of `trait Program` are trivial.
 
-###  `FactorialMain`
+###  `FactorialMain` using `functionProgram`
 
 We already stated that, for *type classes*, we are going to use the *dependency injection by* `import` technique. Type classes need imported `val`'s to be `implicit`. So let's move on and define an `implicit val` that we can `import` later on. 
 
@@ -981,7 +981,7 @@ The code above mainly consists of bringing the necessary artifacts in scope, usi
  - an appropriate `import` of an `implicit`,
  - an appropriate `object` and an `import` that comes with it.
 
-####  executing `FactorialMain`
+####  executing `FactorialMain` using `functionProgram`
 
 Ok, so let's *execute* our program.  Note: we use *execute* here as an alias for *sbt run*.
 
@@ -1077,7 +1077,7 @@ The code below makes `fibonacci` ready for `Execution`
 
 Add the definitions above to `trait FibonacciTrait`.
 
-###  `FibonacciMain`
+###  `FibonacciMain` using `functionProgram`
 
 Finally we can define an *executable program*. Note: we use *program* here as code written using the `Dotty` programming language, and we use *executable* here as having an object with a *main* method.
 
@@ -1110,7 +1110,7 @@ The code above mainly consists of bringing the necessary artifacts in scope, usi
  - an appropriate `import` of an `implicit`,
  - an appropriate `object` and an `import` that comes with it.
 
-####  executing `FibonacciMain`
+####  executing `FibonacciMain` using `functionProgram`
 
 Ok, so let's *execute* our program.  Note: we use *execute* here as an alias for *sbt run*.
 
@@ -1130,14 +1130,6 @@ please type an integer
 20
 it's fibonacci value is 6765
 [success] Total time: 5 s, completed Jan 27, 2018 8:56:12 PM
-```
-
-```scala
-[info] Running examples.program.main.function.FibonacciMain
-please type an integer
-20
-it's fibonacci value is 6765
-[success] Total time: 3 s, completed Jan 27, 2018 8:56:55 PM
 ```
 
 ```scala
@@ -1202,6 +1194,8 @@ We have a problem here.
 ```
 
 Where `` `(z&&(y&&x))>-->z` ``, `` `(z&&(y&&x))>-->y` ``,  and `` `(z&&(y&&x))>-->x` `` are what you expect. Add them to `trait Function` and add the corresponding generic product utilities to `object productUtils` in `package pdbp.utils`.
+
+####  executing optimized `FibonacciMain` using `functionProgram`
 
 Ok, so let's *execute* our optimized program.  Note: we use *execute* here as an alias for *sbt run*.
 
@@ -1599,8 +1593,7 @@ The *programming* capabilities `function`, `compose`, `product` and `sum` can be
 Add the code fragments above to `trait Computation`.
 
 The difference in *power of expression* between *computations* and *programs* boils down to having a programming capability of type 
-`(Z && (Z >--> Y)) >--> Y`, modeling *application* at the *program* level. Anyway, the idea of this book is not to stop at the programming capabilities presented so far, but to add *extra* programming capabilities by need.
-
+`(Z && (Z >--> Y)) >--> Y`, modeling *application* at the *program* level. Anyway, the idea of this book is not to stop at the programming capabilities presented so far, but to add *extra* programming capabilities by need. Below is the code dealing with application at the program level
 
 ```scala
 private trait ProgramWithApply[>-->[- _, + _]] extends Program[>-->] {
@@ -1644,6 +1637,248 @@ private trait ComputationWithApply[M[+ _]] extends Computation[M] {
 ```
 
 The program `` `z>-->u` `` (`u` stands for `Unit`) is the one you expect. Add `` `z>-->u` `` to `trait Function` and add the corresponding generic function utility to `object functionUtils` in `package pdbp.util`.
+
+
+
+###  `activeProgram`
+
+The simplest computation instance one can probably think of is the *active* instance (we use *active* as opposed to *reactive*) as defined below
+
+```scala
+package pdbp.types.active
+
+import pdbp.types.kleisli.kleisliFunctionType._
+
+object activeTypes {
+
+  type Active[+Z] = Z
+
+  type `>-a->` = Kleisli[Active]
+
+}
+```
+
+We are ready for our next program instance.
+
+```scala
+package pdbp.program.instances.active
+
+import pdbp.utils.functionUtils._
+
+import pdbp.program.Program
+
+import pdbp.computation.Computation
+
+import pdbp.types.active.activeTypes._
+
+object activeProgram extends Computation[Active] with Program[`>-a->`] {
+
+  override private[pdbp] def liftObject[Z]: Z => Active[Z] = `z=>az`
+
+  override private[pdbp] def bind[Z, Y](az: Active[Z],
+                                        `z=>ay`: Z => Active[Y]): Active[Y] =
+    `z=>ay`(az)
+
+  override def execute(`u>-a->u`: Unit `>-a->` Unit): Unit =
+    `u>-a->u`(())
+}
+```
+
+For `object activeProgram`, the definitions of the members of `trait Computation` are trivial.
+
+###  `FactorialMain` using `activeProgram`
+
+We already stated that, for *type classes*, we are going to use the *dependency injection by* `import` technique. Type classes need imported `val`'s to be `implicit`. So let's move on and define an `implicit val` that we can `import` later on. 
+
+```scala
+package pdbp.program.implicits.active
+
+object implicits {
+
+  import pdbp.program.instances.active.activeProgram
+
+  implicit val implicitActiveProgram: activeProgram.type = activeProgram
+
+}
+```
+
+Finally we can define an *executable program*. Note: we use *program* here as code written using the `Dotty` programming language, and we use *executable* here as having an object with a *main* method.
+
+```scala
+package examples.program.main.active
+
+import pdbp.types.active.activeTypes.`>-a->`
+
+import pdbp.program.implicits.active.implicits.implicitActiveProgram
+
+import examples.program.FactorialTrait
+
+object FactorialMain {
+
+  object factorialObject extends FactorialTrait[`>-a->`]()
+
+  import factorialObject._
+
+  def main(args: Array[String]): Unit = {
+
+    executeFactorialProgram
+
+  }
+
+}
+```
+
+The code above mainly consists of bringing the necessary artifacts in scope, using
+
+ - an appropriate `import` of an `implicit`,
+ - an appropriate `object` and an `import` that comes with it.
+
+####  executing `FactorialMain` using `activeProgram`
+
+Ok, so let's *execute* our program.  Note: we use *execute* here as an alias for *sbt run*.
+
+Let's try `100`.
+
+```scala
+[info] Running examples.program.main.active.FactorialMain
+please type an integer
+100
+it's factorial value is 93326215443944152681699238856266700490715968264381621468592963895217599993229915608941463976156518286253697920827223758251185210916864000000000000000000000000
+[success] Total time: 3 s, completed Jan 28, 2018 8:52:17 PM
+```
+
+Note that the time *is not* related to `factorial` itself. It is related to *console input*.
+
+Let's try `1000`.
+
+```scala
+[info] Running examples.program.main.active.FactorialMain
+please type an integer
+1000
+[error] (run-main-0) java.lang.StackOverflowError
+java.lang.StackOverflowError
+```
+
+We also have a problem here. The active program instance is not *stack safe*. The good news is that the function instance is just *one* way to define a meaning for `factorial`. We are going to solve this problem later with *another* program instance that is just *another* way to define a meaning for `factorial`.
+
+###  `FibonacciMain` using `actionProgram`
+
+Finally we can define an *executable program*. Note: we use *program* here as code written using the `Dotty` programming language, and we use *executable* here as having an object with a *main* method.
+
+```scala
+package examples.program.main.active
+
+import pdbp.types.active.activeTypes.`>-a->`
+
+import pdbp.program.implicits.active.implicits.implicitActiveProgram
+
+import examples.program.FibonacciTrait
+
+object FibonacciMain {
+
+  object fibonacciObject extends FibonacciTrait[`>-=->`]()
+
+  import fibonacciObject._
+
+  def main(args: Array[String]): Unit = {
+
+    executeFibonacciProgram
+
+  }
+
+}
+```
+
+The code above mainly consists of bringing the necessary artifacts in scope, using
+
+ - an appropriate `import` of an `implicit`,
+ - an appropriate `object` and an `import` that comes with it.
+
+####  executing `FibonacciMain` using `functionProgram`
+
+Ok, so let's *execute* our program.  Note: we use *execute* here as an alias for *sbt run*.
+
+Let's try `10`, `20`, `30`, `35`, `40` ... .
+
+```scala
+[info] Running examples.program.main.active.FibonacciMain
+please type an integer
+10
+it's fibonacci value is 55
+[success] Total time: 10 s, completed Jan 28, 2018 8:58:19 PM
+```
+
+```scala
+[info] Running examples.program.main.active.FibonacciMain
+please type an integer
+20
+it's fibonacci value is 6765
+[success] Total time: 3 s, completed Jan 28, 2018 8:58:24 PM
+```
+
+```scala
+[info] Running examples.program.main.active.FibonacciMain
+please type an integer
+30
+it's fibonacci value is 832040
+[success] Total time: 4 s, completed Jan 28, 2018 8:58:29 PM
+```
+
+```scala
+[info] Running examples.program.main.active.FibonacciMain
+please type an integer
+35
+it's fibonacci value is 9227465
+[success] Total time: 13 s, completed Jan 28, 2018 8:58:42 PM
+```
+
+```scala
+[info] Running examples.program.main.action.FibonacciMain
+please type an integer
+40
+^C
+```
+
+Note that the time *is* related to `fibonacci` itself.
+
+We have a problem here. 
+
+####  executing optimized `FibonacciMain` using `functionProgram`
+
+Ok, so let's *execute* our optimized program.  Note: we use *execute* here as an alias for *sbt run*.
+
+Let's try `100`.
+
+```scala
+[info] Running examples.program.main.active.FibonacciMain
+please type an integer
+100
+it's fibonacci value is 354224848179261915075
+[success] Total time: 7 s, completed Jan 28, 2018 9:03:29 PM
+```
+
+Note that the time *is not* related to `fibonacci` itself. It is related to *console input*.
+
+Let's try `1000`.
+
+```scala
+[info] Running examples.program.main.active.FibonacciMain
+please type an integer
+1000
+[error] (run-main-0) java.lang.StackOverflowError
+java.lang.StackOverflowError
+```
+
+We also have a problem here. The function program instance is not *stack safe*. The good news is that the function instance is just *one* way to define a meaning for `fibonacci`. We are going to solve this problem later with *another* program instance that is just *another* way to define a meaning for `fibonacci`.
+
+## Transformers
+
+### Introcuction
+
+In the `Program` and `Computation` sections we have essentially worked with *functions*. If either we want to change the meaning of programs or extend them with extra capabilities, then one common technique for doing that is by using *transformers*. Monad transformers were introduced in [Monad Transformers and Modular Interpreters](http://haskell.cs.yale.edu/wp-content/uploads/2011/02/POPL96-Modular-interpreters.pdf). I have contributed to monad transformers myself by combining them with *catamorpisms* [Using Catamorphisms, Subtypes and Monad Transformers for Writing Modular Functional Interpreters](http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=97555A49D9F56885C9EA225088EA73BA?doi=10.1.1.11.7093&rep=rep1&type=pdf).
+
+
+
 
 <!--
 

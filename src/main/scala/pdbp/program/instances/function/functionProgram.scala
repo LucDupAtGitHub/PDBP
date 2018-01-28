@@ -9,6 +9,7 @@ package pdbp.program.instances.function
 //  \_\/       \______\/  \______\/      \_\/
 //                                           v1.0
 //  Program Description Based Programming Library
+//  author        Luc Duponcheel        2017-2018
 
 import pdbp.utils.productUtils._
 import pdbp.utils.sumUtils._

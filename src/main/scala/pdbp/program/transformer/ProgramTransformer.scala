@@ -1,4 +1,4 @@
-package pdbp.utils
+package pdbp.program.transformer
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,24 +11,12 @@ package pdbp.utils
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-object functionUtils {
+import pdbp.program.Program
 
-  def `z=>z`[Z]: Z => Z = { z =>
-    z
-  }
+trait ProgramTransformer[`>-D->`[- _, + _]: Program, `>-U->`[- _, + _]] {
 
-  def `mz=>mz`[M[+ _], Z]: M[Z] => M[Z] = { mz =>
-    mz
-  }  
+  private[pdbp] val implicitProgram = implicitly[Program[`>-D->`]]
 
-  def `z=>u`[Z]: Z => Unit = { z =>
-    ()
-  }
-
-  import pdbp.types.active.activeTypes._
-
-  def `z=>az`[Z]: Z => Active[Z] = { z =>
-    z
-  }  
+  private[pdbp] def liftProgram[Z, Y](`z>-d->y`: Z `>-D->` Y): Z `>-U->` Y
 
 }
