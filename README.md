@@ -1277,7 +1277,7 @@ Where `` `(z&&y)>-->z` `` and `` `((z&&y)&&x)>-->(y&&x)` `` are what you expect.
 
 ### Introduction
 
-In the `Program` section we have presented *programs*, defined in terms of *programming capabilities*. In this section we start presenting *computations* defined in terms of *computational capabilities*. In this section we present a limited amount of computational capabilities. The full amount of computational capabilities will be presented in the `Computation` section. All computational capabilities are defined as `private [pdbp]`. We do not want to expose pointful capabilies to the users of the library. We only expose pointfree capabilities to the users of the library. It is convenient to have pointful capabilies available in the library itself. For example: it is simpler to define instances since computations have less declared capabilities to be defined than programs.
+In the `Program` section we have presented *programs*, defined in terms of *programming capabilities*. In this section we start presenting *computations* defined in terms of *computational capabilities*. In this section we present a limited amount of computational capabilities. The full amount of computational capabilities will be presented in the `Computation` section. All computational capabilities are defined as `private [pdbp]`. We do not want to expose pointful capabilies to the users of the library. We only expose pointfree capabilities to the users of the library. It is convenient to have pointful capabilies available in the library itself. It is also simpler (not necessarily easier, though) to define `Computation` instances since `Computation` have less declared capabilities than `Program`.
 
 ### `Lifting`
 
@@ -1467,7 +1467,7 @@ In the `Computation` section we show that, if `M` is a *computation*, then `Z =>
 
 In the `Lifting` section we have presented a limited amount of computational capabilities: the *lifting capabilities*. In this section we present the full amount of computational capabilities: we add the *binding capability*.
 
-### `Computation`
+### `Binding`
 
 Consider
 
@@ -1497,29 +1497,111 @@ The *function utility* `` `mz=>mz` `` is the one you expect. Add it to `object f
  - `bind` can be defined in terms of `flatten` using `liftFunction`.
  - `flatten` can be defined in terms of `bind` using `` `mz=>mz` ``.
 
-Here is some intuition behind the types involved when binding the *computation* way. Lifting a function of type `Z => M[Z]` results in a function of type `M[Z] => M[M[Z]]`. Flattening the result of type `M[M[Z]]`, obtained by binding an argument of type `M[Z]` to that lifted function results in an object of type `M[Z]`.
+Here is some intuition behind the types involved when binding the *computation* way. Lifting a function of type `Z => M[Z]` results in a function of type `M[Z] => M[M[Z]]`. Flattening the result of type `M[M[Z]]`, obtained by binding an argument of type `M[Z]` to that lifted function, results in an object of type `M[Z]`.
 
 Note that the functions of type `Z => M[Y]` involved are Kleisli functions. 
 
  - When dealing with computations we annotate them with `Z => M[Y]`  
  - When dealing with programs we annotate them with `Kleisli[M][Z, Y]]` or, `` Z `>=K=>` Y `` for some type alias `` `>=K=>` ``
 
-<!--
+### `Computation`
 
 Consider
 
-\input{generated/Binding}
+```scala
+package pdbp.computation
+
+import pdbp.types.kleisli.kleisliFunctionType.Kleisli
+
+import pdbp.program.Program
+
+import pdbp.lifting.Lifting
+import pdbp.lift.Sequencing
+
+import pdbp.binding.Binding
+
+private[pdbp] trait Computation[M[+ _]]
+    extends Binding[M]
+    with Lifting[M]
+    with Sequencing[M]
+    with Program[Kleisli[M]] {
+
+  private[pdbp] def result[Z]: Z => M[Z] =
+    liftObject
+
+  // add Lifting capabilities here
 
 
-`trait Computation` is a *type class* that will gradually be explained later in this document. `trait Function`, `trait Composition`, `trait Construction`, `trait Condition` and `trait Execution` will be explained later in this section. `trait Aggregation` will be explained later in this document. `trait Program` declares *programming capabilities* of *program descriptions*. The programming capabilities of `Function`, `Composition` and `Construction` correspond to *arrows*. 
+  // add Programming capabilities here  
 
-All code in this chapter is \ttb{private [fbfp]}~: we do not expose computational capabilities (we only expose programming capabilities).
+}    
+```
 
-\ttb{Computation}\index{\ttb{Computation}} is a {\em type class}\index{type class} that will gradually be explained later in this book.
-The \ttb{trait}'s \ttb{Program} resp. \ttb{Lifting} have been explained in chapter~\ref{chapter:Program} resp. chapter~\ref{chapter:Lifting}.
-The \ttb{trait} \ttb{Binding} will be explained later in this chapter.
-The \ttb{trait} \ttb{Sequencing} will be explained later in this book.
-The \ttb{trait} \ttb{Computation} declares all the {\em computational capabilities}\index{computational capability} of {\em computation descriptions}\index{computation description}.
-The computational capabilities \ttb{Lifting} and \ttb{Binding} correspond to {\em monads}\index{monad} in~\cite{bib:IdiomsArrowsMonads}.
+`result` is an alias for `liftObject`.
+
+`trait Computation` is a *type class* that will gradually be explained later in this document. `trait Sequencing` will be explained later in this document (it is related to `trait Aggregation`). `trait Computation` declares *computational capabilities* of *computation descriptions*. The computational capabilities of `Lift0` and `Bind` correspond to *monads*. 
+
+Note that we were a bit sloppy by not showing `[M]`
+
+Recall that we are often going to write *computation* instead of *computation description*.
+
+#### `Computation` and `Lifting`
+
+The *lifting* capabilities `liftFunction` and `liftOperator` can be defined in terms of `bind`.
+
+```scala
+  // Lifting
+
+  override private[pdbp] def liftObject[Z]: Z => M[Z] =
+    result
+
+  override private[pdbp] def liftFunction[Z, Y](
+      `z=>y`: Z => Y): M[Z] => M[Y] = { mz =>
+    bind(mz, z => result(`z=>y`(z)))
+  }
+
+  override private[pdbp] def liftOperator[Z, Y, X](
+      `(z&&y)=>x`: (Z && Y) => X): (M[Z] && M[Y]) => M[X] = { (mz, my) =>
+    bind(mz, z => bind(my, y => result(`(z&&y)=>x`(z, y))))
+  }
+```
+
+Add the code fragments above to `trait Computation` (you'll need some `import`'s).
+
+`liftObject` is an alias for `result`.
+
+#### `Computation` and `Program`
+
+The *programming* capabilities `function` and `compose`, `product` and `sum` can be defined in terms of *computational* capabilities.
+
+```scala
+
+  // Program  
+
+  private type `>=K=>` = Kleisli[M]
+
+  override def function[Z, Y](`z=>y`: Z => Y): Z `>=K=>` Y = { z =>
+    result(`z=>y`(z))
+  }
+
+  override def compose[Z, Y, X](`z>=k=>y`: Z `>=K=>` Y,
+                                `y>=k=>x`: => Y `>=K=>` X): Z `>=K=>` X = { z =>
+    bind(`z>=k=>y`(z), `y>=k=>x`)
+  }
+
+  override def product[Z, Y, X](
+      `z>=k=>y`: Z `>=K=>` Y,
+      `z>=k=>x`: => Z `>=K=>` X): Z `>=K=>` (Y && X) = { z =>
+    bind(`z>=k=>y`(z), y => bind(`z>=k=>x`(z), x => result(y, x)))
+  }
+
+  override def sum[Z, Y, X](`y>=k=>z`: => Y `>=K=>` Z,
+                            `x>=k=>z`: => X `>=K=>` Z): (Y || X) `>=K=>` Z =
+    foldSum(`y>=k=>z`, `x>=k=>z`) 
+```
+
+Add the code fragments above to `trait Computation`.
+
+<!--
 
 -->
