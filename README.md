@@ -2112,7 +2112,7 @@ object activeFreeTypes {
 
 We are ready for our next program instance.
 
-###  `FactorialMain` using `activePFreerogram`
+###  `FactorialMain` using `activeFreeProgram`
 
 We already stated that, for *type classes*, we are going to use the *dependency injection by* `import` technique. Type classes need imported `val`'s to be `implicit`. So let's move on and define an `implicit val` that we can `import` later on. 
 
