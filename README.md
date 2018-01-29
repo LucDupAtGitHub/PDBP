@@ -2030,7 +2030,7 @@ private[pdbp] trait FreeTransformer[M[+ _]: Computation]
     def step[Z](ftmz: FTM[Z]): FTM[Z] = ftmz match {
       case Bind(Bind(mx, x2ftmy), y2ftmz) =>
         step(bind(mx, x => bind(x2ftmy(x), y2ftmz)))
-      case Bind(LiftObject(y), y2ftmz) => step(y2ftmz(y))
+     case Bind(LiftObject(y), y2ftmz) => step(y2ftmz(y))
       case _                           => ftmz
     }
     step(`z>=ftk=>y`(z)) match {
@@ -2044,17 +2044,20 @@ private[pdbp] trait FreeTransformer[M[+ _]: Computation]
 }
 ```
 
+Note that we use names like `x2ftmy` instead of `` `x>=ftk=>y` `` because they are used in patterns.
+
 `trait FreeTransformer` transforms `FreeTransformed[M]` into computation and `Kleisli[FreeTransformed[M]]` into a program. 
 
- - `liftComputation` is used nowhere
- - `liftObject` is trivially defined using `LiftObject`
- - `bind` is trivially defined using `Bind`
- - `execute` is defined using `lowerProgram` that lowers a lifted free program back down the program it wraps
- - `lowerProgram` is a *tail recursive* `stepwise` *folding* of a of free computation of type `FreeTransformed[M][Z]` to a computation of type `M[Z]`
+ - `liftComputation` is used nowhere,
+ - `liftObject` is trivially defined using `LiftObject`,
+ - `bind` is defined using `Bind`,  
+ - `execute` is defined using `lower` which *lowers* a lifted free program back down the program it wraps
+ - `lower` is a *tail recursive* `step`*-wise* *folding* of a of free computation of type `FreeTransformed[M][Z]` to a computation of type `M[Z]`
 
-Note that `step` is annotated with `@annotation.tailrec`.
+Note that
 
-
+ - the first `case` uses an *associativity* law of `bind`, the left associated `Bind`'s are lowered to right associated `bind`'s, 
+ - `step` is annotated with `@annotation.tailrec`.
 
 <!--
 

@@ -62,20 +62,19 @@ private[pdbp] trait FreeTransformer[M[+ _]: Computation]
 
   override def execute(`u>=ftk=>u`: Unit `>=FTK=>` Unit): Unit = {
     import implicitProgram.{execute => executeKM}
-    executeKM {
-      lowerProgram[Unit, Unit](`u>=ftk=>u`)
-    }
+    executeKM(lower(`u>=ftk=>u`))
   }
 
-  private[pdbp] def lowerProgram[Z, Y](
+  private[pdbp] def lower[Z, Y](
       `z>=ftk=>y`: Z `>=FTK=>` Y): Z `>=K=>` Y = { z =>
     import implicitComputation.{result => resultM}
     @annotation.tailrec
     def step[Z](ftmz: FTM[Z]): FTM[Z] = ftmz match {
       case Bind(Bind(mx, x2ftmy), y2ftmz) =>
-        step(bind(mx, x => bind(x2ftmy(x), y2ftmz)))
+        // step(bind(mx, x => bind(x2ftmy(x), y2ftmz)))
+        step(bind(mx, compose(x2ftmy, y2ftmz)))
       case Bind(LiftObject(y), y2ftmz) => step(y2ftmz(y))
-      case _                           => ftmz
+      case              _              => ftmz
     }
     step(`z>=ftk=>y`(z)) match {
       case LiftObject(z) => resultM(z)
