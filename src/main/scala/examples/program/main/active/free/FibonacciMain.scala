@@ -14,17 +14,17 @@ import pdbp.types.active.free.activeFreeTypes.`>-af->`
 
 import pdbp.program.implicits.active.free.implicits.implicitActiveFreeProgram
 
-import examples.program.FactorialTrait
+import examples.program.FibonacciTrait
 
-object FactorialMain {
+object FibonacciMain {
 
-  object factorialObject extends FactorialTrait[`>-af->`]()
+  object fibonacciObject extends FibonacciTrait[`>-af->`]()
 
-  import factorialObject._
+  import fibonacciObject._
 
   def main(args: Array[String]): Unit = {
 
-    executeFactorialProgram
+    executeFibonacciProgram
 
   }
 

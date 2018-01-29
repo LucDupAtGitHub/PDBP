@@ -1759,7 +1759,7 @@ please type an integer
 java.lang.StackOverflowError
 ```
 
-We also have a problem here. The active program instance is not *stack safe*. The good news is that the function instance is just *one* way to define a meaning for `factorial`. We are going to solve this problem later with *another* program instance that is just *another* way to define a meaning for `factorial`.
+We also have a problem here. The active program instance is not *stack safe*. The good news is that the active instance is just *one* way to define a meaning for `factorial`. We are going to solve this problem later with *another* program instance that is just *another* way to define a meaning for `factorial`.
 
 ###  `FibonacciMain` using `actionProgram`
 
@@ -1843,7 +1843,7 @@ Note that the time *is* related to `fibonacci` itself.
 
 We have a problem here. 
 
-####  executing optimized `FibonacciMain` using `functionProgram`
+####  executing optimized `FibonacciMain` using `activeProgram`
 
 Ok, so let's *execute* our optimized program.  Note: we use *execute* here as an alias for *sbt run*.
 
@@ -1869,7 +1869,7 @@ please type an integer
 java.lang.StackOverflowError
 ```
 
-We also have a problem here. The function program instance is not *stack safe*. The good news is that the function instance is just *one* way to define a meaning for `fibonacci`. We are going to solve this problem later with *another* program instance that is just *another* way to define a meaning for `fibonacci`.
+We also have a problem here. The active program instance is not *stack safe*. The good news is that the active instance is just *one* way to define a meaning for `fibonacci`. We are going to solve this problem later with *another* program instance that is just *another* way to define a meaning for `fibonacci`.
 
 ## Transformers
 
@@ -2045,7 +2045,7 @@ private[pdbp] trait FreeTransformer[M[+ _]: Computation]
 
 Note that we use names like `x2ftmy` instead of `` `x>=ftk=>y` `` because they are used in patterns.
 
-`trait FreeTransformer` transforms `FreeTransformed[M]` into computation and `Kleisli[FreeTransformed[M]]` into a program. 
+`trait FreeTransformer` transforms `FreeTransformed[M]` to a computation and `Kleisli[FreeTransformed[M]]` to a program. 
 
  - `liftComputation` is used nowhere,
  - `liftObject` is trivially defined using `LiftObject`,
@@ -2058,6 +2058,124 @@ Note that
  - the first `case` uses an *associativity* law of `bind`, the left associated `Bind`'s are lowered to right associated `bind`'s, 
  - `step` is annotated with `@annotation.tailrec`.
 
+###  `FactorialMain` using `activePFreerogram`
+
+We already stated that, for *type classes*, we are going to use the *dependency injection by* `import` technique. Type classes need imported `val`'s to be `implicit`. So let's move on and define an `implicit val` that we can `import` later on. 
+
+```scala
+package pdbp.types.active.free
+
+import pdbp.types.kleisli.kleisliFunctionType._
+
+import pdbp.types.active.activeTypes._
+
+import pdbp.computation.transformer.free.freeTransformer._
+
+object activeFreeTypes {
+
+  type ActiveFree = FreeTransformed[Active]
+
+  type `>-af->` = Kleisli[ActiveFree]
+
+}
+```
+Finally we can define an *executable program*. Note: we use *program* here as code written using the `Dotty` programming language, and we use *executable* here as having an object with a *main* method.
+
+```scala
+package examples.program.main.active.free
+
+import pdbp.program.implicits.active.free.implicits.implicitActiveFreeProgram
+
+import examples.program.FactorialTrait
+
+object FactorialMain {
+
+  object factorialObject extends FactorialTrait[`>-af->`]()
+
+  import factorialObject._
+
+  def main(args: Array[String]): Unit = {
+
+    executeFactorialProgram
+
+  }
+
+}
+
+The code above mainly consists of bringing the necessary artifacts in scope, using
+
+ - an appropriate `import` of an `implicit`,
+ - an appropriate `object` and an `import` that comes with it.
+
+####  executing `FactorialMain` using `activeFreeProgram`
+
+Ok, so let's *execute* our program.  Note: we use *execute* here as an alias for *sbt run*.
+
+Let's try `1000`.
+
+```scala
+[info] Running examples.program.main.active.free.FactorialMain
+please type an integer
+1000
+it's factorial value is 402387260077093773543702433923003985719374864210714632543799910429938512398629020592044208486969404800479988610197196058631666872994808558901323829669944590997424504087073759918823627727188732519779505950995276120874975462497043601418278094646496291056393887437886487337119181045825783647849977012476632889835955735432513185323958463075557409114262417474349347553428646576611667797396668820291207379143853719588249808126867838374559731746136085379534524221586593201928090878297308431392844403281231558611036976801357304216168747609675871348312025478589320767169132448426236131412508780208000261683151027341827977704784635868170164365024153691398281264810213092761244896359928705114964975419909342221566832572080821333186116811553615836546984046708975602900950537616475847728421889679646244945160765353408198901385442487984959953319101723355556602139450399736280750137837615307127761926849034352625200015888535147331611702103968175921510907788019393178114194545257223865541461062892187960223838971476088506276862967146674697562911234082439208160153780889893964518263243671616762179168909779911903754031274622289988005195444414282012187361745992642956581746628302955570299024324153181617210465832036786906117260158783520751516284225540265170483304226143974286933061690897968482590125458327168226458066526769958652682272807075781391858178889652208164348344825993266043367660176999612831860788386150279465955131156552036093988180612138558600301435694527224206344631797460594682573103790084024432438465657245014402821885252470935190620929023136493273497565513958720559654228749774011413346962715422845862377387538230483865688976461927383814900140767310446640259899490222221765904339901886018566526485061799702356193897017860040811889729918311021171229845901641921068884387121855646124960798722908519296819372388642614839657382291123125024186649353143970137428531926649875337218940694281434118520158014123344828015051399694290153483077644569099073152433278288269864602789864321139083506217095002597389863554277196742822248757586765752344220207573630569498825087968928162753848863396909959826280956121450994871701244516461260379029309120889086942028510640182154399457156805941872748998094254742173582401063677404595741785160829230135358081840096996372524230560855903700624271243416909004153690105933983835777939410970027753472000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+[success] Total time: 7 s, completed Jan 29, 2018 10:05:22 AM
+```
+
+We have no problem here any more. The active free program instance is *stack safe*.
+
+###  `FibonacciMain` using `actionFreeProgram`
+
+Finally we can define an *executable program*. Note: we use *program* here as code written using the `Dotty` programming language, and we use *executable* here as having an object with a *main* method.
+
+```scala
+package examples.program.main.active.free
+
+import pdbp.types.active.free.activeFreeTypes.`>-af->`
+
+import pdbp.program.implicits.active.free.implicits.implicitActiveFreeProgram
+
+import examples.program.FibonacciTrait
+
+object FibonacciMain {
+
+  object fibonacciObject extends FibonacciTrait[`>-af->`]()
+
+  import fibonacciObject._
+
+  def main(args: Array[String]): Unit = {
+
+    executeFibonacciProgram
+
+  }
+
+}
+```
+
+The code above mainly consists of bringing the necessary artifacts in scope, using
+
+ - an appropriate `import` of an `implicit`,
+ - an appropriate `object` and an `import` that comes with it.
+
+####  executing `FibonacciMain` using `activeFreeProgram`
+
+Ok, so let's *execute* our program (the `optimizedFibonacci` version).  Note: we use *execute* here as an alias for *sbt run*.
+
+Let's try `1000`.
+
+```scala
+[info] Running examples.program.main.active.free.FibonacciMain
+please type an integer
+1000
+it's fibonacci value is 43466557686937456435688527675040625802564660517371780402481729089536555417949051890403879840079255169295922593080322634775209689623239873322471161642996440906533187938298969649928516003704476137795166849228875
+[success] Total time: 3 s, completed Jan 29, 2018 10:09:49 AM
+```
+
+We have no problem here any more. The active free program instance is *stack safe*.
+
 <!--
+
+
+
+```
 
 -->
