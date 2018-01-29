@@ -124,7 +124,7 @@ defined trait Function
 
 Above are two `Dotty` *type classes* for a type `E` declaring element related capabilities.
 
- - `trait Element[E]` declares `E`s capability to have an element, `element`.
+ - `trait Element[E]` declares `E`'s capability to have an element, `element`.
  - `trait Function[E]` declares `E`'s capability to have an function, `function`, that transforms an argument element `e` to yield a result element `function(e)`.
 
 Given those *declarations* we can already start *defining* some *element descriptions* as illustrated below
