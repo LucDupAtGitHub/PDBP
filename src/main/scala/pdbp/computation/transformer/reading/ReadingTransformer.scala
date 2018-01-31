@@ -59,18 +59,18 @@ private[pdbp] trait ReadingTransformer[R, M[+ _]: Computation]
 
   private type `>=RTK=>` = Kleisli[RTM]   
         
-  import implicitProgram.{execute => executeKM}
-
-  override def `z>-->r`[Z]: Z `>=RTK=>` R = { _ =>
-    resultM(implicitly) 
-  }
+  import implicitProgram.{execute => executeK}
 
   override type Environment = implicitProgram.Environment && R
 
   override def execute(`u>=rtk=>u`: Unit `>=RTK=>` Unit): Environment `I=>` Unit = { implicit environment =>
     implicit val implicitProgramEnvironment: implicitProgram.Environment = environment._1
     implicit val r: R = environment._2
-    executeKM { u => `u>=rtk=>u`(u) }
+    executeK { u => `u>=rtk=>u`(u) }
   }
+
+  override def `z>-->r`[Z]: Z `>=RTK=>` R = { _ =>
+    resultM(implicitly) 
+  }  
 
 }

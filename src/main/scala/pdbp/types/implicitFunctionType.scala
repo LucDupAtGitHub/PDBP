@@ -13,6 +13,6 @@ package pdbp.types
 
 object implicitFunctionType {
 
-  type `I=>`[-X, +Z] = implicit X => Z 
+  type `I=>`[-X, +Y] = implicit X => Y 
 
 }

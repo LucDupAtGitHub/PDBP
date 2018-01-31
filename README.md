@@ -1949,7 +1949,7 @@ Frankly, a computation transformer is more of a *computation lifter*, lifting co
 
 ### Introduction
 
-The first computation transformer (and corresponding program transformer) that we describe is the `FreeTransformer` that is used to give a *tail recursive* meaning to programs.
+The first computation transformer (and corresponding program transformer) that we describe is `trait FreeTransformer` that is used to give a *tail recursive* meaning to programs.
 
 ### `FreeTransformer`
 
@@ -2016,10 +2016,10 @@ private[pdbp] trait FreeTransformer[M[+ _]: Computation]
   private type `>=FTK=>` = Kleisli[FTM]
 
   import implicitComputation.{result => resultM}
-  import implicitProgram.{execute => executeKM}
+  import implicitProgram.{execute => executeK}
 
   override def execute(`u>=ftk=>u`: Unit `>=FTK=>` Unit): Unit =
-    executeKM(lower(`u>=ftk=>u`))
+    executeK(lower(`u>=ftk=>u`))
 
   private[pdbp] def lower[Z, Y](
       `z>=ftk=>y`: Z `>=FTK=>` Y): Z `>=K=>` Y = { z =>
@@ -2262,7 +2262,103 @@ Note that
 
 `` `z>-->u` `` is the program you expect. Add it to `trait Function` and add the corresponding generic function utility to `object functionUtils` in `package pdbp.util` (if not already there).
 
+## `ReadingTransformer`
 
+### Introduction
+
+The next computation transformer (and corresponding program transformer) that we describe is `trait ReadingTransformer` that is used to add the *reading* capability to programs. Groundbraking [Simplicity](https://infoscience.epfl.ch/record/229878/files/simplicitly_1.pdf) work by Martin Odersky introduces *implicit functions*. In his POPL article, Martin Odersky argues that implicit functions can be used to *replace* the reader monad. Since our goal is to provide an program description DSL we *do* add *reading* as an *explicit* programming capability taking advantage of implicit functions to greatly *simplify* the definition of `trait ReadingTransformer` *a lot*. Moreover implicit functions greatly improve the *performance* of the *meaning* of *reading*. Implicit functions replace boilerplate repetition of `implicit` *parameters* by an *implicitly* available *global* `val`. You may argue that this is *going back in time* since, already years ago, using globals was considered to be harmful. In fact, instead it is *going back to the future* since
+
+ - those globals are *immutable* `val`'s rather than *mutable* `var`'s (much less prone to harmful code),
+ - those globals are *only* available in bodies of members having a *type* that *reflects their availability*.
+
+### `ReadingTransformer`
+
+Consider
+
+```scala
+package pdbp.computation.transformer.reading
+
+import pdbp.types.implicitFunctionType.`I=>`
+
+private[pdbp] object readingTransformer {
+
+  type ReadingTransformed = [R, M[+ _]] => [+Z] => (R `I=>` M[Z])
+
+}
+import readingTransformer._
+
+import pdbp.types.kleisli.kleisliFunctionType._
+
+import pdbp.utils.productUtils._
+
+import pdbp.program.Program
+
+import pdbp.computation.Computation
+
+import pdbp.program.transformer.ProgramTransformer
+
+import pdbp.computation.transformer.ComputationTransformer
+
+import pdbp.program.reading.Reading
+
+private[pdbp] trait ReadingTransformer[R, M[+ _]: Computation]
+    extends ComputationTransformer[M, ReadingTransformed[R, M]] 
+    with Computation[ReadingTransformed[R, M]]
+    with ProgramTransformer[Kleisli[M], Kleisli[ReadingTransformed[R, M]]]
+    with Program[Kleisli[ReadingTransformed[R, M]]]
+    with Reading[R, Kleisli[ReadingTransformed[R, M]]] {
+
+  private type RTM = ReadingTransformed[R, M]      
+
+  override private[pdbp] def liftComputation[Z](mz: M[Z]): RTM[Z] =
+     sys.error(
+       "Impossible, since, for 'ReadingTransformer', 'liftComputation' is used nowhere")
+
+  import implicitComputation.{bind => bindM}
+  import implicitComputation.{result => resultM}
+
+  override private[pdbp] def liftObject[Z]: Z => RTM[Z]  = { z =>
+     resultM(z)
+  }   
+
+  override private[pdbp] def bind[Z, Y](rtmz: RTM[Z], `z>=rtmy`: Z => RTM[Y]): RTM[Y] =
+    bindM(rtmz, { z => `z>=rtmy`(z) })
+
+  private type `>=RTK=>` = Kleisli[RTM]   
+        
+  import implicitProgram.{execute => executeK}
+
+  override def `z>-->r`[Z]: Z `>=RTK=>` R = { _ =>
+    resultM(implicitly) 
+  }
+
+  override type Environment = implicitProgram.Environment && R
+
+  override def execute(`u>=rtk=>u`: Unit `>=RTK=>` Unit): Environment `I=>` Unit = { implicit environment =>
+    implicit val implicitProgramEnvironment: implicitProgram.Environment = environment._1
+    implicit val r: R = environment._2
+    executeK { u => `u>=rtk=>u`(u) }
+  }
+
+}
+```
+where
+
+```scala
+package pdbp.types
+
+object implicitFunctionType {
+
+  type `I=>`[-X, +Y] = implicit X => Y 
+
+}
+```
+
+The type synonym `` `I=>` `` (and corresponding `RTM` and `` `>=RTK=>` `` ) above, indicate that the *implicitly* available *global* `val` is available. In fact, in `` `z>-->r` `` we use it as `implicitly`. 
+
+You may wonder how it is possible that the definitions above are so simple. This is mainly the case because the compiler can turn values into implicit functions whenever the context *expects* them to be implicit functions.
+
+Finally, not that we changed the type of `execute`. You have to change the types of the `execute` member of `Execute` (and it's previous usages) accordingly: an easy, slightly tedious exercise.
 
 
 <!--

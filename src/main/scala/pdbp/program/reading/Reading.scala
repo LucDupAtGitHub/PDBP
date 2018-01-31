@@ -22,6 +22,4 @@ trait Reading[R, >-->[- _, + _]] {
 
   def `u>-->r`: Unit >--> R = `z>-->r`[Unit]
 
-
-
 }
