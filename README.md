@@ -2334,7 +2334,7 @@ private[pdbp] trait ReadingTransformer[R, M[+ _]: Computation]
   override type Environment = EnvironmentK && R
 
   override def execute(`u>=rtk=>u`: Unit `>=RTK=>` Unit): Environment `I=>` Unit = { implicit environment =>
-    implicit val implicitProgramEnvironment: implicitProgram.Environment = environment._1
+    implicit val environmentK: EnvironmentK = environment._1
     implicit val r: R = environment._2
     executeK { u => `u>=rtk=>u`(u) }
   }
