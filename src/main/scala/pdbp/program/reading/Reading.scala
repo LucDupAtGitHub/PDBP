@@ -11,9 +11,17 @@ package pdbp.program.reading
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
+import pdbp.program.Function
+
+import pdbp.program.Composition
 
 trait Reading[R, >-->[- _, + _]] {
+  this: Function[>-->] & Composition[>-->] =>
 
-  def `z>-->r`[Z]: Z >--> R
+  def `z>-->r`[Z]: Z >--> R = compose(`z>-->u`, `u>-->r`)
+
+  def `u>-->r`: Unit >--> R = `z>-->r`[Unit]
+
+
 
 }

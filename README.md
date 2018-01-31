@@ -206,7 +206,7 @@ Monads naturally lead to a pointful programming style. Monad based computations 
 
 ### Why `Dotty`
 
-Program description based programming is not only about *power of expression*, it is also, and probably even more, about *elegance of use*. Traditionally, the pointfree style has *not* been considered to be very elegant. Luckily, the `Dotty` programming language comes to the rescue! `Dotty` is a *strongly typed*, *scalable* programming language. It is possible to *extend the language* in a *type safe* way at the *library* level with *internal domain specific languages*. By using a domain specific language for the domain of *programs*, program description based programming can be done in a very *concise* way.
+Program description based programming is not only about *power of expression*, it is also, and probably even more, about *elegance of use*. Traditionally the pointfree style has been considered to be elegant by some programmers and *abstruse* by other programmers. Luckily, the `Dotty` programming language comes to the rescue for the latter ones! `Dotty` is a *strongly typed*, *scalable* programming language. It is possible to *extend the language* in a *type safe* way at the *library* level with *internal domain specific languages*. By using a domain specific language for the domain of *programs*, program description based programming can be done in a very *concise* way.
 
 Below are both an `FP` example and a `Dotty` example illustrating difference in elegance of use.
 
@@ -409,7 +409,7 @@ trait Composition[>-->[- _, + _]] {
 }
 ```
 
-`composition` make a  *program* `` composition(`z>-->y`, `y>-->x`) `` that is *composed* from *simpler programs*, `` `z>-->y` `` and `` `y>-->x` ``.
+`composition` makes a  *program* `` composition(`z>-->y`, `y>-->x`) `` that is *composed* from *simpler programs*, `` `z>-->y` `` and `` `y>-->x` ``.
 
 The program `` composition(`z>-->y`, `y>-->x`) `` is the *sequential composition* of the program `` `z>-->y` `` and the program `` `y>-->x` ``. The result of program `` `z>-->y` `` is the argument of the *subsequent* program `` `y>-->x` ``. Note that `` `y>-->x` `` is a *call-by-name parameter*. Program `` `z>-->y` `` may *fail*. 
 
@@ -2220,6 +2220,50 @@ the fibonacci value of the integer is 434665576869374564356885276750406258025646
 ```
 
 We have no problem here any more. The active free program instance *is stack safe*.
+
+## `Reading`
+
+### Introduction
+
+In sections `Program` and `Computation` we presented the *basic* programming and computation capabilities. In this section we introduce the first *extra* programming capability: *reading*. In a way we already used some form of reading using *producers* that are used together with *consumers* to turn programs of type `Z >--> Y` into programs of type `Unit >--> Unit` that are ready to be *executed*. Think of the reading capability of this section as *configuration* related.
+
+### `Reading`
+
+Consider
+
+```scala
+package pdbp.program.reading
+
+import pdbp.program.Function
+
+import pdbp.program.Composition
+
+trait Reading[R, >-->[- _, + _]] {
+  this: Function[>-->] & Composition[>-->] =>
+
+  def `z>-->r`[Z]: Z >--> R = compose(`z>-->u`, `u>-->r`)
+
+  def `u>-->r`: Unit >--> R = `z>-->r`[Unit]
+
+}
+```
+
+`` `z>-->r` `` is a program that, given any argument of type `Z` has a result of type `R`. 
+
+`trait Reading` has another member 
+
+ - `` `u>-->r` `` is a simpler version of `` `z>-->r` ``
+
+Note that
+
+ - `` `z>-->r` `` can be defined in terms of `` `u>-->r` ``, `compose` and `` `z>-->u` ``
+ - `` `u>-->r` `` can be defined in terms of `` `z>-->r` `` by using `Unit` for `Z`
+
+
+`` `z>-->u` `` is the program you expect. Add it to `trait Function` and add the corresponding generic function utility to `object functionUtils` in `package pdbp.util` (if not already there).
+
+
+
 
 <!--
 
