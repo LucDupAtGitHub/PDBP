@@ -64,8 +64,9 @@ private[pdbp] trait FreeTransformer[M[+ _]: Computation]
 
   import implicitComputation.{result => resultM}
   import implicitProgram.{execute => executeK}
+  import implicitProgram.{Environment => EnvironmentK}
 
-  override type Environment = implicitProgram.Environment
+  override type Environment = EnvironmentK
 
   override val environment: Environment = implicitProgram.environment
 
