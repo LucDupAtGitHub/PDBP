@@ -2015,14 +2015,14 @@ private[pdbp] trait FreeTransformer[M[+ _]: Computation]
 
   private type `>=FTK=>` = Kleisli[FTM]
 
-  override def execute(`u>=ftk=>u`: Unit `>=FTK=>` Unit): Unit = {
-    import implicitProgram.{execute => executeKM}
+  import implicitComputation.{result => resultM}
+  import implicitProgram.{execute => executeKM}
+
+  override def execute(`u>=ftk=>u`: Unit `>=FTK=>` Unit): Unit =
     executeKM(lower(`u>=ftk=>u`))
-  }
 
   private[pdbp] def lower[Z, Y](
       `z>=ftk=>y`: Z `>=FTK=>` Y): Z `>=K=>` Y = { z =>
-    import implicitComputation.{result => resultM}
     @annotation.tailrec
     def step[Z](ftmz: FTM[Z]): FTM[Z] = ftmz match {
       case Bind(Bind(mx, x2ftmy), y2ftmz) =>
@@ -2037,7 +2037,7 @@ private[pdbp] trait FreeTransformer[M[+ _]: Computation]
         sys.error(
           "Impossible, since, for 'FreeTransformer', 'step' eliminates this case")
     }
-  } 
+  }  
 
 }
 ```
@@ -2063,8 +2063,6 @@ The next computation instance that we present is the *active free* instance (we 
 
 ```scala
 package pdbp.program.instances.active.free
-
-import pdbp.utils.functionUtils._
 
 import pdbp.program.Program
 

@@ -1,4 +1,4 @@
-package pdbp.program.instances.active.free
+package pdbp.program.instances.active.reading.int
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -18,17 +18,23 @@ import pdbp.program.transformer.ProgramTransformer
 
 import pdbp.computation.transformer.ComputationTransformer
 
-import pdbp.computation.transformer.free.FreeTransformer
+import pdbp.computation.transformer.reading.ReadingTransformer
 
 import pdbp.types.active.activeTypes._
 
 import pdbp.program.implicits.active.implicits.implicitActiveProgram
 
-import pdbp.types.active.free.activeFreeTypes._
+import pdbp.types.active.reading.int.activeIntReadingTypes._
 
-object activeFreeProgram
-    extends FreeTransformer[Active]()
-    with ComputationTransformer[Active, ActiveFree]()
-    with Computation[ActiveFree]
-    with ProgramTransformer[`>-a->`, `>-af->`]()
-    with Program[`>-af->`]
+import pdbp.program.instances.active.reading.ActiveReadingProgram
+
+object activeIntReadingProgram
+    extends ActiveReadingProgram[Int]
+    with ReadingTransformer[Int, Active]()
+    with ComputationTransformer[Active, ActiveIntReading]()
+    with Computation[ActiveIntReading]
+    with ProgramTransformer[`>-a->`, `>-air->`]()
+    with Program[`>-air->`] {
+
+
+}
