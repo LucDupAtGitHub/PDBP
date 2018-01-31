@@ -11,6 +11,8 @@ package pdbp.program.instances.function
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
+import pdbp.types.implicitFunctionType.`I=>`
+
 import pdbp.utils.productUtils._
 import pdbp.utils.sumUtils._
 
@@ -34,11 +36,14 @@ object functionProgram extends Program[`>-=->`] {
   }
 
   override def sum[Z, Y, X](`y>-=->z`: => Y `>-=->` Z,
-                            `x>-=->z`: => X `>-=->` Z): (Y || X) `>-=->` Z = {
+                            `x>-=->z`: => X `>-=->` Z): (Y || X) `>-=->` Z =
     foldSum(`y>-=->z`, `x>-=->z`)
-  }
 
-  override def execute(`u>-=->u`: Unit `>-=->` Unit): Unit =
+  override type Environment = Unit
+
+  override implicit val environment: Environment = ()
+
+  override def execute(`u>-=->u`: Unit `>-=->` Unit): Environment `I=>` Unit =
     `u>-=->u`(())
 
 }

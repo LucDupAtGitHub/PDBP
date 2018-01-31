@@ -123,14 +123,14 @@ trait FibonacciTrait[>-->[- _, + _]: Program] {
     readInt("please type an integer")
 
   val consumer: BigInt >--> Unit =
-    write(s"it's fibonacci value is")
+    write(s"the fibonacci value of the integer is")
 
   val fibonacciProgram: Unit >--> Unit =
     producer >-->
       optimizedFibonacci >-->
-      consumer
+      consumer   
 
   def executeFibonacciProgram: Unit =
-    execute(fibonacciProgram)       
+    execute(fibonacciProgram)        
 
 }

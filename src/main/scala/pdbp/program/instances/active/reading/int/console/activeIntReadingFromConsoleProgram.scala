@@ -1,4 +1,4 @@
-package pdbp.program.instances.active.reading.int
+package pdbp.program.instances.active.reading.int.console
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -9,6 +9,8 @@ package pdbp.program.instances.active.reading.int
 //  \_\/       \______\/  \______\/      \_\/
 //                                           v1.0
 //  Program Description Based Programming Library
+
+import pdbp.utils.runUtils._
 
 import pdbp.program.Program
 
@@ -28,13 +30,18 @@ import pdbp.types.active.reading.int.activeIntReadingTypes._
 
 import pdbp.program.instances.active.reading.ActiveReadingProgram
 
-object activeIntReadingProgram
-    extends ActiveReadingProgram[Int]
-    with ReadingTransformer[Int, Active]()
+object activeIntReadingFromConsoleProgram
+    extends ActiveReadingProgram[BigInt]
+    with ReadingTransformer[BigInt, Active]()
     with ComputationTransformer[Active, ActiveIntReading]()
     with Computation[ActiveIntReading]
     with ProgramTransformer[`>-a->`, `>-air->`]()
     with Program[`>-air->`] {
 
+  implicit val implicitBigInt: BigInt = readInt("please type an integer configured by reading from the console")(())
+
+  override implicit val environment: Environment = {
+      (implicitProgram.environment, implicitBigInt)
+  }
 
 }

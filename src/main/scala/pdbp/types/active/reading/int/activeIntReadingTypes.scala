@@ -16,8 +16,8 @@ import pdbp.types.active.reading.activeReadingTypes._
 
 object activeIntReadingTypes {
 
-  type ActiveIntReading = ActiveReading[Int]
+  type ActiveIntReading = ActiveReading[BigInt]
 
-  type `>-air->`= `>-ar->`[Int]
+  type `>-air->`= `>-ar->`[BigInt]
 
 }

@@ -11,16 +11,18 @@ package pdbp.computation.transformer.reading
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.implicitFunctionType.`>=I=>`
+import pdbp.types.implicitFunctionType.`I=>`
 
 private[pdbp] object readingTransformer {
 
-  type ReadingTransformed = [R, M[+ _]] => [+Z] => (R `>=I=>` M[Z])
+  type ReadingTransformed = [R, M[+ _]] => [+Z] => (R `I=>` M[Z])
 
 }
 import readingTransformer._
 
 import pdbp.types.kleisli.kleisliFunctionType._
+
+import pdbp.utils.productUtils._
 
 import pdbp.program.Program
 
@@ -42,37 +44,33 @@ private[pdbp] trait ReadingTransformer[R, M[+ _]: Computation]
   private type RTM = ReadingTransformed[R, M]      
 
   override private[pdbp] def liftComputation[Z](mz: M[Z]): RTM[Z] =
-    mz
-    // sys.error(
-    //   "Impossible, since, for 'ReadingTransformer', 'liftComputation' is used nowhere")
+     sys.error(
+       "Impossible, since, for 'ReadingTransformer', 'liftComputation' is used nowhere")
 
   import implicitComputation.{bind => bindM}
+  import implicitComputation.{result => resultM}
 
-  // override private[pdbp] def liftObject[Z]: Z => RTM[Z]  = { z =>
-  //   resultM(z)
-  // }   
+  override private[pdbp] def liftObject[Z]: Z => RTM[Z]  = { z =>
+     resultM(z)
+  }   
 
   override private[pdbp] def bind[Z, Y](rtmz: RTM[Z], `z>=rtmy`: Z => RTM[Y]): RTM[Y] =
     bindM(rtmz, { z => `z>=rtmy`(z) })
 
   private type `>=RTK=>` = Kleisli[RTM]   
         
-  import implicitComputation.{result => resultM}
   import implicitProgram.{execute => executeKM}
 
   override def `z>-->r`[Z]: Z `>=RTK=>` R = { _ =>
     resultM(implicitly) 
   }
 
-  override def execute(`u>=rtk=>u`: Unit `>=RTK=>` Unit): Unit = {
-    ???   
-  }
+  override type Environment = implicitProgram.Environment && R
 
-  def run(`u>=rtk=>u`: Unit `>=RTK=>` Unit): R `>=I=>` Unit = { implicit ir =>
-    //type `>=K=>` = Kleisli[M]
-    //val `u>=k=>u`: Unit `>=K=>` Unit = u => `u>=rtk=>u`(u)(ir)
-    //executeKM(`u>=k=>u`)
-    executeKM(u => `u>=rtk=>u`(u)(ir))
+  override def execute(`u>=rtk=>u`: Unit `>=RTK=>` Unit): Environment `I=>` Unit = { implicit environment =>
+    implicit val implicitProgramEnvironment: implicitProgram.Environment = environment._1
+    implicit val r: R = environment._2
+    executeKM { u => `u>=rtk=>u`(u) }
   }
 
 }

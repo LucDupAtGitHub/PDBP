@@ -107,7 +107,7 @@ trait FactorialTrait[>-->[- _, + _]: Program] {
     readInt("please type an integer")
 
   val consumer: BigInt >--> Unit =
-    write(s"it's factorial value is")
+    write(s"the factorial value of the integer is")
 
   val factorialProgram: Unit >--> Unit =
     producer >-->
@@ -115,6 +115,6 @@ trait FactorialTrait[>-->[- _, + _]: Program] {
       consumer
 
   def executeFactorialProgram: Unit =
-    execute(factorialProgram)   
+    execute(factorialProgram)  
 
 }

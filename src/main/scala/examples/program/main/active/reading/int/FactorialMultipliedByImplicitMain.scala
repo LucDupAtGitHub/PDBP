@@ -1,4 +1,4 @@
-package examples.program.main.active
+package examples.program.main.active.reading.int
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,23 +11,26 @@ package examples.program.main.active
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.active.activeTypes.`>-a->`
+import pdbp.types.active.reading.int.activeIntReadingTypes.`>-air->`
 
-import pdbp.program.implicits.active.implicits.implicitActiveProgram
+import pdbp.program.implicits.active.reading.int.console.implicits.implicitActiveIntReadingFromConsoleProgram
 
 import examples.program.FactorialTrait
 
-object FactorialMain {
+import examples.program.reading.int.FactorialMultipliedByImplicitTrait
 
-  object factorialObject extends FactorialTrait[`>-a->`]()
+object FactorialMultipliedByImplicitMain {
 
-  import factorialObject._
+  object factorialMultipliedByImplicitObject 
+    extends FactorialMultipliedByImplicitTrait[`>-air->`]() 
+    with FactorialTrait[`>-air->`]()
+
+  import factorialMultipliedByImplicitObject._
 
   def main(args: Array[String]): Unit = {
 
-    executeFactorialProgram
+    executeFactorialMultipliedByImplicitProgram
 
   }
 
 }
-

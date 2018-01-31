@@ -26,6 +26,8 @@ private[pdbp] object freeTransformer {
 
 import freeTransformer._
 
+import pdbp.types.implicitFunctionType.`I=>`
+
 import pdbp.types.kleisli.kleisliFunctionType._
 
 import pdbp.program.Program
@@ -63,7 +65,11 @@ private[pdbp] trait FreeTransformer[M[+ _]: Computation]
   import implicitComputation.{result => resultM}
   import implicitProgram.{execute => executeKM}
 
-  override def execute(`u>=ftk=>u`: Unit `>=FTK=>` Unit): Unit =
+  override type Environment = implicitProgram.Environment
+
+  override val environment: Environment = implicitProgram.environment
+
+  override def execute(`u>=ftk=>u`: Unit `>=FTK=>` Unit): Environment `I=>` Unit =
     executeKM(lower(`u>=ftk=>u`))
 
   private[pdbp] def lower[Z, Y](

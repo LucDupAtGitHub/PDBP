@@ -11,8 +11,14 @@ package pdbp.program
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
+import pdbp.types.implicitFunctionType.`I=>`
+
 trait Execution[>-->[- _, + _]] {
 
-  def execute(`u>-->u`: Unit >--> Unit): Unit
+  type Environment
+
+  implicit val environment: Environment
+
+  def execute(`u>-->u`: Unit >--> Unit): Environment `I=>` Unit  
 
 }

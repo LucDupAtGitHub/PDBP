@@ -852,7 +852,7 @@ The code below makes `factorial` (it might as well have been `pointfulFactorial`
     readInt("please type an integer")
 
   val consumer: BigInt >--> Unit =
-    write(s"it's factorial value is")
+    write(s"the factorial value of the integer is")
 
   val factorialProgram: Unit >--> Unit =
     producer >-->
@@ -991,7 +991,7 @@ Let's try `100`.
 [info] Running examples.program.main.function.FactorialMain
 please type an integer
 100
-it's factorial value is 93326215443944152681699238856266700490715968264381621468592963895217599993229915608941463976156518286253697920827223758251185210916864000000000000000000000000
+the factorial value of the integer is 93326215443944152681699238856266700490715968264381621468592963895217599993229915608941463976156518286253697920827223758251185210916864000000000000000000000000
 [success] Total time: 2 s, completed Jan 27, 2018 1:09:21 PM
 ```
 
@@ -1064,7 +1064,7 @@ The code below makes `fibonacci` ready for `Execution`
     readInt("please type an integer")
 
   val consumer: BigInt >--> Unit =
-    write(s"it's fibonacci value is")
+    write(s"the fibonacci value of the integer is")
 
   val fibonacciProgram: Unit >--> Unit =
     producer >-->
@@ -1120,7 +1120,7 @@ Let's try `10`, `20`, `30`, `35`, `40` ... .
 [info] Running examples.program.main.function.FibonacciMain
 please type an integer
 10
-it's fibonacci value is 55
+the fibonacci value of the integer is 55
 [success] Total time: 2 s, completed Jan 27, 2018 8:54:45 PM
 ```
 
@@ -1128,7 +1128,7 @@ it's fibonacci value is 55
 [info] Running examples.program.main.function.FibonacciMain
 please type an integer
 20
-it's fibonacci value is 6765
+the fibonacci value of the integer is 6765
 [success] Total time: 5 s, completed Jan 27, 2018 8:56:12 PM
 ```
 
@@ -1136,7 +1136,7 @@ it's fibonacci value is 6765
 [info] Running examples.program.main.function.FibonacciMain
 please type an integer
 30
-it's fibonacci value is 832040
+the fibonacci value of the integer is 832040
 [success] Total time: 4 s, completed Jan 27, 2018 8:57:21 PM
 ```
 
@@ -1144,7 +1144,7 @@ it's fibonacci value is 832040
 [info] Running examples.program.main.function.FibonacciMain
 please type an integer
 35
-it's fibonacci value is 9227465
+the fibonacci value of the integer is 9227465
 [success] Total time: 16 s, completed Jan 27, 2018 8:58:00 PM
 ```
 
@@ -1205,7 +1205,7 @@ Let's try `100`.
 [info] Running examples.program.main.function.FibonacciMain
 please type an integer
 100
-it's fibonacci value is 354224848179261915075
+the fibonacci value of the integer is 354224848179261915075
 [success] Total time: 4 s, completed Jan 27, 2018 9:18:35 PM
 ```
 
@@ -1217,7 +1217,7 @@ Let's try `1000`.
 [info] Running examples.program.main.function.FibonacciMain
 please type an integer
 1000
-it's fibonacci value is 43466557686937456435688527675040625802564660517371780402481729089536555417949051890403879840079255169295922593080322634775209689623239873322471161642996440906533187938298969649928516003704476137795166849228875
+the fibonacci value of the integer is 43466557686937456435688527675040625802564660517371780402481729089536555417949051890403879840079255169295922593080322634775209689623239873322471161642996440906533187938298969649928516003704476137795166849228875
 [success] Total time: 6 s, completed Jan 27, 2018 9:21:54 PM
 ```
 
@@ -1742,7 +1742,7 @@ Let's try `100`.
 [info] Running examples.program.main.active.FactorialMain
 please type an integer
 100
-it's factorial value is 93326215443944152681699238856266700490715968264381621468592963895217599993229915608941463976156518286253697920827223758251185210916864000000000000000000000000
+the factorial value of the integer is  93326215443944152681699238856266700490715968264381621468592963895217599993229915608941463976156518286253697920827223758251185210916864000000000000000000000000
 [success] Total time: 3 s, completed Jan 28, 2018 8:52:17 PM
 ```
 
@@ -1803,7 +1803,7 @@ Let's try `10`, `20`, `30`, `35`, `40` ... .
 [info] Running examples.program.main.active.FibonacciMain
 please type an integer
 10
-it's fibonacci value is 55
+the fibonacci value of the integer is 55
 [success] Total time: 10 s, completed Jan 28, 2018 8:58:19 PM
 ```
 
@@ -1811,7 +1811,7 @@ it's fibonacci value is 55
 [info] Running examples.program.main.active.FibonacciMain
 please type an integer
 20
-it's fibonacci value is 6765
+the fibonacci value of the integer is 6765
 [success] Total time: 3 s, completed Jan 28, 2018 8:58:24 PM
 ```
 
@@ -1819,7 +1819,7 @@ it's fibonacci value is 6765
 [info] Running examples.program.main.active.FibonacciMain
 please type an integer
 30
-it's fibonacci value is 832040
+the fibonacci value of the integer is 832040
 [success] Total time: 4 s, completed Jan 28, 2018 8:58:29 PM
 ```
 
@@ -1827,7 +1827,7 @@ it's fibonacci value is 832040
 [info] Running examples.program.main.active.FibonacciMain
 please type an integer
 35
-it's fibonacci value is 9227465
+the fibonacci value of the integer is 9227465
 [success] Total time: 13 s, completed Jan 28, 2018 8:58:42 PM
 ```
 
@@ -1852,7 +1852,7 @@ Let's try `100`.
 [info] Running examples.program.main.active.FibonacciMain
 please type an integer
 100
-it's fibonacci value is 354224848179261915075
+the fibonacci value of the integer is 354224848179261915075
 [success] Total time: 7 s, completed Jan 28, 2018 9:03:29 PM
 ```
 
@@ -2215,7 +2215,7 @@ Let's try `1000`.
 [info] Running examples.program.main.active.free.FibonacciMain
 please type an integer
 1000
-it's fibonacci value is 43466557686937456435688527675040625802564660517371780402481729089536555417949051890403879840079255169295922593080322634775209689623239873322471161642996440906533187938298969649928516003704476137795166849228875
+the fibonacci value of the integer is 43466557686937456435688527675040625802564660517371780402481729089536555417949051890403879840079255169295922593080322634775209689623239873322471161642996440906533187938298969649928516003704476137795166849228875
 [success] Total time: 3 s, completed Jan 29, 2018 10:09:49 AM
 ```
 
@@ -2223,8 +2223,5 @@ We have no problem here any more. The active free program instance *is stack saf
 
 <!--
 
-
-
-```
 
 -->

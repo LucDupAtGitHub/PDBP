@@ -11,6 +11,8 @@ package pdbp.program.instances.active
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
+import pdbp.types.implicitFunctionType.`I=>`
+
 import pdbp.utils.functionUtils._
 
 import pdbp.program.Program
@@ -27,6 +29,11 @@ object activeProgram extends Computation[Active] with Program[`>-a->`] {
                                         `z=>ay`: Z => Active[Y]): Active[Y] =
     `z=>ay`(az)
 
-  override def execute(`u>-a->u`: Unit `>-a->` Unit): Unit =
+  override type Environment = Unit
+
+  override implicit val environment: Environment = ()
+
+  override def execute(`u>-a->u`: Unit `>-a->` Unit): Environment `I=>` Unit =
     `u>-a->u`(())
+
 }
