@@ -2266,10 +2266,12 @@ Note that
 
 ### Introduction
 
-The next computation transformer (and corresponding program transformer) that we describe is `trait ReadingTransformer` that is used to add the *reading* capability to programs. Groundbraking [Simplicity](https://infoscience.epfl.ch/record/229878/files/simplicitly_1.pdf) work by Martin Odersky introduces *implicit functions*. In his POPL article, Martin Odersky argues that implicit functions can be used to *replace* the reader monad. Since our goal is to provide an program description DSL we *do* add *reading* as an *explicit* programming capability taking advantage of implicit functions to greatly *simplify* the definition of `trait ReadingTransformer` *a lot*. Moreover implicit functions greatly improve the *performance* of the *meaning* of *reading*. Implicit functions replace boilerplate repetition of `implicit` *parameters* by an *implicitly* available *global* `val`. You may argue that this is *going back in time* since, already years ago, using globals was considered to be harmful. In fact, instead it is *going back to the future* since
+The next computation transformer (and corresponding program transformer) that we describe is `trait ReadingTransformer` that is used to add the *reading* capability to programs. Groundbraking [Simplicity](https://infoscience.epfl.ch/record/229878/files/simplicitly_1.pdf) work by Martin Odersky introduces *implicit functions*. In his POPL article, Martin Odersky argues that implicit functions can be used to *replace* the reader monad. Since our goal is to provide a program description DSL we *do* add *reading* as an *explicit* programming capability taking advantage of implicit functions to greatly *simplify* the definition of `trait ReadingTransformer`. Moreover implicit functions greatly improve the *performance* of the *meaning* of *reading*. 
+
+Implicit functions replace boilerplate repetition of `implicit` *parameters* by an *implicitly* available *global* `val`. You may argue that this is *going back in time* since, for years, using globals has been considered to be harmful. In fact, instead it is *going back to the future* since
 
  - those globals are *immutable* `val`'s rather than *mutable* `var`'s (much less prone to harmful code),
- - those globals are *only* available in bodies of members having a *type* that *reflects their availability*.
+ - more important, those globals are *only* available in bodies of members having a *type* that *reflects their availability*.
 
 ### `ReadingTransformer`
 
@@ -2356,9 +2358,9 @@ object implicitFunctionType {
 
 The type synonym `` `I=>` `` (and corresponding `RTM` and `` `>=RTK=>` `` ) above, indicate that the *implicitly* available *global* `val` is available. In fact, in `` `z>-->r` `` we use it as `implicitly`. 
 
-You may wonder how it is possible that the definitions above are so simple. This is mainly the case because the compiler can turn values into implicit functions whenever the context *expects* them to be implicit functions.
+You may wonder how it is possible that the definitions above are so simple. This is mainly the case because the compiler can turn value types into implicit function types whenever it *expects* them to be implicit function types.
 
-Finally, not that we changed the type of `execute`. You have to change the types of the `execute` member of `Execute` (and it's previous usages) accordingly: an easy, slightly tedious exercise.
+Finally, note that we changed the type of `execute`. You have to change the types of the `execute` member of `Execute` (and it's previous usages) accordingly: an easy, slightly tedious exercise.
 
 
 <!--
