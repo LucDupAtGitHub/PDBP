@@ -44,8 +44,8 @@ private[pdbp] trait ReadingTransformer[R, M[+ _]: Computation]
   private type RTM = ReadingTransformed[R, M]      
 
   override private[pdbp] def liftComputation[Z](mz: M[Z]): RTM[Z] =
-     sys.error(
-       "Impossible, since, for 'ReadingTransformer', 'liftComputation' is used nowhere")
+    sys.error(
+      "Impossible, since, for 'ReadingTransformer', 'liftComputation' is used nowhere")
 
   import implicitComputation.{bind => bindM}
   import implicitComputation.{result => resultM}
@@ -70,7 +70,7 @@ private[pdbp] trait ReadingTransformer[R, M[+ _]: Computation]
     executeK { u => `u>=rtk=>u`(u) }
   }
 
-  override def `z>-->r`[Z]: Z `>=RTK=>` R = { _ =>
+  override def `u>-->r`: Unit `>=RTK=>` R = { _ =>
     resultM(implicitly) 
   }  
 

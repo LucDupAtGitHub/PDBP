@@ -2241,18 +2241,18 @@ import pdbp.program.Composition
 trait Reading[R, >-->[- _, + _]] {
   this: Function[>-->] & Composition[>-->] =>
 
-  def `z>-->r`[Z]: Z >--> R = compose(`z>-->u`, `u>-->r`)
-
   def `u>-->r`: Unit >--> R = `z>-->r`[Unit]
+
+  def `z>-->r`[Z]: Z >--> R = compose(`z>-->u`, `u>-->r`)
 
 }
 ```
 
-`` `z>-->r` `` is a program that, given any argument of type `Z` has a result of type `R`. 
+`` `u>-->r` `` is a program that, given an argument of type `Unit` has a result of type `R`. 
 
 `trait Reading` has another member 
 
- - `` `u>-->r` `` is a simpler version of `` `z>-->r` ``
+ - `` `z>-->r` `` is a more complex version of `` `z>-->r` ``
 
 Note that
 
@@ -2313,8 +2313,8 @@ private[pdbp] trait ReadingTransformer[R, M[+ _]: Computation]
   private type RTM = ReadingTransformed[R, M]      
 
   override private[pdbp] def liftComputation[Z](mz: M[Z]): RTM[Z] =
-     sys.error(
-       "Impossible, since, for 'ReadingTransformer', 'liftComputation' is used nowhere")
+    sys.error(
+      "Impossible, since, for 'ReadingTransformer', 'liftComputation' is used nowhere")
 
   import implicitComputation.{bind => bindM}
   import implicitComputation.{result => resultM}
@@ -2339,7 +2339,7 @@ private[pdbp] trait ReadingTransformer[R, M[+ _]: Computation]
     executeK { u => `u>=rtk=>u`(u) }
   }
 
-  override def `z>-->r`[Z]: Z `>=RTK=>` R = { _ =>
+  override def `u>-->r`: Unit `>=RTK=>` R = { _ =>
     resultM(implicitly) 
   }
 
@@ -2357,7 +2357,7 @@ object implicitFunctionType {
 }
 ```
 
-The type synonym `` `I=>` `` (and corresponding `RTM` and `` `>=RTK=>` `` ) above, indicate that the *implicitly* available *global* `val` is available. In fact, in `` `z>-->r` `` we use it as `implicitly`. 
+The type synonym `` `I=>` `` (and corresponding `RTM` and `` `>=RTK=>` `` ) above, indicate that the *implicitly* available *global* `val` is available. In fact, in `` `u>-->r` `` we use it as `implicitly`. 
 
 You may wonder how it is possible that the definitions above are so simple. This is mainly the case because the compiler can turn value types into implicit function types whenever it *expects* them to be implicit function types.
 
