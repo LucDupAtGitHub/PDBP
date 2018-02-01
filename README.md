@@ -2600,7 +2600,7 @@ The code above mainly consists of bringing the necessary artifacts in scope, usi
 
 Ok, so let's *execute* our program.
 
-Let's try `5` for the integer and `2` for the multiplication factor.
+Let's try `5` for the `factorial` argument and `2` for the `multiply` factor.
 
 ```scala
 [info] Running examples.program.main.active.reading.int.console.FactorialMultipliedByIntReadFromConsoleMain
