@@ -18,8 +18,8 @@ import pdbp.program.Composition
 trait Reading[R, >-->[- _, + _]] {
   this: Function[>-->] & Composition[>-->] =>
 
-  def `z>-->r`[Z]: Z >--> R = compose(`z>-->u`, `u>-->r`)
-
   def `u>-->r`: Unit >--> R = `z>-->r`[Unit]
+
+  def `z>-->r`[Z]: Z >--> R = compose(`z>-->u`, `u>-->r`)
 
 }
