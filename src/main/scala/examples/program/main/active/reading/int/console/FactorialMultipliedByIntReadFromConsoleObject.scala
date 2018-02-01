@@ -1,4 +1,4 @@
-package examples.program.main.active.reading.int
+package examples.program.main.active.reading.int.console
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -17,15 +17,15 @@ import pdbp.program.implicits.active.reading.int.console.implicits.implicitActiv
 
 import examples.program.FactorialTrait
 
-import examples.program.reading.int.FactorialMultipliedByImplicitTrait
+import examples.program.reading.int.console.FactorialMultipliedByIntReadFromConsoleTrait
 
 object FactorialMultipliedByImplicitMain {
 
-  object factorialMultipliedByImplicitObject 
-    extends FactorialMultipliedByImplicitTrait[`>-air->`]() 
+  object FactorialMultipliedByIntReadFromConsoleObject 
+    extends FactorialMultipliedByIntReadFromConsoleTrait[`>-air->`]() 
     with FactorialTrait[`>-air->`]()
 
-  import factorialMultipliedByImplicitObject._
+  import FactorialMultipliedByIntReadFromConsoleObject._
 
   def main(args: Array[String]): Unit = {
 
