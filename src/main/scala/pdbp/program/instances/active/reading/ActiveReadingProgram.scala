@@ -31,8 +31,5 @@ trait ActiveReadingProgram[R]
     with ComputationTransformer[Active, ActiveReading[R]]
     with Computation[ActiveReading[R]]
     with ProgramTransformer[`>-a->`, `>-ar->`[R]]
-    with Program[`>-ar->`[R]] {
-
-
-}
+    with Program[`>-ar->`[R]]
 

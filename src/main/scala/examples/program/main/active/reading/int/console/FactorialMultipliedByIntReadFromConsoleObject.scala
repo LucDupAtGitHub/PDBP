@@ -19,7 +19,7 @@ import examples.program.FactorialTrait
 
 import examples.program.reading.int.console.FactorialMultipliedByIntReadFromConsoleTrait
 
-object FactorialMultipliedByImplicitMain {
+object FactorialMultipliedByIntReadFromConsoleMain {
 
   object FactorialMultipliedByIntReadFromConsoleObject 
     extends FactorialMultipliedByIntReadFromConsoleTrait[`>-air->`]() 
@@ -29,7 +29,7 @@ object FactorialMultipliedByImplicitMain {
 
   def main(args: Array[String]): Unit = {
 
-    executeFactorialMultipliedByImplicitProgram
+    executeFactorialMultipliedByIntReadFromConsoleProgram
 
   }
 

@@ -15,8 +15,9 @@ import pdbp.program.Program
 
 import pdbp.program.reading.Reading
 
-trait FactorialMultipliedByIntReadFromConsoleTrait[>-->[- _, + _]: Program : [>-->[- _, + _]] => Reading[BigInt, >-->]] 
-  extends examples.program.FactorialTrait[>-->] {
+trait FactorialMultipliedByIntReadFromConsoleTrait
+  [>-->[- _, + _]: Program : [>-->[- _, + _]] => Reading[BigInt, >-->]]
+    extends examples.program.FactorialTrait[>-->] {
 
   import implicitProgram._
 
@@ -27,19 +28,21 @@ trait FactorialMultipliedByIntReadFromConsoleTrait[>-->[- _, + _]: Program : [>-
   import pdbp.program.compositionOperator._
   import pdbp.program.constructionOperators._
 
-  def implicitlyConsumedInt[Z]: Z >--> BigInt = `z>-->r`
-      
-  lazy val factorialMultipliedByImplicit: BigInt >--> BigInt = (factorial & implicitlyConsumedInt) >--> multiply
+  def intReadFromConsole[Z]: Z >--> BigInt = `z>-->r`
+
+  lazy val factorialMultipliedByIntReadFromConsole
+    : BigInt >--> BigInt = (factorial & intReadFromConsole) >--> multiply
 
   override val consumer: BigInt >--> Unit =
-    write(s"the factorial value of the integer multiplied by the configured integer (read from the console) is")
+    write(
+      s"the factorial value of the integer multiplied by the configured integer (read from the console) is")
 
-  val factorialMultipliedByImplicitProgram: Unit >--> Unit =
+  val factorialMultipliedByIntReadFromConsoleProgram: Unit >--> Unit =
     producer >-->
-      factorialMultipliedByImplicit >-->
+      factorialMultipliedByIntReadFromConsole >-->
       consumer
 
-  def executeFactorialMultipliedByImplicitProgram: Unit =
-    execute(factorialMultipliedByImplicitProgram)        
-   
+  def executeFactorialMultipliedByIntReadFromConsoleProgram: Unit =
+    execute(factorialMultipliedByIntReadFromConsoleProgram)
+
 }

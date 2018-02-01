@@ -950,7 +950,7 @@ object implicits {
 }
 ```
 
-Finally we can define an *executable program*. Note: we use *program* here as code written using the `Dotty` programming language, and we use *executable* here as having an object with a *main* method.
+Finally we can define a *runnable program*. Note: we use *program* here as code written using the `Dotty` programming language, and we use *runnable* here as having an object with a *main* method.
 
 ```scala
 package examples.program.main.function
@@ -981,9 +981,9 @@ The code above mainly consists of bringing the necessary artifacts in scope, usi
  - an appropriate `import` of an `implicit`,
  - an appropriate `object` and an `import` that comes with it.
 
-####  executing `FactorialMain` using `functionProgram`
+####  running `FactorialMain` using `functionProgram`
 
-Ok, so let's *execute* our program.  Note: we use *execute* here as an alias for *sbt run*.
+Ok, so let's *run* our program.  Note: we use *run* here as an alias for *sbt run*.
 
 Let's try `100`.
 
@@ -1079,7 +1079,7 @@ Add the definitions above to `trait FibonacciTrait`.
 
 ###  `FibonacciMain` using `functionProgram`
 
-Finally we can define an *executable program*. Note: we use *program* here as code written using the `Dotty` programming language, and we use *executable* here as having an object with a *main* method.
+Finally we can define a *runnable program*.
 
 ```scala
 package examples.program.main.function
@@ -1110,9 +1110,9 @@ The code above mainly consists of bringing the necessary artifacts in scope, usi
  - an appropriate `import` of an `implicit`,
  - an appropriate `object` and an `import` that comes with it.
 
-####  executing `FibonacciMain` using `functionProgram`
+####  running `FibonacciMain` using `functionProgram`
 
-Ok, so let's *execute* our program.  Note: we use *execute* here as an alias for *sbt run*.
+Ok, so let's *run* our program.
 
 Let's try `10`, `20`, `30`, `35`, `40` ... .
 
@@ -1195,10 +1195,9 @@ We have a problem here.
 
 Where `` `(z&&(y&&x))>-->z` ``, `` `(z&&(y&&x))>-->y` ``,  and `` `(z&&(y&&x))>-->x` `` are what you expect. Add them to `trait Function` and add the corresponding generic product utilities to `object productUtils` in `package pdbp.utils`.
 
-####  executing optimized `FibonacciMain` using `functionProgram`
+####  running optimized `FibonacciMain` using `functionProgram`
 
-Ok, so let's *execute* our optimized program.  Note: we use *execute* here as an alias for *sbt run*.
-
+Ok, so let's *run* our optimized program.
 Let's try `100`.
 
 ```scala
@@ -1641,7 +1640,7 @@ The program `` `z>-->u` `` (`u` stands for `Unit`) is the one you expect. Add ``
 
 ###  `activeProgram`
 
-The simplest computation instance one can probably think of is the *active* instance (we use *active* as opposed to *reactive*) as defined below
+The simplest computation instance (and corresponding program instance) one can probably think of is the *active* instance (we use *active* as opposed to *reactive*) as defined below
 
 ```scala
 package pdbp.types.active
@@ -1687,7 +1686,7 @@ For `object activeProgram`, the definitions of the members of `trait Computation
 
 ###  `FactorialMain` using `activeProgram`
 
-We already stated that, for *type classes*, we are going to use the *dependency injection by* `import` technique. Type classes need imported `val`'s to be `implicit`. So let's move on and define an `implicit val` that we can `import` later on. 
+Let's move on and define an `implicit val` that we can `import` later on. 
 
 ```scala
 package pdbp.program.implicits.active
@@ -1701,7 +1700,7 @@ object implicits {
 }
 ```
 
-Finally we can define an *executable program*. Note: we use *program* here as code written using the `Dotty` programming language, and we use *executable* here as having an object with a *main* method.
+Finally we can define a *runnable program*.
 
 ```scala
 package examples.program.main.active
@@ -1732,9 +1731,9 @@ The code above mainly consists of bringing the necessary artifacts in scope, usi
  - an appropriate `import` of an `implicit`,
  - an appropriate `object` and an `import` that comes with it.
 
-####  executing `FactorialMain` using `activeProgram`
+####  running `FactorialMain` using `activeProgram`
 
-Ok, so let's *execute* our program.  Note: we use *execute* here as an alias for *sbt run*.
+Ok, so let's *run* our program.
 
 Let's try `100`.
 
@@ -1762,7 +1761,7 @@ We also have a problem here. The active program instance *is not stack safe*. Th
 
 ###  `FibonacciMain` using `actionProgram`
 
-Finally we can define an *executable program*. Note: we use *program* here as code written using the `Dotty` programming language, and we use *executable* here as having an object with a *main* method.
+Finally we can define a *runnable program*.
 
 ```scala
 package examples.program.main.active
@@ -1793,9 +1792,9 @@ The code above mainly consists of bringing the necessary artifacts in scope, usi
  - an appropriate `import` of an `implicit`,
  - an appropriate `object` and an `import` that comes with it.
 
-####  executing `FibonacciMain` using `functionProgram`
+####  running `FibonacciMain` using `functionProgram`
 
-Ok, so let's *execute* our program.  Note: we use *execute* here as an alias for *sbt run*.
+Ok, so let's *run* our program.
 
 Let's try `10`, `20`, `30`, `35`, `40` ... .
 
@@ -1842,9 +1841,9 @@ Note that the time *is* related to `fibonacci` itself.
 
 We have a problem here. 
 
-####  executing optimized `FibonacciMain` using `activeProgram`
+####  running optimized `FibonacciMain` using `activeProgram`
 
-Ok, so let's *execute* our optimized program.  Note: we use *execute* here as an alias for *sbt run*.
+Ok, so let's *run* our optimized program.
 
 Let's try `100`.
 
@@ -2059,7 +2058,7 @@ Note that
 
 ###  `activeFreeProgram`
 
-The next computation instance that we present is the *active free* instance (we use *active* as opposed to *reactive*) as defined below
+The next computation instance (and corresponding program instance) that we present is the *active free* instance (we use *active* as opposed to *reactive*) as defined below
 
 ```scala
 package pdbp.program.instances.active.free
@@ -2108,11 +2107,9 @@ object activeFreeTypes {
 }
 ```
 
-We are ready for our next program instance.
-
 ###  `FactorialMain` using `activeFreeProgram`
 
-We already stated that, for *type classes*, we are going to use the *dependency injection by* `import` technique. Type classes need imported `val`'s to be `implicit`. So let's move on and define an `implicit val` that we can `import` later on. 
+Let's move on and define an `implicit val` that we can `import` later on. 
 
 ```scala
 package pdbp.program.implicits.active.free
@@ -2127,7 +2124,7 @@ object implicits {
 }
 ```
 
-Finally we can define an *executable program*. Note: we use *program* here as code written using the `Dotty` programming language, and we use *executable* here as having an object with a *main* method.
+Finally we can define an *runnable program*.
 
 ```scala
 package examples.program.main.active.free
@@ -2156,9 +2153,9 @@ The code above mainly consists of bringing the necessary artifacts in scope, usi
  - an appropriate `import` of an `implicit`,
  - an appropriate `object` and an `import` that comes with it.
 
-####  executing `FactorialMain` using `activeFreeProgram`
+####  running `FactorialMain` using `activeFreeProgram`
 
-Ok, so let's *execute* our program.  Note: we use *execute* here as an alias for *sbt run*.
+Ok, so let's *run* our program.
 
 Let's try `1000`.
 
@@ -2174,7 +2171,7 @@ We have no problem here any more. The active free program instance *is stack saf
 
 ###  `FibonacciMain` using `actionFreeProgram`
 
-Finally we can define an *executable program*. Note: we use *program* here as code written using the `Dotty` programming language, and we use *executable* here as having an object with a *main* method.
+Finally we can define a *runnable program*.
 
 ```scala
 package examples.program.main.active.free
@@ -2205,9 +2202,9 @@ The code above mainly consists of bringing the necessary artifacts in scope, usi
  - an appropriate `import` of an `implicit`,
  - an appropriate `object` and an `import` that comes with it.
 
-####  executing `FibonacciMain` using `activeFreeProgram`
+####  running `FibonacciMain` using `activeFreeProgram`
 
-Ok, so let's *execute* our program (the `optimizedFibonacci` version).  Note: we use *execute* here as an alias for *sbt run*.
+Ok, so let's *run* our program (the `optimizedFibonacci` version).
 
 Let's try `1000`.
 
@@ -2272,6 +2269,28 @@ Implicit functions replace boilerplate repetition of `implicit` *parameters* by 
 
  - those globals are *immutable* `val`'s rather than *mutable* `var`'s (much less prone to harmful code),
  - more important, those globals are *only* available in bodies of members having a *type* that *reflects their availability*.
+
+### `Execution` revisited
+
+Consider
+
+```scala
+package pdbp.program
+
+import pdbp.types.implicitFunctionType.`I=>`
+
+trait Execution[>-->[- _, + _]] {
+
+  type Environment
+
+  implicit val environment: Environment
+
+  def execute(`u>-->u`: Unit >--> Unit): Environment `I=>` Unit  
+
+}
+```
+
+We changed the type of the member `execute` of `trait Execution` to have an *implicit function type* `` Environment `I=>` Unit `` for some type member `Environment`. `trait Execution` also has a `implicit val environment` of type `Environment`. You have to change all *usages* of `trait Execute` : an easy, slightly tedious exercise.
 
 ### `ReadingTransformer`
 
@@ -2361,7 +2380,237 @@ The type synonym `` `I=>` `` (and corresponding `RTM` and `` `>=RTK=>` `` ) abov
 
 You may wonder how it is possible that the definitions above are so simple. This is mainly the case because the compiler can turn value types into implicit function types whenever it *expects* them to be implicit function types.
 
-Finally, note that we changed the type of `execute`. You have to change the types of the `execute` member of `Execute` (and it's previous usages) accordingly: an easy, slightly tedious exercise.
+###  `activeReadingProgram`
+
+The next computation instance (and corresponding program instance) that we present is the *active reading* instance as defined below
+
+```scala
+package pdbp.program.instances.active.reading
+
+import pdbp.program.Program
+
+import pdbp.computation.Computation
+
+import pdbp.program.transformer.ProgramTransformer
+
+import pdbp.computation.transformer.ComputationTransformer
+
+import pdbp.computation.transformer.reading.ReadingTransformer
+
+import pdbp.types.active.activeTypes._
+
+import pdbp.program.implicits.active.implicits.implicitActiveProgram
+
+import pdbp.types.active.reading.activeReadingTypes._
+
+trait ActiveReadingProgram[R]
+    extends ReadingTransformer[R, Active]
+    with ComputationTransformer[Active, ActiveReading[R]]
+    with Computation[ActiveReading[R]]
+    with ProgramTransformer[`>-a->`, `>-ar->`[R]]
+    with Program[`>-ar->`[R]]
+```
+
+where
+
+```scala
+package pdbp.types.active.reading
+
+import pdbp.types.kleisli.kleisliFunctionType._
+
+import pdbp.types.active.activeTypes._
+
+import pdbp.computation.transformer.reading.readingTransformer._
+
+object activeReadingTypes {
+
+  type ActiveReading = [R] => ReadingTransformed[R, Active]
+
+  type `>-ar->`= [R] => Kleisli[ActiveReading[R]]
+
+}
+```
+
+Since there is a type parameter `R` involved, we defined the computation instance as `trait ActiveReadingProgram`. 
+
+Consider
+
+```scala
+package pdbp.program.instances.active.reading.int.console
+
+import pdbp.utils.runUtils._
+
+import pdbp.program.Program
+
+import pdbp.computation.Computation
+
+import pdbp.program.transformer.ProgramTransformer
+
+import pdbp.computation.transformer.ComputationTransformer
+
+import pdbp.computation.transformer.reading.ReadingTransformer
+
+import pdbp.types.active.activeTypes._
+
+import pdbp.program.implicits.active.implicits.implicitActiveProgram
+
+import pdbp.types.active.reading.int.activeIntReadingTypes._
+
+import pdbp.program.instances.active.reading.ActiveReadingProgram
+
+object activeIntReadingFromConsoleProgram
+    extends ActiveReadingProgram[BigInt]
+    with ReadingTransformer[BigInt, Active]()
+    with ComputationTransformer[Active, ActiveIntReading]()
+    with Computation[ActiveIntReading]
+    with ProgramTransformer[`>-a->`, `>-air->`]()
+    with Program[`>-air->`] {
+
+  implicit val implicitBigInt: BigInt = 
+    readInt("please type an integer (configured by reading from the console)")(())
+
+  import implicitProgram.{environment => environmentK}
+
+  override implicit val environment: Environment = {
+    (environmentK, implicitBigInt)
+  }
+
+}
+```
+
+where
+
+```scala
+package pdbp.types.active.reading.int
+
+import pdbp.types.kleisli.kleisliFunctionType._
+
+import pdbp.types.active.reading.activeReadingTypes._ 
+
+object activeIntReadingTypes {
+
+  type ActiveIntReading = ActiveReading[BigInt]
+
+  type `>-air->`= `>-ar->`[BigInt]
+
+}
+```
+
+If we instantiate `R` with a concrete type `BigInt`, and define `environment` to *implicitly* read an integer from the *console*, then we can define an `object activeIntReadingFromConsoleProgram`.
+
+### `factorialMultipliedByIntReadFromConsole` using `activeIntReadingFromConsoleProgram`
+
+Consider
+
+```scala
+package examples.program.reading.int.console
+
+import pdbp.program.Program
+
+import pdbp.program.reading.Reading
+
+trait FactorialMultipliedByIntReadFromConsoleTrait
+  [>-->[- _, + _]: Program : [>-->[- _, + _]] => Reading[BigInt, >-->]]
+    extends examples.program.FactorialTrait[>-->] {
+
+  import implicitProgram._
+
+  val implicitReading = implicitly[Reading[BigInt, >-->]]
+
+  import implicitReading._
+
+  import pdbp.program.compositionOperator._
+  import pdbp.program.constructionOperators._
+
+  def intReadFromConsole[Z]: Z >--> BigInt = `z>-->r`
+
+  lazy val factorialMultipliedByIntReadFromConsole
+    : BigInt >--> BigInt = (factorial & intReadFromConsole) >--> multiply
+
+  override val consumer: BigInt >--> Unit =
+    write(
+      s"the factorial value of the integer multiplied by the configured integer (read from the console) is")
+
+  val factorialMultipliedByIntReadFromConsoleProgram: Unit >--> Unit =
+    producer >-->
+      factorialMultipliedByIntReadFromConsole >-->
+      consumer
+
+  def executeFactorialMultipliedByIntReadFromConsoleProgram: Unit =
+    execute(factorialMultipliedByIntReadFromConsoleProgram)
+
+}
+```
+
+Now that we are concrete about *what* we are reading and *how* we are reading it, is natural to define an alias `intReadFromConsole` for the generic name `` `z>-->r` `` of the reading capability of our program.
+
+### `FactorialMultipliedByIntReadFromConsoleMain` using `activeIntReadingFromConsoleProgram`
+
+Let's move on and define an `implicit val` that we can `import` later on. 
+
+```scala
+package pdbp.program.implicits.active.reading.int.console
+
+object implicits {
+
+  import pdbp.program.instances.active.reading.int.console.activeIntReadingFromConsoleProgram
+
+  implicit val implicitActiveIntReadingFromConsoleProgram: activeIntReadingFromConsoleProgram.type =
+    activeIntReadingFromConsoleProgram
+
+}
+```
+
+Finally we can define a *runnable program*.
+
+```scala
+package examples.program.main.active.reading.int.console
+
+import pdbp.types.active.reading.int.activeIntReadingTypes.`>-air->`
+
+import pdbp.program.implicits.active.reading.int.console.implicits.implicitActiveIntReadingFromConsoleProgram
+
+import examples.program.FactorialTrait
+
+import examples.program.reading.int.console.FactorialMultipliedByIntReadFromConsoleTrait
+
+object FactorialMultipliedByIntReadFromConsoleMain {
+
+  object FactorialMultipliedByIntReadFromConsoleObject 
+    extends FactorialMultipliedByIntReadFromConsoleTrait[`>-air->`]() 
+    with FactorialTrait[`>-air->`]()
+
+  import FactorialMultipliedByIntReadFromConsoleObject._
+
+  def main(args: Array[String]): Unit = {
+
+    executeFactorialMultipliedByIntReadFromConsoleProgram
+
+  }
+
+}
+```
+
+The code above mainly consists of bringing the necessary artifacts in scope, using
+
+ - an appropriate `import` of an `implicit`,
+ - an appropriate `object` and an `import` that comes with it.
+
+#### running `FactorialMultipliedByIntReadFromConsoleMain` using `activeIntReadingFromConsoleProgram`
+
+Ok, so let's *execute* our program.
+
+Let's try `5` for the integer and `2` for the multiplication factor.
+
+```scala
+[info] Running examples.program.main.active.reading.int.console.FactorialMultipliedByIntReadFromConsoleMain
+please type an integer (configured by reading from the console)
+2
+please type an integer
+5
+the factorial value of the integer multiplied by the configured integer (read from the console) is 240
+[success] Total time: 8 s, completed Feb 1, 2018 3:11:44 PM
+```
 
 
 <!--
