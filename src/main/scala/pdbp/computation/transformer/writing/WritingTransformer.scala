@@ -80,4 +80,8 @@ trait WritingTransformer[W: CanBeWritten, M[+ _]: Computation]
     }
   }
 
+  override private[pdbp] val `w>-->u`: W `>=WTK=>` Unit = { w =>
+    resultM((w, ()))
+  }  
+
 }

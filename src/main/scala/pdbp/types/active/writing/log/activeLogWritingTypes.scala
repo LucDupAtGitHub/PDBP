@@ -1,4 +1,4 @@
-package pdbp.program.instances.writing.logging
+package pdbp.types.active.writing.log
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -9,6 +9,17 @@ package pdbp.program.instances.writing.logging
 //  \_\/       \______\/  \______\/      \_\/
 //                                           v1.0
 //  Program Description Based Programming Library
-//  author        Luc Duponcheel        2017-2018
 
-object activeLoggingProgram 
+import pdbp.types.kleisli.kleisliFunctionType._
+
+import pdbp.types.log.logTypes._
+
+import pdbp.types.active.writing.activeWritingTypes._ 
+
+object activeLogWritingTypes {
+
+  type ActiveLogWriting = ActiveWriting[Log]
+
+  type `>-alw->`= `>-aw->`[Log]
+
+}

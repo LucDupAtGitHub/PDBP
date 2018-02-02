@@ -2437,8 +2437,6 @@ Since there is a type parameter `R` involved, we defined the computation instanc
 Consider
 
 ```scala
-package pdbp.program.instances.active.reading.int.console
-
 import pdbp.utils.runUtils._
 
 import pdbp.program.Program
