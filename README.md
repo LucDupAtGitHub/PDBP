@@ -2615,7 +2615,7 @@ the factorial value of the integer multiplied by the integer read is 240
 
 ### Introduction
 
-In sections `Reading` we presented a *first* extra programming and computation capability. In this section we introduce the *next* extra programming capability: *writing*. In a way we already used some form of writing using *consumerss* that are used together with *producerss* to turn programs of type `Z >--> Y` into programs of type `Unit >--> Unit` that are ready to be *executed*. Think for example, of the writing capability of this section as *logging* related.
+In sections `Reading` we presented a *first* extra programming and computation capability. In this section we introduce the *next* extra programming capability: *writing*. In a way we already used some form of writing using *consumers* that are used together with *producers* to turn programs of type `Z >--> Y` into programs of type `Unit >--> Unit` that are ready to be *executed*. Think for example, of the writing capability of this section as *logging* related.
 
 Reading works with *any* type `R` involved. Writing requires the type `W` involved to have it's own *can be written capabilities* as explained in the following three sections.
 
@@ -2753,7 +2753,7 @@ trait Writing[W: CanBeWritten, >-->[- _, + _]] {
 
  - `writing` is a more complex version of `` `w>-->u` `` that does the actual writing.
  - the first `write` is a less complex version of `writing`
- - the second `write` is a specific one that will be explained later in the next section
+ - the second specific `write` is one that will be explained later in the next section
 
 ### `WritingTransformer`
 
@@ -2851,7 +2851,7 @@ Note that
  - `liftComputation` (related to `liftObject` and `result`) is defined in terms of `empty`,
  - `bind` is defined in terms of `append`.
 
-Also note that the definition of the second `write` is closely related to the specific `WritingTransformed` type. Anyway: both `write` methods are `private[pdbp]`.
+Also note that the definition of the second, specific `write` is closely related to the specific `WritingTransformed` type. Anyway: both `write` methods are `private[pdbp]`.
 
 ###  `ActiveWritingProgram`
 
@@ -2908,7 +2908,7 @@ Since there is a type parameter `W` involved, we defined the computation instanc
 
 ### `Logging`
 
-In the `Reading` section we, eventually, substituted `BigInt` for `R`. In the beginning of this section we mentioned logging. In this section we, eventually, substituted `Log` for `R`, where `Log` is defined below
+In the `Reading` section we, eventually, substituted `BigInt` for `R`. In the beginning of this section we mentioned *logging*. In this section we, eventually, substitute `Log` for `R`, where `Log` is defined below
 
 ```scala
 package pdbp.types.log
@@ -2920,7 +2920,7 @@ object logTypes {
 }
 ```
 
-`Log` is a `case class` *describing* the *side effect* of doing some kind of logging. From a *pure functional programming* point of view, there is nothing wrong with *effects* (descriptions of side effects). For being useful for *writing* we need to show that *logs can be written*. Below is the evidence
+`Log` is a `case class` *describing* the *side effect* of doing some kind of logging. From a *pure functional programming* point of view, there is nothing wrong with *effects* (descriptions of side effects). For being useful for *writing* we need evidence that *logs can be written*.
 
 ```scala
 package pdbp.program.writing.canbewritten.instances.log
@@ -2943,9 +2943,9 @@ private[pdbp] object logCanBeWritten extends CanBeWritten[Log] {
 }
 ```
 
-You may argue that `empty` and `append` are defined in terms of *impure*, *side-effectful* code. Recall that the code *describes* side effects, rather than *executing* them.
+You may argue that `empty` and `append` are defined in terms of *impure* code. Recall that the code *describes* side effects, rather than *executing* them.
 
-When *writing logs*, more formally, when substituting `Log` for `W in `Writing`, it makes sense to add a few extra members that are *logging* related.
+When *writing logs*, more formally, when substituting `Log` for `W` in `Writing`, it makes sense to add a few extra members that are *logging* related.
 
 ```scala
 package pdbp.program.writing.log
@@ -2971,7 +2971,7 @@ trait Logging[>-->[- _, + _]] extends Writing[Log, >-->] {
 ```
 
  - `info` does *info-level logging*,
- - `functionWithInfo` is a specific member that will be explained late in this section.
+ - `functionWithInfo` is a specific member (a combination of `function` and `info`) that will be explained late in this section.
 
 We could have defined members for other levels as well.
 
@@ -3073,7 +3073,7 @@ object activeLoggingTypes {
 }
 ```
 
-If we instantiate `W` with a concrete type `Log`, and define *how* to log information (using *sl4j*), then we can define an `object activeLoggingUsingSl4jProgram`. Note that the actual *execution* of the side effect happens in `execute`. Again we pushed the *impure* parts of our programs to the edges of the programs.
+If we instantiate `W` with a concrete type `Log`, and define *how* to log information (using *sl4j*), then we can define an `object activeLoggingUsingSl4jProgram`. Note that the actual *execution* of the logging side effect happens in `execute`. Again we pushed the *impure* parts of our programs to the edges of those programs.
 
 
 
