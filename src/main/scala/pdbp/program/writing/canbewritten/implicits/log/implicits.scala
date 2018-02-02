@@ -1,4 +1,4 @@
-package pdbp.program.reading
+package pdbp.program.writing.canbewritten.implicits.log
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -9,17 +9,12 @@ package pdbp.program.reading
 //  \_\/       \______\/  \______\/      \_\/
 //                                           v1.0
 //  Program Description Based Programming Library
-//  author        Luc Duponcheel        2017-2018
 
-import pdbp.program.Function
+import pdbp.program.writing.canbewritten.instances.log.logCanBeWritten
 
-import pdbp.program.Composition
+object implicits {
 
-trait Reading[R, >-->[- _, + _]] {
-  this: Function[>-->] & Composition[>-->] =>
-
-  def `u>-->r`: Unit >--> R = reading[Unit]
-
-  def reading[Z]: Z >--> R = compose(`z>-->u`, `u>-->r`)
+  implicit val implicitLogCanBeWritten: logCanBeWritten.type = 
+    logCanBeWritten
 
 }

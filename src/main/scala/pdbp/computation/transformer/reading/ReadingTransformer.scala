@@ -18,6 +18,7 @@ private[pdbp] object readingTransformer {
   type ReadingTransformed = [R, M[+ _]] => [+Z] => (R `I=>` M[Z])
 
 }
+
 import readingTransformer._
 
 import pdbp.types.kleisli.kleisliFunctionType._
@@ -47,8 +48,8 @@ private[pdbp] trait ReadingTransformer[R, M[+ _]: Computation]
     sys.error(
       "Impossible, since, for 'ReadingTransformer', 'liftComputation' is used nowhere")
 
-  import implicitComputation.{bind => bindM}
   import implicitComputation.{result => resultM}
+  import implicitComputation.{bind => bindM}
 
   override private[pdbp] def liftObject[Z]: Z => RTM[Z]  = { z =>
      resultM(z)
@@ -59,8 +60,8 @@ private[pdbp] trait ReadingTransformer[R, M[+ _]: Computation]
 
   private type `>=RTK=>` = Kleisli[RTM]   
         
-  import implicitProgram.{execute => executeK}
   import implicitProgram.{Environment => EnvironmentK}
+  import implicitProgram.{execute => executeK}
 
   override type Environment = EnvironmentK && R
 

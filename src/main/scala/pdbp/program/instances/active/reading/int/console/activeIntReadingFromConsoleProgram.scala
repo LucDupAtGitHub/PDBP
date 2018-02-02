@@ -38,13 +38,13 @@ object activeIntReadingFromConsoleProgram
     with ProgramTransformer[`>-a->`, `>-air->`]()
     with Program[`>-air->`] {
 
-  implicit val implicitBigInt: BigInt = 
-    readInt("please type an integer (configured by reading from the console)")(())
+  implicit val implicitIntReadFromConsole: BigInt = 
+    readInt("please type an integer to read")(())
 
   import implicitProgram.{environment => environmentK}
 
   override implicit val environment: Environment = {
-    (environmentK, implicitBigInt)
+    (environmentK, implicitIntReadFromConsole)
   }
 
 }

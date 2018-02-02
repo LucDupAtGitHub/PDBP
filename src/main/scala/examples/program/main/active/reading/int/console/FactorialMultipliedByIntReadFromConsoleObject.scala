@@ -17,19 +17,19 @@ import pdbp.program.implicits.active.reading.int.console.implicits.implicitActiv
 
 import examples.program.FactorialTrait
 
-import examples.program.reading.int.console.FactorialMultipliedByIntReadFromConsoleTrait
+import examples.program.reading.int.FactorialMultipliedByIntReadTrait
 
 object FactorialMultipliedByIntReadFromConsoleMain {
 
   object FactorialMultipliedByIntReadFromConsoleObject 
-    extends FactorialMultipliedByIntReadFromConsoleTrait[`>-air->`]() 
+    extends FactorialMultipliedByIntReadTrait[`>-air->`]() 
     with FactorialTrait[`>-air->`]()
 
   import FactorialMultipliedByIntReadFromConsoleObject._
 
   def main(args: Array[String]): Unit = {
 
-    executeFactorialMultipliedByIntReadFromConsoleProgram
+    executeFactorialMultipliedByIntReadProgram
 
   }
 

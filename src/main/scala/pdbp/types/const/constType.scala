@@ -1,4 +1,4 @@
-package pdbp.program.reading
+package pdbp.types.const
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -9,17 +9,9 @@ package pdbp.program.reading
 //  \_\/       \______\/  \______\/      \_\/
 //                                           v1.0
 //  Program Description Based Programming Library
-//  author        Luc Duponcheel        2017-2018
 
-import pdbp.program.Function
+object constType {
 
-import pdbp.program.Composition
-
-trait Reading[R, >-->[- _, + _]] {
-  this: Function[>-->] & Composition[>-->] =>
-
-  def `u>-->r`: Unit >--> R = reading[Unit]
-
-  def reading[Z]: Z >--> R = compose(`z>-->u`, `u>-->r`)
+  type Const[X] = [+Z] => X
 
 }

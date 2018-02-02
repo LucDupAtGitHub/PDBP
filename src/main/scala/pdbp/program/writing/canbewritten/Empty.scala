@@ -1,4 +1,4 @@
-package pdbp.program.reading
+package pdbp.program.writing.canbewritten
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -9,17 +9,19 @@ package pdbp.program.reading
 //  \_\/       \______\/  \______\/      \_\/
 //                                           v1.0
 //  Program Description Based Programming Library
-//  author        Luc Duponcheel        2017-2018
 
-import pdbp.program.Function
+import pdbp.types.const.constType._
 
-import pdbp.program.Composition
+import pdbp.lifting.LiftObject
 
-trait Reading[R, >-->[- _, + _]] {
-  this: Function[>-->] & Composition[>-->] =>
+private[pdbp] trait Empty[W] 
+  extends LiftObject[Const[W]] {
 
-  def `u>-->r`: Unit >--> R = reading[Unit]
+  private[pdbp] val empty: W
 
-  def reading[Z]: Z >--> R = compose(`z>-->u`, `u>-->r`)
+  override private[pdbp] def liftObject[Z]: Z => W = { _ =>
+    empty
+  }  
 
 }
+

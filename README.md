@@ -2238,9 +2238,9 @@ import pdbp.program.Composition
 trait Reading[R, >-->[- _, + _]] {
   this: Function[>-->] & Composition[>-->] =>
 
-  def `u>-->r`: Unit >--> R = `z>-->r`[Unit]
+  def `u>-->r`: Unit >--> R = reading[Unit]
 
-  def `z>-->r`[Z]: Z >--> R = compose(`z>-->u`, `u>-->r`)
+  def reading[Z]: Z >--> R = compose(`z>-->u`, `u>-->r`)
 
 }
 ```
@@ -2249,12 +2249,12 @@ trait Reading[R, >-->[- _, + _]] {
 
 `trait Reading` has another member 
 
- - `` `z>-->r` `` is a more complex version of `` `z>-->r` ``
+ - `reading` is a more complex version of `` `u>-->r` ``
 
 Note that
 
- - `` `z>-->r` `` can be defined in terms of `` `u>-->r` ``, `compose` and `` `z>-->u` ``
- - `` `u>-->r` `` can be defined in terms of `` `z>-->r` `` by using `Unit` for `Z`
+ - `reading` can be defined in terms of `` `u>-->r` ``, `compose` and `` `z>-->u` ``
+ - `` `u>-->r` `` can be defined in terms of `reading` by using `Unit` for `Z`
 
 
 `` `z>-->u` `` is the program you expect. Add it to `trait Function` and add the corresponding generic function utility to `object functionUtils` in `package pdbp.util` (if not already there).
@@ -2306,6 +2306,7 @@ private[pdbp] object readingTransformer {
   type ReadingTransformed = [R, M[+ _]] => [+Z] => (R `I=>` M[Z])
 
 }
+
 import readingTransformer._
 
 import pdbp.types.kleisli.kleisliFunctionType._
@@ -2335,8 +2336,8 @@ private[pdbp] trait ReadingTransformer[R, M[+ _]: Computation]
     sys.error(
       "Impossible, since, for 'ReadingTransformer', 'liftComputation' is used nowhere")
 
-  import implicitComputation.{bind => bindM}
   import implicitComputation.{result => resultM}
+  import implicitComputation.{bind => bindM}
 
   override private[pdbp] def liftObject[Z]: Z => RTM[Z]  = { z =>
      resultM(z)
@@ -2347,8 +2348,8 @@ private[pdbp] trait ReadingTransformer[R, M[+ _]: Computation]
 
   private type `>=RTK=>` = Kleisli[RTM]   
         
-  import implicitProgram.{execute => executeK}
   import implicitProgram.{Environment => EnvironmentK}
+  import implicitProgram.{execute => executeK}
 
   override type Environment = EnvironmentK && R
 
@@ -2466,13 +2467,13 @@ object activeIntReadingFromConsoleProgram
     with ProgramTransformer[`>-a->`, `>-air->`]()
     with Program[`>-air->`] {
 
-  implicit val implicitBigInt: BigInt = 
-    readInt("please type an integer (configured by reading from the console)")(())
+  implicit val implicitIntReadFromConsole: BigInt = 
+    readInt("please type an integer to read")(())
 
   import implicitProgram.{environment => environmentK}
 
   override implicit val environment: Environment = {
-    (environmentK, implicitBigInt)
+    (environmentK, implicitIntReadFromConsole)
   }
 
 }
@@ -2498,18 +2499,16 @@ object activeIntReadingTypes {
 
 If we instantiate `R` with a concrete type `BigInt`, and define `environment` to *implicitly* read an integer from the *console*, then we can define an `object activeIntReadingFromConsoleProgram`.
 
-### `factorialMultipliedByIntReadFromConsole` using `activeIntReadingFromConsoleProgram`
+### `factorialMultipliedByIntRead` using `activeIntReadingFromConsoleProgram`
 
 Consider
 
 ```scala
-package examples.program.reading.int.console
-
 import pdbp.program.Program
 
 import pdbp.program.reading.Reading
 
-trait FactorialMultipliedByIntReadFromConsoleTrait
+trait FactorialMultipliedByIntReadTrait
   [>-->[- _, + _]: Program : [>-->[- _, + _]] => Reading[BigInt, >-->]]
     extends examples.program.FactorialTrait[>-->] {
 
@@ -2522,27 +2521,27 @@ trait FactorialMultipliedByIntReadFromConsoleTrait
   import pdbp.program.compositionOperator._
   import pdbp.program.constructionOperators._
 
-  def intReadFromConsole[Z]: Z >--> BigInt = `z>-->r`
+  def readingInt[Z]: Z >--> BigInt = reading
 
-  lazy val factorialMultipliedByIntReadFromConsole
-    : BigInt >--> BigInt = (factorial & intReadFromConsole) >--> multiply
+  lazy val factorialMultipliedByIntRead
+    : BigInt >--> BigInt = (factorial & readingInt) >--> multiply
 
   override val consumer: BigInt >--> Unit =
     write(
-      s"the factorial value of the integer multiplied by the configured integer (read from the console) is")
+      s"the factorial value of the integer multiplied by the integer read is")
 
-  val factorialMultipliedByIntReadFromConsoleProgram: Unit >--> Unit =
+  val factorialMultipliedByIntReadProgram: Unit >--> Unit =
     producer >-->
-      factorialMultipliedByIntReadFromConsole >-->
+      factorialMultipliedByIntRead >-->
       consumer
 
-  def executeFactorialMultipliedByIntReadFromConsoleProgram: Unit =
-    execute(factorialMultipliedByIntReadFromConsoleProgram)
+  def executeFactorialMultipliedByIntReadProgram: Unit =
+    execute(factorialMultipliedByIntReadProgram)
 
 }
 ```
 
-Now that we are concrete about *what* we are reading and *how* we are reading it, is natural to define an alias `intReadFromConsole` for the generic name `` `z>-->r` `` of the reading capability of our program.
+Now that we are concrete about *what* we are reading, is natural to define an alias `readingInt` for the generic name `reading` of the reading capability of our program. The fact that, for `activeIntReadingFromConsoleProgram` (where we were concrete about the *how* we are reading), `readingInt` makes use of `implicit` functions is an implementation detail (in many ways, a very important one) but we do not reflect that in the name (as we did with the name `implicitIntReadFromConsole` in `activeIntReadingFromConsoleProgram`).
 
 ### `FactorialMultipliedByIntReadFromConsoleMain` using `activeIntReadingFromConsoleProgram`
 
@@ -2604,11 +2603,11 @@ Let's try `5` for the `factorial` argument and `2` for the `multiply` factor.
 
 ```scala
 [info] Running examples.program.main.active.reading.int.console.FactorialMultipliedByIntReadFromConsoleMain
-please type an integer (configured by reading from the console)
+please type an integer to read
 2
 please type an integer
 5
-the factorial value of the integer multiplied by the configured integer (read from the console) is 240
+the factorial value of the integer multiplied by the integer read is 240
 [success] Total time: 8 s, completed Feb 1, 2018 3:11:44 PM
 ```
 

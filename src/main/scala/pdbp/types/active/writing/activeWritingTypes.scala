@@ -1,4 +1,4 @@
-package pdbp.program.reading
+package pdbp.types.active.writing
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -9,17 +9,17 @@ package pdbp.program.reading
 //  \_\/       \______\/  \______\/      \_\/
 //                                           v1.0
 //  Program Description Based Programming Library
-//  author        Luc Duponcheel        2017-2018
 
-import pdbp.program.Function
+import pdbp.types.kleisli.kleisliFunctionType._
 
-import pdbp.program.Composition
+import pdbp.types.active.activeTypes._
 
-trait Reading[R, >-->[- _, + _]] {
-  this: Function[>-->] & Composition[>-->] =>
+import pdbp.computation.transformer.writing.writingTransformer._
 
-  def `u>-->r`: Unit >--> R = reading[Unit]
+object activeWritingTypes {
 
-  def reading[Z]: Z >--> R = compose(`z>-->u`, `u>-->r`)
+  type ActiveWriting = [W] => WritingTransformed[W, Active]
+
+  type `>-aw->`= [W] => Kleisli[ActiveWriting[W]]
 
 }

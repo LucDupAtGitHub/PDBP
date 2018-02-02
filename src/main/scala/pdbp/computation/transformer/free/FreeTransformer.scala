@@ -63,8 +63,8 @@ private[pdbp] trait FreeTransformer[M[+ _]: Computation]
   private type `>=FTK=>` = Kleisli[FTM]
 
   import implicitComputation.{result => resultM}
-  import implicitProgram.{execute => executeK}
   import implicitProgram.{Environment => EnvironmentK}
+  import implicitProgram.{execute => executeK}
 
   override type Environment = EnvironmentK
 

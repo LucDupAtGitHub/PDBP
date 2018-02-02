@@ -24,14 +24,21 @@ trait Function[>-->[- _, + _]] {
   def `z>-->z`[Z]: Z >--> Z =
     function(`z=>z`)  
 
+  def `w=>(z>-->w)`[W, Z]: W => (Z >--> W) = { w =>
+    function(`w=>(z=>w)`(w))
+  }     
+
   def `(y&&x)>-->(y&&x)`[Y, X]: (Y && X) >--> (Y && X) =
     function(`(y&&x)=>(y&&x)`)
 
   def `(z&&y)>-->z`[Z, Y]: (Z && Y) >--> Z =
-    function(`(z&&y)=>z`)
+    function(`(z&&y)=>z`)   
 
   def `(z&&y)>-->y`[Z, Y]: (Z && Y) >--> Y =
     function(`(z&&y)=>y`)
+
+  def `(u&&y)>-->y`[Y]: (Unit && Y) >--> Y =
+    `(z&&y)>-->y` 
 
   def `((z&&y)&&x)>-->(y&&x)`[Z, Y, X]: ((Z && Y) && X) >--> (Y && X) =
     function(`((z&&y)&&x)=>(y&&x)`)      

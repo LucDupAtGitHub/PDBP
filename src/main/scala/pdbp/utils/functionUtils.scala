@@ -31,4 +31,13 @@ object functionUtils {
     z
   }  
 
+  def `m=>m`[M]: M => M = { m =>
+    m
+  }  
+
+  def `w=>(z=>w)`[W, Z]: W => (Z => W) = { w =>
+    _ =>
+      w
+  }  
+
 }
