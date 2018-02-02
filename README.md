@@ -2495,7 +2495,7 @@ object activeIntReadingTypes {
 }
 ```
 
-If we instantiate `R` with a concrete type `BigInt`, and define `environment` to *implicitly* read an integer from the *console*, then we can define an `object activeIntReadingFromConsoleProgram`.
+If we instantiate `R` with a concrete type `BigInt`, and define *how* to read an integer (*implicitly* from the *console*), then we can define an `object activeIntReadingFromConsoleProgram`.
 
 ### `factorialMultipliedByIntRead` using `activeIntReadingFromConsoleProgram`
 
@@ -2903,6 +2903,181 @@ object activeWritingTypes {
 
 }
 ```
+
+Since there is a type parameter `W` involved, we defined the computation instance as `trait ActiveWritingProgram`.
+
+### `Logging`
+
+In the `Reading` section we, eventually, substituted `BigInt` for `R`. In the beginning of this section we mentioned logging. In this section we, eventually, substituted `Log` for `R`, where `Log` is defined below
+
+```scala
+package pdbp.types.log
+
+object logTypes {
+
+  case class Log(effect: Unit => Unit)
+
+}
+```
+
+`Log` is a `case class` *describing* the *side effect* of doing some kind of logging. From a *pure functional programming* point of view, there is nothing wrong with *effects* (descriptions of side effects). For being useful for *writing* we need to show that *logs can be written*. Below is the evidence
+
+```scala
+package pdbp.program.writing.canbewritten.instances.log
+
+import pdbp.types.log.logTypes._
+
+import pdbp.utils.productUtils._
+
+import pdbp.program.writing.canbewritten.CanBeWritten
+
+private[pdbp] object logCanBeWritten extends CanBeWritten[Log] {
+
+  override private[pdbp] val empty: Log =
+    Log(effect = { _ => () })
+
+  override private[pdbp] val append: Log && Log => Log = { (l1, l2) =>
+    Log(effect = { _ => { l1.effect(()) ; l2.effect(()) } } )
+  }   
+
+}
+```
+
+You may argue that `empty` and `append` are defined in terms of *impure*, *side-effectful* code. Recall that the code *describes* side effects, rather than *executing* them.
+
+When *writing logs*, more formally, when substituting `Log` for `W in `Writing`, it makes sense to add a few extra members that are *logging* related.
+
+```scala
+package pdbp.program.writing.log
+
+import pdbp.types.log.logTypes._
+
+import pdbp.program.Function
+
+import pdbp.program.Composition
+
+import pdbp.program.Construction
+
+import pdbp.program.writing.Writing
+
+trait Logging[>-->[- _, + _]] extends Writing[Log, >-->] {
+  this: Function[>-->] & Composition[>-->] & Construction[>-->] => 
+
+  def info[Z, Y](s: String): (Z >--> Y) => (Z >--> Y)
+
+  def functionWithInfo[Z, Y](s: String): (Z => Y) => (Z >--> Y)
+
+}
+```
+
+ - `info` does *info-level logging*,
+ - `functionWithInfo` is a specific member that will be explained late in this section.
+
+We could have defined members for other levels as well.
+
+Consider
+
+```scala
+package pdbp.program.instances.active.writing.log.sl4j
+
+import pdbp.types.implicitFunctionType.`I=>`
+
+import pdbp.types.log.logTypes._
+
+import org.slf4j.LoggerFactory
+
+import pdbp.program.Program
+
+import pdbp.computation.Computation
+
+import pdbp.program.writing.Writing
+
+import pdbp.program.writing.log.Logging
+
+import pdbp.program.transformer.ProgramTransformer
+
+import pdbp.computation.transformer.ComputationTransformer
+
+import pdbp.computation.transformer.writing.WritingTransformer
+
+import pdbp.types.active.activeTypes._
+
+import pdbp.program.implicits.active.implicits.implicitActiveProgram
+
+import pdbp.types.active.writing.log.activeLoggingTypes._
+
+import pdbp.program.instances.active.writing.ActiveWritingProgram
+
+import pdbp.program.writing.canbewritten.implicits.log.implicits.implicitLogCanBeWritten
+
+object activeLoggingUsingSl4jProgram
+    extends ActiveWritingProgram[Log]
+    with WritingTransformer[Log, Active]()
+    with ComputationTransformer[Active, ActiveLogging]()
+    with Computation[ActiveLogging]
+    with ProgramTransformer[`>-a->`, `>-al->`]()
+    with Program[`>-al->`] 
+    with Writing[Log, `>-al->`]() 
+    with Logging[`>-al->`] {
+
+  val logger = LoggerFactory.getLogger(this.getClass)
+
+  import logger._
+  
+  override def info[Z, Y](s : String): (Z `>-al->` Y) => (Z `>-al->` Y) =
+    write(Log { _ => info(s) } )
+
+  override def functionWithInfo[Z, Y](s : String): (Z => Y) => (Z `>-al->` Y) = {`z=>y` =>
+    write({ z => (Log { _ => logger.info(s"$s($z)") }, `z=>y`(z) )})
+  }    
+  
+  import implicitComputation.{result => resultM}
+  import implicitComputation.{bind => bindM}
+
+  import implicitProgram.{environment => environmentK}
+  import implicitProgram.{execute => executeK}
+
+  override implicit val environment: Environment = {
+    environmentK
+  }
+
+  override def execute(`u>-al->u`: Unit `>-al->` Unit): Environment `I=>` Unit = {
+    executeK { u: Unit =>
+      bindM(`u>-al->u`(u), { (log, u) =>
+        log.effect(())
+        resultM(u)
+      })
+    } 
+  }
+
+}
+```
+
+where
+
+```scala
+package pdbp.types.active.writing.log
+
+import pdbp.types.kleisli.kleisliFunctionType._
+
+import pdbp.types.log.logTypes._
+
+import pdbp.types.active.writing.activeWritingTypes._ 
+
+object activeLoggingTypes {
+
+  type ActiveLogging = ActiveWriting[Log]
+
+  type `>-al->`= `>-aw->`[Log]
+
+}
+```
+
+If we instantiate `W` with a concrete type `Log`, and define *how* to log information (using *sl4j*), then we can define an `object activeLoggingUsingSl4jProgram`. Note that the actual *execution* of the side effect happens in `execute`. Again we pushed the *impure* parts of our programs to the edges of the programs.
+
+
+
+
 
 
 

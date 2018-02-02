@@ -19,10 +19,10 @@ import pdbp.program.writing.canbewritten.CanBeWritten
 private[pdbp] object logCanBeWritten extends CanBeWritten[Log] {
 
   override private[pdbp] val empty: Log =
-    Log(effect = { _ => () })
+    Log { _ => () }
 
   override private[pdbp] val append: Log && Log => Log = { (l1, l2) =>
-    Log(effect = { _ => { l1.effect(()) ; l2.effect(()) } } )
+    Log { _ => { l1.effect(()) ; l2.effect(()) } }
   }   
 
 }

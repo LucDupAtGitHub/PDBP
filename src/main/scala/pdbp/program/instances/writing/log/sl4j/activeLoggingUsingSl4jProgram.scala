@@ -81,5 +81,4 @@ object activeLoggingUsingSl4jProgram
     } 
   }
 
-
 }
