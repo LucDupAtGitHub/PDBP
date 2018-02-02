@@ -31,12 +31,12 @@ import pdbp.types.active.reading.int.activeIntReadingTypes._
 import pdbp.program.instances.active.reading.ActiveReadingProgram
 
 object activeIntReadingFromConsoleProgram
-    extends ActiveReadingProgram[BigInt]
-    with ReadingTransformer[BigInt, Active]()
+    extends Computation[ActiveIntReading]
+    with Program[`>-air->`]
+    with ActiveReadingProgram[BigInt]
     with ComputationTransformer[Active, ActiveIntReading]()
-    with Computation[ActiveIntReading]
     with ProgramTransformer[`>-a->`, `>-air->`]()
-    with Program[`>-air->`] {
+    with ReadingTransformer[BigInt, Active]() {
 
   implicit val implicitIntReadFromConsole: BigInt = 
     readInt("please type an integer to read")(())

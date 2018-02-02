@@ -39,10 +39,10 @@ import pdbp.program.transformer.ProgramTransformer
 import pdbp.computation.transformer.ComputationTransformer
 
 private[pdbp] trait FreeTransformer[M[+ _]: Computation]
-    extends ComputationTransformer[M, FreeTransformed[M]]
-    with Computation[FreeTransformed[M]]
-    with ProgramTransformer[Kleisli[M], Kleisli[FreeTransformed[M]]]
-    with Program[Kleisli[FreeTransformed[M]]] {
+    extends Computation[FreeTransformed[M]]
+    with Program[Kleisli[FreeTransformed[M]]]
+    with ComputationTransformer[M, FreeTransformed[M]]
+    with ProgramTransformer[Kleisli[M], Kleisli[FreeTransformed[M]]] {
 
   private type FTM = FreeTransformed[M]
 

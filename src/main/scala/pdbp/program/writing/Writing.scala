@@ -10,6 +10,8 @@ package pdbp.program.writing
 //                                           v1.0
 //  Program Description Based Programming Library
 
+import pdbp.utils.productUtils._
+
 import pdbp.program.Function
 
 import pdbp.program.Composition
@@ -23,11 +25,13 @@ trait Writing[W: CanBeWritten, >-->[- _, + _]] {
 
   private[pdbp] val `w>-->u`: W >--> Unit
 
-  private[pdbp] def writing[Z, Y](`z>-->w`: Z >--> W): ((Z >--> Y) => (Z >--> Y)) = { `z>-->y` =>
+  private[pdbp] def writing[Z, Y](`z>-->w`: Z >--> W): (Z >--> Y) => (Z >--> Y) = { `z>-->y` =>
     compose(product(compose(`z>-->w`, `w>-->u`), `z>-->y`), `(u&&y)>-->y`) 
   }  
 
-  private[pdbp] def writing[Z, Y](w: => W): (Z >--> Y) => (Z >--> Y) = 
-    writing(`w=>(z>-->w)`(w)) 
+  private[pdbp] def write[Z, Y](w: W): (Z >--> Y) => (Z >--> Y) = 
+    writing(`w=>(z>-->w)`(w))     
+
+  private[pdbp] def write[Z, Y](`z=>(w,y)`: Z => W && Y): Z >--> Y
 
 }

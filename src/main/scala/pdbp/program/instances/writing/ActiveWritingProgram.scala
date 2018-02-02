@@ -27,9 +27,9 @@ import pdbp.program.implicits.active.implicits.implicitActiveProgram
 import pdbp.types.active.writing.activeWritingTypes._
 
 trait ActiveWritingProgram[W]
-    extends WritingTransformer[W, Active]
-    with ComputationTransformer[Active, ActiveWriting[W]]
-    with Computation[ActiveWriting[W]]
-    with ProgramTransformer[`>-a->`, `>-aw->`[W]]
+    extends Computation[ActiveWriting[W]]
     with Program[`>-aw->`[W]]
+    with ProgramTransformer[`>-a->`, `>-aw->`[W]]
+    with ComputationTransformer[Active, ActiveWriting[W]]
+    with WritingTransformer[W, Active]
 

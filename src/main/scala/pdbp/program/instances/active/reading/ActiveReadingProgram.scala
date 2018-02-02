@@ -27,9 +27,9 @@ import pdbp.program.implicits.active.implicits.implicitActiveProgram
 import pdbp.types.active.reading.activeReadingTypes._
 
 trait ActiveReadingProgram[R]
-    extends ReadingTransformer[R, Active]
-    with ComputationTransformer[Active, ActiveReading[R]]
-    with Computation[ActiveReading[R]]
-    with ProgramTransformer[`>-a->`, `>-ar->`[R]]
+    extends Computation[ActiveReading[R]]
     with Program[`>-ar->`[R]]
+    with ComputationTransformer[Active, ActiveReading[R]]
+    with ProgramTransformer[`>-a->`, `>-ar->`[R]]
+    with ReadingTransformer[R, Active]
 

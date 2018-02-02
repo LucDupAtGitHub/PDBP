@@ -40,11 +40,11 @@ import pdbp.program.writing.canbewritten.CanBeWritten
 import pdbp.program.writing.Writing
 
 trait WritingTransformer[W: CanBeWritten, M[+ _]: Computation]
-    extends ComputationTransformer[M, WritingTransformed[W, M]]
-    with Computation[WritingTransformed[W, M]]
-    with ProgramTransformer[Kleisli[M], Kleisli[WritingTransformed[W, M]]]
+    extends Computation[WritingTransformed[W, M]]
     with Program[Kleisli[WritingTransformed[W, M]]]
-    with Writing[W, Kleisli[WritingTransformed[W, M]]] {
+    with Writing[W, Kleisli[WritingTransformed[W, M]]]
+    with ComputationTransformer[M, WritingTransformed[W, M]]
+    with ProgramTransformer[Kleisli[M], Kleisli[WritingTransformed[W, M]]] {
 
   private type WTM = WritingTransformed[W, M]      
 
@@ -83,5 +83,9 @@ trait WritingTransformer[W: CanBeWritten, M[+ _]: Computation]
   override private[pdbp] val `w>-->u`: W `>=WTK=>` Unit = { w =>
     resultM((w, ()))
   }  
+
+  override def write[Z, Y](`z=>(w&&y)`: Z => (W && Y)): Z `>=WTK=>` Y = { z =>
+    resultM(`z=>(w&&y)`(z))  
+  }
 
 }

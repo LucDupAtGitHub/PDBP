@@ -21,11 +21,11 @@ import examples.program.reading.int.FactorialMultipliedByIntReadTrait
 
 object FactorialMultipliedByIntReadFromConsoleMain {
 
-  object FactorialMultipliedByIntReadFromConsoleObject 
-    extends FactorialMultipliedByIntReadTrait[`>-air->`]() 
-    with FactorialTrait[`>-air->`]()
+  object factorialMultipliedByIntReadFromConsoleObject 
+    extends FactorialTrait[`>-air->`]()
+    with FactorialMultipliedByIntReadTrait[`>-air->`]() 
 
-  import FactorialMultipliedByIntReadFromConsoleObject._
+  import factorialMultipliedByIntReadFromConsoleObject._
 
   def main(args: Array[String]): Unit = {
 

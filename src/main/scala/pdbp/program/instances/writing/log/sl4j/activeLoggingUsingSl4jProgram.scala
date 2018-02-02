@@ -1,4 +1,4 @@
-package pdbp.program.instances.writing.log.sl4j
+package pdbp.program.instances.active.writing.log.sl4j
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,15 +11,19 @@ package pdbp.program.instances.writing.log.sl4j
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
+import pdbp.types.implicitFunctionType.`I=>`
+
 import pdbp.types.log.logTypes._
 
 import org.slf4j.LoggerFactory
 
 import pdbp.program.Program
 
+import pdbp.computation.Computation
+
 import pdbp.program.writing.Writing
 
-import pdbp.computation.Computation
+import pdbp.program.writing.log.Logging
 
 import pdbp.program.transformer.ProgramTransformer
 
@@ -31,31 +35,51 @@ import pdbp.types.active.activeTypes._
 
 import pdbp.program.implicits.active.implicits.implicitActiveProgram
 
-import pdbp.types.active.writing.log.activeLogWritingTypes._
+import pdbp.types.active.writing.log.activeLoggingTypes._
 
 import pdbp.program.instances.active.writing.ActiveWritingProgram
 
 import pdbp.program.writing.canbewritten.implicits.log.implicits.implicitLogCanBeWritten
 
-object activeLogWritingUsingSl4jProgram
+object activeLoggingUsingSl4jProgram
     extends ActiveWritingProgram[Log]
     with WritingTransformer[Log, Active]()
-    with ComputationTransformer[Active, ActiveLogWriting]()
-    with Computation[ActiveLogWriting]
-    with ProgramTransformer[`>-a->`, `>-alw->`]()
-    with Program[`>-alw->`] 
-    with Writing[Log, `>-alw->`]() {
+    with ComputationTransformer[Active, ActiveLogging]()
+    with Computation[ActiveLogging]
+    with ProgramTransformer[`>-a->`, `>-al->`]()
+    with Program[`>-al->`] 
+    with Writing[Log, `>-al->`]() 
+    with Logging[`>-al->`] {
 
-  def logger = LoggerFactory.getLogger(this.getClass)
+  val logger = LoggerFactory.getLogger(this.getClass)
+
+  import logger._
   
-  def info[Z, Y]: String => (Z `>-alw->` Y) => (Z `>-alw->` Y) = { s =>
-    writing(Log(effect = { _ => logger.info(s) }))
-  }
+  override def info[Z, Y](s : String): (Z `>-al->` Y) => (Z `>-al->` Y) =
+    write(Log { _ => info(s) } )
+
+  override def functionWithInfo[Z, Y](s : String): (Z => Y) => (Z `>-al->` Y) = {`z=>y` =>
+    write({ z => (Log { _ => logger.info(s"$s($z)") }, `z=>y`(z) )})
+  }    
   
+  import implicitComputation.{result => resultM}
+  import implicitComputation.{bind => bindM}
+
   import implicitProgram.{environment => environmentK}
+  import implicitProgram.{execute => executeK}
 
   override implicit val environment: Environment = {
     environmentK
   }
+
+  override def execute(`u>-al->u`: Unit `>-al->` Unit): Environment `I=>` Unit = {
+    executeK { u: Unit =>
+      bindM(`u>-al->u`(u), { (log, u) =>
+        log.effect(())
+        resultM(u)
+      })
+    } 
+  }
+
 
 }

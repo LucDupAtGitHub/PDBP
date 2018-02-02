@@ -36,11 +36,11 @@ import pdbp.computation.transformer.ComputationTransformer
 import pdbp.program.reading.Reading
 
 private[pdbp] trait ReadingTransformer[R, M[+ _]: Computation]
-    extends ComputationTransformer[M, ReadingTransformed[R, M]] 
-    with Computation[ReadingTransformed[R, M]]
-    with ProgramTransformer[Kleisli[M], Kleisli[ReadingTransformed[R, M]]]
+    extends Computation[ReadingTransformed[R, M]]
     with Program[Kleisli[ReadingTransformed[R, M]]]
-    with Reading[R, Kleisli[ReadingTransformed[R, M]]] {
+    with Reading[R, Kleisli[ReadingTransformed[R, M]]]
+    with ComputationTransformer[M, ReadingTransformed[R, M]] 
+    with ProgramTransformer[Kleisli[M], Kleisli[ReadingTransformed[R, M]]] {
 
   private type RTM = ReadingTransformed[R, M]      
 

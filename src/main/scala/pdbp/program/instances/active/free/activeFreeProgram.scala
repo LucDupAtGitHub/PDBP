@@ -27,8 +27,8 @@ import pdbp.program.implicits.active.implicits.implicitActiveProgram
 import pdbp.types.active.free.activeFreeTypes._
 
 object activeFreeProgram
-    extends FreeTransformer[Active]()
-    with ComputationTransformer[Active, ActiveFree]()
-    with Computation[ActiveFree]
-    with ProgramTransformer[`>-a->`, `>-af->`]()
+    extends Computation[ActiveFree]
     with Program[`>-af->`]
+    with ComputationTransformer[Active, ActiveFree]()
+    with ProgramTransformer[`>-a->`, `>-af->`]()
+    with FreeTransformer[Active]()

@@ -1991,10 +1991,10 @@ import pdbp.program.transformer.ProgramTransformer
 import pdbp.computation.transformer.ComputationTransformer
 
 private[pdbp] trait FreeTransformer[M[+ _]: Computation]
-    extends ComputationTransformer[M, FreeTransformed[M]]
-    with Computation[FreeTransformed[M]]
-    with ProgramTransformer[Kleisli[M], Kleisli[FreeTransformed[M]]]
-    with Program[Kleisli[FreeTransformed[M]]] {
+    extends Computation[FreeTransformed[M]]
+    with Program[Kleisli[FreeTransformed[M]]]
+    with ComputationTransformer[M, FreeTransformed[M]]
+    with ProgramTransformer[Kleisli[M], Kleisli[FreeTransformed[M]]] {
 
   private type FTM = FreeTransformed[M]
 
@@ -2080,11 +2080,11 @@ import pdbp.program.implicits.active.implicits.implicitActiveProgram
 import pdbp.types.active.free.activeFreeTypes._
 
 object activeFreeProgram
-    extends FreeTransformer[Active]()
-    with ComputationTransformer[Active, ActiveFree]()
-    with Computation[ActiveFree]
-    with ProgramTransformer[`>-a->`, `>-af->`]()
+    extends Computation[ActiveFree]
     with Program[`>-af->`]
+    with ComputationTransformer[Active, ActiveFree]()
+    with ProgramTransformer[`>-a->`, `>-af->`]()
+    with FreeTransformer[Active]()
 ```
 
 where
@@ -2324,11 +2324,11 @@ import pdbp.computation.transformer.ComputationTransformer
 import pdbp.program.reading.Reading
 
 private[pdbp] trait ReadingTransformer[R, M[+ _]: Computation]
-    extends ComputationTransformer[M, ReadingTransformed[R, M]] 
-    with Computation[ReadingTransformed[R, M]]
-    with ProgramTransformer[Kleisli[M], Kleisli[ReadingTransformed[R, M]]]
+    extends Computation[ReadingTransformed[R, M]]
     with Program[Kleisli[ReadingTransformed[R, M]]]
-    with Reading[R, Kleisli[ReadingTransformed[R, M]]] {
+    with Reading[R, Kleisli[ReadingTransformed[R, M]]]
+    with ComputationTransformer[M, ReadingTransformed[R, M]] 
+    with ProgramTransformer[Kleisli[M], Kleisli[ReadingTransformed[R, M]]] {
 
   private type RTM = ReadingTransformed[R, M]      
 
@@ -2405,11 +2405,11 @@ import pdbp.program.implicits.active.implicits.implicitActiveProgram
 import pdbp.types.active.reading.activeReadingTypes._
 
 trait ActiveReadingProgram[R]
-    extends ReadingTransformer[R, Active]
-    with ComputationTransformer[Active, ActiveReading[R]]
-    with Computation[ActiveReading[R]]
-    with ProgramTransformer[`>-a->`, `>-ar->`[R]]
+    extends Computation[ActiveReading[R]]
     with Program[`>-ar->`[R]]
+    with ComputationTransformer[Active, ActiveReading[R]]
+    with ProgramTransformer[`>-a->`, `>-ar->`[R]]
+    with ReadingTransformer[R, Active]
 ```
 
 where
@@ -2458,12 +2458,12 @@ import pdbp.types.active.reading.int.activeIntReadingTypes._
 import pdbp.program.instances.active.reading.ActiveReadingProgram
 
 object activeIntReadingFromConsoleProgram
-    extends ActiveReadingProgram[BigInt]
-    with ReadingTransformer[BigInt, Active]()
+    extends Computation[ActiveIntReading]
+    with Program[`>-air->`]
+    with ActiveReadingProgram[BigInt]
     with ComputationTransformer[Active, ActiveIntReading]()
-    with Computation[ActiveIntReading]
     with ProgramTransformer[`>-a->`, `>-air->`]()
-    with Program[`>-air->`] {
+    with ReadingTransformer[BigInt, Active]() {
 
   implicit val implicitIntReadFromConsole: BigInt = 
     readInt("please type an integer to read")(())
@@ -2506,9 +2506,11 @@ import pdbp.program.Program
 
 import pdbp.program.reading.Reading
 
+import examples.program.FactorialTrait
+
 trait FactorialMultipliedByIntReadTrait
   [>-->[- _, + _]: Program : [>-->[- _, + _]] => Reading[BigInt, >-->]]
-    extends examples.program.FactorialTrait[>-->] {
+    extends FactorialTrait[>-->] {
 
   import implicitProgram._
 
@@ -2573,11 +2575,11 @@ import examples.program.reading.int.console.FactorialMultipliedByIntReadFromCons
 
 object FactorialMultipliedByIntReadFromConsoleMain {
 
-  object FactorialMultipliedByIntReadFromConsoleObject 
-    extends FactorialMultipliedByIntReadFromConsoleTrait[`>-air->`]() 
-    with FactorialTrait[`>-air->`]()
+  object factorialMultipliedByIntReadFromConsoleObject 
+    extends FactorialTrait[`>-air->`]()
+    with FactorialMultipliedByIntReadTrait[`>-air->`]() 
 
-  import FactorialMultipliedByIntReadFromConsoleObject._
+  import factorialMultipliedByIntReadFromConsoleObject._
 
   def main(args: Array[String]): Unit = {
 

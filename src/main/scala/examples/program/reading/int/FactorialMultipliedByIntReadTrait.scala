@@ -15,9 +15,11 @@ import pdbp.program.Program
 
 import pdbp.program.reading.Reading
 
+import examples.program.FactorialTrait
+
 trait FactorialMultipliedByIntReadTrait
   [>-->[- _, + _]: Program : [>-->[- _, + _]] => Reading[BigInt, >-->]]
-    extends examples.program.FactorialTrait[>-->] {
+    extends FactorialTrait[>-->] {
 
   import implicitProgram._
 
