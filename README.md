@@ -326,7 +326,7 @@ Note that `>-->` is
 This is consistent with
 
  - The [*Liskov Substitution Principle*](https://en.wikipedia.org/wiki/Liskov_substitution_principle) which states: *require less* and *provide more*. 
- - [*Internet Robustness principle Principle*](https://en.wikipedia.org/wiki/Robustness_principle) which states: *be conservative in what you send, be liberal in what you accept*.
+ - [*Internet Robustness Principle*](https://en.wikipedia.org/wiki/Robustness_principle) which states: *be conservative in what you send, be liberal in what you accept*.
 
 Below we illustrate this for *functions* (recall that programs, somehow, generalize functions)
 
