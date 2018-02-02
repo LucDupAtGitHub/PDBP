@@ -2222,7 +2222,7 @@ We have no problem here any more. The active free program instance *is stack saf
 
 ### Introduction
 
-In sections `Program` and `Computation` we presented the *basic* programming and computation capabilities. In this section we introduce the first *extra* programming capability: *reading*. In a way we already used some form of reading using *producers* that are used together with *consumers* to turn programs of type `Z >--> Y` into programs of type `Unit >--> Unit` that are ready to be *executed*. Think of the reading capability of this section as *configuration* related.
+In sections `Program` and `Computation` we presented the *basic* programming and computation capabilities. In this section we introduce the first *extra* programming capability: *reading*. In a way we already used some form of reading using *producers* that are used together with *consumers* to turn programs of type `Z >--> Y` into programs of type `Unit >--> Unit` that are ready to be *executed*. Think, for example, of the reading capability of this section as *configuration* related.
 
 ### `Reading`
 
@@ -2245,7 +2245,7 @@ trait Reading[R, >-->[- _, + _]] {
 }
 ```
 
-`` `u>-->r` `` is a program that, given an argument of type `Unit` has a result of type `R`. 
+`` `u>-->r` `` is a program that produces a result of type `R`. 
 
 `trait Reading` has another member 
 
@@ -2381,7 +2381,7 @@ The type synonym `` `I=>` `` (and corresponding `RTM` and `` `>=RTK=>` `` ) abov
 
 You may wonder how it is possible that the definitions above are so simple. This is mainly the case because the compiler can turn value types into implicit function types whenever it *expects* them to be implicit function types.
 
-###  `activeReadingProgram`
+###  `ActiveReadingProgram`
 
 The next computation instance (and corresponding program instance) that we present is the *active reading* instance as defined below
 
@@ -2610,6 +2610,301 @@ please type an integer
 the factorial value of the integer multiplied by the integer read is 240
 [success] Total time: 8 s, completed Feb 1, 2018 3:11:44 PM
 ```
+
+## `Writing`
+
+### Introduction
+
+In sections `Reading` we presented a *first* extra programming and computation capability. In this section we introduce the *next* extra programming capability: *writing*. In a way we already used some form of writing using *consumerss* that are used together with *producerss* to turn programs of type `Z >--> Y` into programs of type `Unit >--> Unit` that are ready to be *executed*. Think for example, of the writing capability of this section as *logging* related.
+
+Reading works with *any* type `R` involved. Writing requires the type `W` involved to have it's own *can be written capabilities* as explained in the following three sections.
+
+### `Empty`
+
+Consider
+
+```scala
+package pdbp.program.writing.canbewritten
+
+import pdbp.types.const.constType._
+
+import pdbp.lifting.LiftObject
+
+private[pdbp] trait Empty[W] 
+  extends LiftObject[Const[W]] {
+
+  private[pdbp] val empty: W
+
+  override private[pdbp] def liftObject[Z]: Z => W = { _ =>
+    empty
+  }  
+
+}
+```
+
+where
+
+```scala
+package pdbp.types.const
+
+object constType {
+
+  type Const[X] = [+Z] => X
+
+}
+```
+
+`empty` does not write anything.
+
+Note that, in a somewhat special way (via `type Const`), `Empty` and `LiftObject` are related.
+
+### `Append`
+
+Consider
+
+```scala
+package pdbp.program.writing.canbewritten
+
+import pdbp.types.const.constType._
+
+import pdbp.utils.productUtils._
+
+import pdbp.lifting.LiftOperator
+
+private[pdbp] trait Append[W] extends LiftOperator[Const[W]] {
+
+  private[pdbp] val append: W && W => W
+
+  override private[pdbp] def liftOperator[Z, Y, X](
+    `(z&&y)=>x`: (Z && Y) => X): (W && W) => W = append
+
+}
+```
+
+`append` does two writings.
+
+Note that, in a somewhat special way (via `type Const`), `Append` and `LiftOperator` are related.
+
+### `CanBeWritten`
+
+Consider
+
+```scala
+package pdbp.program.writing.canbewritten
+
+import pdbp.types.const.constType._
+
+import pdbp.utils.functionUtils._
+
+import pdbp.lifting.Lifting
+
+private[pdbp] trait CanBeWritten[W]
+    extends Empty[W]
+    with Append[W]
+    with Lifting[Const[M]] {
+
+  override private[pdbp] def liftFunction[Z, Y](`z=>y`: Z => Y): W => W =
+    `m=>m`
+
+}
+```
+
+Note that, for completeness, we added , in a somewhat special way (via `type Const`), a member relating `CanBeWritten` and `Lifting`.
+
+The *can be written capabilities* correspond to a *monoid*. [*Monoids*](https://en.wikipedia.org/wiki/Monoid) are ubiquitous in functional programming.
+
+### `Writing`
+
+Consider
+
+```scala
+package pdbp.program.writing
+
+import pdbp.utils.productUtils._
+
+import pdbp.program.Function
+
+import pdbp.program.Composition
+
+import pdbp.program.Construction
+
+import pdbp.program.writing.canbewritten.CanBeWritten
+
+trait Writing[W: CanBeWritten, >-->[- _, + _]] {
+  this: Function[>-->] & Composition[>-->] & Construction[>-->] =>
+
+  private[pdbp] val `w>-->u`: W >--> Unit
+
+  private[pdbp] def writing[Z, Y](`z>-->w`: Z >--> W): (Z >--> Y) => (Z >--> Y) = { `z>-->y` =>
+    compose(product(compose(`z>-->w`, `w>-->u`), `z>-->y`), `(u&&y)>-->y`) 
+  }  
+
+  private[pdbp] def write[Z, Y](w: W): (Z >--> Y) => (Z >--> Y) = 
+    writing(`w=>(z>-->w)`(w))     
+
+  private[pdbp] def write[Z, Y](`z=>(w,y)`: Z => W && Y): Z >--> Y
+
+}
+```
+
+`` `w>-->u` `` is a program that consumes an argument of type `W`.
+
+`trait Writing` has other members 
+
+ - `writing` is a more complex version of `` `w>-->u` `` that does the actual writing.
+ - the first `write` is a less complex version of `writing`
+ - the second `write` is a specific one that will be explained later in the next section
+
+### `WritingTransformer`
+
+Consider
+
+```scala
+package pdbp.computation.transformer.writing
+
+import pdbp.utils.productUtils._
+
+private[pdbp] object writingTransformer {
+
+  type WritingTransformed = [W, M[+ _]] => [+Z] => M[W && Z]
+
+}
+
+import writingTransformer._
+
+import pdbp.types.kleisli.kleisliFunctionType._
+
+import pdbp.types.implicitFunctionType.`I=>`
+
+import pdbp.program.Program
+
+import pdbp.computation.Computation
+
+import pdbp.program.transformer.ProgramTransformer
+
+import pdbp.computation.transformer.ComputationTransformer
+
+import pdbp.program.writing.canbewritten.CanBeWritten
+
+import pdbp.program.writing.Writing
+
+trait WritingTransformer[W: CanBeWritten, M[+ _]: Computation]
+    extends Computation[WritingTransformed[W, M]]
+    with Program[Kleisli[WritingTransformed[W, M]]]
+    with Writing[W, Kleisli[WritingTransformed[W, M]]]
+    with ComputationTransformer[M, WritingTransformed[W, M]]
+    with ProgramTransformer[Kleisli[M], Kleisli[WritingTransformed[W, M]]] {
+
+  private type WTM = WritingTransformed[W, M]
+
+  val implicitCanBeWritten = implicitly[CanBeWritten[W]]
+
+  import implicitCanBeWritten._
+
+  import implicitComputation.{bind => bindM}
+  import implicitComputation.{result => resultM}
+
+  override private[pdbp] def liftComputation[Z](mz: M[Z]): WTM[Z] = {
+    bindM(mz, { z =>
+      resultM((empty, z))
+    })
+  }
+
+  override private[pdbp] def bind[Z, Y](wtmz: WTM[Z],
+                                        `z=>wtmy`: Z => WTM[Y]): WTM[Y] =
+    bindM(wtmz, { (w1, z) =>
+      val (w2, y): W && Y = `z=>wtmy`(z)
+      resultM(append(w1, w2), y)
+    })
+
+  private type `>=WTK=>` = Kleisli[WTM]
+
+  import implicitProgram.{Environment => EnvironmentK}
+  import implicitProgram.{execute => executeK}
+
+  override type Environment = EnvironmentK
+
+  override def execute(
+      `u>=wtk=>u`: Unit `>=WTK=>` Unit): Environment `I=>` Unit = {
+    implicit environment =>
+      executeK { u: Unit =>
+        bindM(`u>=wtk=>u`(u), {
+          case (_, u) =>
+            resultM(u)
+        })
+      }
+  }
+
+  override private[pdbp] val `w>-->u`: W `>=WTK=>` Unit = { w =>
+    resultM((w, ()))
+  }
+
+  override def write[Z, Y](`z=>(w&&y)`: Z => (W && Y)): Z `>=WTK=>` Y = { z =>
+    resultM(`z=>(w&&y)`(z))
+  }
+
+}
+```
+
+Note that 
+
+ - `liftComputation` (related to `liftObject` and `result`) is defined in terms of `empty`,
+ - `bind` is defined in terms of `append`.
+
+Also note that the definition of the second `write` is closely related to the specific `WritingTransformed` type. Anyway: both `write` methods are `private[pdbp]`.
+
+###  `ActiveWritingProgram`
+
+The next computation instance (and corresponding program instance) that we present is the *active writing* instance as defined below
+
+```scala
+package pdbp.program.instances.active.writing
+
+import pdbp.program.Program
+
+import pdbp.computation.Computation
+
+import pdbp.program.transformer.ProgramTransformer
+
+import pdbp.computation.transformer.ComputationTransformer
+
+import pdbp.computation.transformer.writing.WritingTransformer
+
+import pdbp.types.active.activeTypes._
+
+import pdbp.program.implicits.active.implicits.implicitActiveProgram
+
+import pdbp.types.active.writing.activeWritingTypes._
+
+trait ActiveWritingProgram[W]
+    extends Computation[ActiveWriting[W]]
+    with Program[`>-aw->`[W]]
+    with ProgramTransformer[`>-a->`, `>-aw->`[W]]
+    with ComputationTransformer[Active, ActiveWriting[W]]
+    with WritingTransformer[W, Active]
+```
+
+where
+
+```scala
+package pdbp.types.active.writing
+
+import pdbp.types.kleisli.kleisliFunctionType._
+
+import pdbp.types.active.activeTypes._
+
+import pdbp.computation.transformer.writing.writingTransformer._
+
+object activeWritingTypes {
+
+  type ActiveWriting = [W] => WritingTransformed[W, Active]
+
+  type `>-aw->`= [W] => Kleisli[ActiveWriting[W]]
+
+}
+```
+
+
 
 
 <!--

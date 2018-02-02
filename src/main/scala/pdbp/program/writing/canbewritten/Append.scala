@@ -21,6 +21,6 @@ private[pdbp] trait Append[W] extends LiftOperator[Const[W]] {
   private[pdbp] val append: W && W => W
 
   override private[pdbp] def liftOperator[Z, Y, X](
-      `(z&&y)=>x`: (Z && Y) => X): (W && W) => W = append
+    `(z&&y)=>x`: (Z && Y) => X): (W && W) => W = append
 
 }
