@@ -25,6 +25,6 @@ trait Logging[>-->[- _, + _]] extends Writing[Log, >-->] {
 
   def info[Z, Y](s: String): (Z >--> Y) => (Z >--> Y)
 
-  def functionWithInfo[Z, Y](s: String): (Z => Y) => (Z >--> Y)
+  def infoFunction[Z, Y](s: String): (Z => Y) => (Z >--> Y)
 
 }

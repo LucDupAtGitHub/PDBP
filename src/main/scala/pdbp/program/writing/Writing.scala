@@ -25,13 +25,10 @@ trait Writing[W: Folding, >-->[- _, + _]] {
 
   private[pdbp] val `w>-->u`: W >--> Unit
 
-  private[pdbp] def writing[Z, Y](`z>-->w`: Z >--> W): (Z >--> Y) => (Z >--> Y) = { `z>-->y` =>
-    compose(product(compose(`z>-->w`, `w>-->u`), `z>-->y`), `(u&&y)>-->y`) 
+  private[pdbp] def writing[Z, Y](w: W): (Z >--> Y) => (Z >--> Y) = { `z>-->y` =>
+    compose(product(compose(`w=>(z>-->w)`(w), `w>-->u`), `z>-->y`), `(u&&y)>-->y`)
   }  
 
-  private[pdbp] def write[Z, Y](w: W): (Z >--> Y) => (Z >--> Y) = 
-    writing(`w=>(z>-->w)`(w))     
-
-  private[pdbp] def functionWithWrite[Z, Y](`z=>(w,y)`: Z => W && Y): Z >--> Y
+  private[pdbp] def writingFunction[Z, Y](`z=>(w&&y)`: Z => (W && Y)): Z >--> Y
 
 }

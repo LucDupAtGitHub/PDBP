@@ -42,24 +42,23 @@ import pdbp.program.instances.active.writing.ActiveWritingProgram
 import pdbp.program.writing.folding.implicits.log.implicits.implicitLogFolding
 
 object activeLoggingUsingSl4jProgram
-    extends ActiveWritingProgram[Log]
-    with WritingTransformer[Log, Active]()
-    with ComputationTransformer[Active, ActiveLogging]()
-    with Computation[ActiveLogging]
-    with ProgramTransformer[`>-a->`, `>-al->`]()
+    extends Computation[ActiveLogging]
     with Program[`>-al->`] 
+    with ActiveWritingProgram[Log]
     with Writing[Log, `>-al->`]() 
-    with Logging[`>-al->`] {
+    with Logging[`>-al->`]    
+    with ComputationTransformer[Active, ActiveLogging]()
+    with ProgramTransformer[`>-a->`, `>-al->`]()
+    with WritingTransformer[Log, Active]() 
+    {
 
   val logger = LoggerFactory.getLogger(this.getClass)
-
-  import logger._
   
   override def info[Z, Y](s : String): (Z `>-al->` Y) => (Z `>-al->` Y) =
-    write(Log { _ => info(s) } )
+    writing(Log { _ => logger.info(s) } )
 
-  override def functionWithInfo[Z, Y](s : String): (Z => Y) => (Z `>-al->` Y) = {`z=>y` =>
-    functionWithWrite({ z => (Log { _ => logger.info(s"$s($z)") }, `z=>y`(z) )})
+  override def infoFunction[Z, Y](s : String): (Z => Y) => (Z `>-al->` Y) = {`z=>y` =>
+    writingFunction({ z => (Log { _ => logger.info(s"$s($z)") }, `z=>y`(z) )})
   }    
   
   import implicitComputation.{result => resultM}

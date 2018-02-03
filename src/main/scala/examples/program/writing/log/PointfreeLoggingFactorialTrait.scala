@@ -21,7 +21,7 @@ import pdbp.program.writing.log.Logging
 
 import examples.program.FactorialTrait
 
-trait LoggingFactorialTrait
+trait PointfreeLoggingFactorialTrait
    [>-->[- _, + _]: Program : [>-->[- _, + _]] => Logging[>-->]]
      extends FactorialTrait[>-->] {
 
@@ -38,35 +38,31 @@ trait LoggingFactorialTrait
   import examples.utils.functionUtils._
 
   override val isPositive: BigInt >--> Boolean =
-    //info("isPositive") {
-      // function(isPositiveFunction)
-      functionWithInfo("isPositive")(isPositiveFunction)
-    //}
+    info("isPositive") {
+      function(isPositiveFunction)
+    }
 
   override val subtractOne: BigInt >--> BigInt =
-    //info("subtractOne") {
-      // function(subtractOneFunction)
-      functionWithInfo("subtractOne")(subtractOneFunction)
-    //}
+    info("subtractOne") {
+      function(subtractOneFunction)
+    }
 
   override val multiply: (BigInt && BigInt) >--> BigInt =
-    //info("multiply") {
-      // function(multiplyFunction)
-      functionWithInfo("multiply")(multiplyFunction)
-    //}
+    info("multiply") {
+      function(multiplyFunction)
+    }
 
   override def one[Z]: Z >--> BigInt =
-    //info("one") {
-      // function(oneFunction)
-      functionWithInfo("one")(oneFunction)  
-    //}
+    info("one") {
+      function(oneFunction)
+    }
 
-  def loggingFactorial: BigInt >--> BigInt =
+  def pointfreeLoggingFactorial: BigInt >--> BigInt =
     info("factorial") {
       `if`(isPositive) {
         `let` {
           subtractOne >-->
-            loggingFactorial  
+            pointfreeLoggingFactorial  
         } `in`
           multiply
       } `else` {
@@ -74,12 +70,12 @@ trait LoggingFactorialTrait
       } 
     }
 
-  val loggingFactorialProgram: Unit >--> Unit =
+  val pointfreeLoggingFactorialProgram: Unit >--> Unit =
     producer >-->
-      loggingFactorial >-->
+      pointfreeLoggingFactorial >-->
       consumer
 
-  def executeLoggingFactorialProgram: Unit =
-    execute(loggingFactorialProgram)     
+  def executePointfreeLoggingFactorialProgram: Unit =
+    execute(pointfreeLoggingFactorialProgram)     
 
 }

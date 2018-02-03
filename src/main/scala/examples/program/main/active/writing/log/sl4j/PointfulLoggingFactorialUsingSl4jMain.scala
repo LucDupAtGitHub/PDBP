@@ -17,19 +17,19 @@ import pdbp.program.implicits.active.writing.log.sl4j.implicits.implicitActiveLo
 
 import examples.program.FactorialTrait
 
-import examples.program.writing.log.LoggingFactorialTrait
+import examples.program.writing.log.PointfulLoggingFactorialTrait
 
-object LoggingFactorialUsingSl4jMain {
+object PointfulLoggingFactorialUsingSl4jMain {
 
-  object loggingFactorialUsingSl4jObject 
-    extends LoggingFactorialTrait[`>-al->`]() 
+  object pointfulLoggingFactorialUsingSl4jObject 
+    extends PointfulLoggingFactorialTrait[`>-al->`]() 
     with FactorialTrait[`>-al->`]()
 
-  import loggingFactorialUsingSl4jObject._
+  import pointfulLoggingFactorialUsingSl4jObject._
 
   def main(args: Array[String]): Unit = {    
 
-    executeLoggingFactorialProgram
+    executePointfulLoggingFactorialProgram
 
   }
 

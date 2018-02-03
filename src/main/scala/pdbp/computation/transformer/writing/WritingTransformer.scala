@@ -88,7 +88,7 @@ trait WritingTransformer[W: Folding, M[+ _]: Computation]
     resultM((w, ()))
   }
 
-  override private[pdbp] def functionWithWrite[Z, Y](`z=>(w&&y)`: Z => (W && Y)): Z `>=WTK=>` Y = { z =>
+  override private[pdbp] def writingFunction[Z, Y](`z=>(w&&y)`: Z => (W && Y)): Z `>=WTK=>` Y = { z =>
     resultM(`z=>(w&&y)`(z))
   }
 

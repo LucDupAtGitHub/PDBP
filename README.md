@@ -2541,7 +2541,7 @@ trait FactorialMultipliedByIntReadTrait
 }
 ```
 
-Now that we are concrete about *what* we are reading, is natural to define an alias `readingInt` for the generic name `reading` of the reading capability of our program. The fact that, for `activeIntReadingFromConsoleProgram` (where we were concrete about the *how* we are reading), `readingInt` makes use of `implicit` functions is an implementation detail (in many ways, a very important one) but we do not reflect that in the name (as we did with the name `implicitIntReadFromConsole` in `activeIntReadingFromConsoleProgram`).
+Now that we are concrete about *what* we are reading (a `BigInt`), is natural to define an alias `readingInt` for the generic name `reading` of the reading capability of our program. The fact that, for `activeIntReadingFromConsoleProgram` (where we were concrete about *how* we are reading), `readingInt` makes use of `implicit` functions is an implementation detail (in many ways, a very important one) but we do not reflect that in the name (as we did with the name `implicitIntReadFromConsole` in `activeIntReadingFromConsoleProgram`).
 
 ### `FactorialMultipliedByIntReadFromConsoleMain` using `activeIntReadingFromConsoleProgram`
 
@@ -2736,14 +2736,11 @@ trait Writing[W: Folding, >-->[- _, + _]] {
 
   private[pdbp] val `w>-->u`: W >--> Unit
 
-  private[pdbp] def writing[Z, Y](`z>-->w`: Z >--> W): (Z >--> Y) => (Z >--> Y) = { `z>-->y` =>
-    compose(product(compose(`z>-->w`, `w>-->u`), `z>-->y`), `(u&&y)>-->y`) 
+  private[pdbp] def writing[Z, Y](w: W): (Z >--> Y) => (Z >--> Y) = { `z>-->y` =>
+    compose(product(compose(`w=>(z>-->w)`(w), `w>-->u`), `z>-->y`), `(u&&y)>-->y`)
   }  
 
-  private[pdbp] def write[Z, Y](w: W): (Z >--> Y) => (Z >--> Y) = 
-    writing(`w=>(z>-->w)`(w))     
-
-  private[pdbp] def functionWithWrite[Z, Y](`z=>(w,y)`: Z => W && Y): Z >--> Y
+  private[pdbp] def writingFunction[Z, Y](`z=>(w&&y)`: Z => (W && Y)): Z >--> Y
 
 }
 ```
@@ -2753,8 +2750,7 @@ trait Writing[W: Folding, >-->[- _, + _]] {
 `trait Writing` has other members 
 
  - `writing` is a more complex version of `` `w>-->u` `` that does the actual writing.
- - `write` is a less complex version of `writing`
- - `functionWithWrite` will be explained later in this section
+ - `writingFunction` will be explained later in this section.
 
 ### `WritingTransformer`
 
@@ -2837,7 +2833,7 @@ trait WritingTransformer[W: Folding, M[+ _]: Computation]
     resultM((w, ()))
   }
 
-  override private[pdbp] def functionWithWrite[Z, Y](`z=>(w&&y)`: Z => (W && Y)): Z `>=WTK=>` Y = { z =>
+  override private[pdbp] def writingFunction[Z, Y](`z=>(w&&y)`: Z => (W && Y)): Z `>=WTK=>` Y = { z =>
     resultM(`z=>(w&&y)`(z))
   }
 
@@ -2849,7 +2845,7 @@ Note that
  - `liftComputation` (related to `liftObject` and `result`) is defined in terms of `start`,
  - `bind` is defined in terms of `append`.
 
-Also note that the definition of the `functionWithWrite` is closely related to the specific `WritingTransformed` type. Anyway: both `write` and `functionWithWrite` are `private[pdbp]`.
+Also note that the definition of the `writingFunction` is closely related to the specific `WritingTransformed` type. Anyway: both `writing` and `writingFunction` are `private[pdbp]`.
 
 ###  `ActiveWritingProgram`
 
@@ -2963,13 +2959,13 @@ trait Logging[>-->[- _, + _]] extends Writing[Log, >-->] {
 
   def info[Z, Y](s: String): (Z >--> Y) => (Z >--> Y)
 
-  def functionWithInfo[Z, Y](s: String): (Z => Y) => (Z >--> Y)
+  def infoFunction[Z, Y](s: String): (Z => Y) => (Z >--> Y)
 
 }
 ```
 
  - `info` does *info-level logging*,
- - `functionWithInfo` is a specific member that will be explained late in this section.
+ - `infoFunction` is a specific member that will be explained late in this section.
 
 We could have defined members for other levels (*debug*, "error", "warning", ...) as well.
 
@@ -3017,14 +3013,12 @@ object activeLoggingUsingSl4jProgram
     with Logging[`>-al->`] {
 
   val logger = LoggerFactory.getLogger(this.getClass)
-
-  import logger._
   
   override def info[Z, Y](s : String): (Z `>-al->` Y) => (Z `>-al->` Y) =
-    write(Log { _ => info(s) } )
+    writing(Log { _ => logger.info(s) } )
 
-  override def functionWithInfo[Z, Y](s : String): (Z => Y) => (Z `>-al->` Y) = {`z=>y` =>
-    functionWithWrite({ z => (Log { _ => logger.info(s"$s($z)") }, `z=>y`(z) )})
+  override def infoFunction[Z, Y](s : String): (Z => Y) => (Z `>-al->` Y) = {`z=>y` =>
+    writingFunction({ z => (Log { _ => logger.info(s"$s($z)") }, `z=>y`(z) )})
   }    
   
   import implicitComputation.{result => resultM}
@@ -3071,13 +3065,325 @@ object activeLoggingTypes {
 
 If we instantiate `W` with a concrete type `Log`, and define *how* to log information (using *sl4j*), then we can define an `object activeLoggingUsingSl4jProgram`. Note that the actual *execution* of the logging side effect happens in `execute`. We pushed the *impure* parts of our programs to the edges of those programs. Finally, note that we do not log *instantaniously* :  we *fold log information* that we write after program execution.
 
+### `pointfreeLoggingFactorial` using `activeLoggingUsingSl4jProgram`
 
+Consider
 
+```scala
+package examples.program.writing.log
 
+import pdbp.types.log.logTypes._
 
+import pdbp.program.Program
 
+import pdbp.program.writing.Writing
 
+import pdbp.program.writing.log.Logging
 
+import examples.program.FactorialTrait
+
+trait PointfreeLoggingFactorialTrait
+   [>-->[- _, + _]: Program : [>-->[- _, + _]] => Logging[>-->]]
+     extends FactorialTrait[>-->] {
+
+  import implicitProgram._
+
+  val implicitLogging = implicitly[Logging[>-->]]
+
+  import implicitLogging._  
+
+  import pdbp.program.compositionOperator._
+
+  import pdbp.utils.productUtils._
+
+  import examples.utils.functionUtils._
+
+  override val isPositive: BigInt >--> Boolean =
+    info("isPositive") {
+      function(isPositiveFunction)
+    }
+
+  override val subtractOne: BigInt >--> BigInt =
+    info("subtractOne") {
+      function(subtractOneFunction)
+    }
+
+  override val multiply: (BigInt && BigInt) >--> BigInt =
+    info("multiply") {
+      function(multiplyFunction)
+    }
+
+  override def one[Z]: Z >--> BigInt =
+    info("one") {
+      function(oneFunction)
+    }
+
+  def pointfreeLoggingFactorial: BigInt >--> BigInt =
+    info("factorial") {
+      `if`(isPositive) {
+        `let` {
+          subtractOne >-->
+            pointfreeLoggingFactorial  
+        } `in`
+          multiply
+      } `else` {
+        one
+      } 
+    }
+
+  val pointfreeLoggingFactorialProgram: Unit >--> Unit =
+    producer >-->
+      pointfreeLoggingFactorial >-->
+      consumer
+
+  def executePointfreeLoggingFactorialProgram: Unit =
+    execute(pointfreeLoggingFactorialProgram)     
+
+}
+```
+
+The `pointfreeLoggingFactorial` version of `factorial` makes use of `info` to do the pointfree logging (we'll see this when running the example). Note that, in contrast with `Reading`, when `Writing`, we already defined `info` in terms of `writing` in `object activeLoggingUsingSl4jProgram` where we were already concrete about *what* we are writing (a `Log`). Note that, in `object activeLoggingUsingSl4jProgram`, we also were concrete about *how* we are writing.
+
+### `PointfreeLoggingFactorialUsingSl4jMain` using `activeLoggingUsingSl4jProgram`
+
+Let's move on and define an `implicit val` that we can `import` later on. 
+
+```scala
+package pdbp.program.implicits.active.writing.log.sl4j
+
+object implicits {
+
+  import pdbp.program.instances.active.writing.log.sl4j.activeLoggingUsingSl4jProgram
+
+  implicit val implicitActiveLoggingUsingSl4jProgram: activeLoggingUsingSl4jProgram.type =
+    activeLoggingUsingSl4jProgram
+
+}
+```
+
+Finally we can define a *runnable program*.
+
+```scala
+package examples.program.main.active.writing.log.sl4j
+
+import pdbp.types.active.writing.log.activeLoggingTypes.`>-al->`
+
+import pdbp.program.implicits.active.writing.log.sl4j.implicits.implicitActiveLoggingUsingSl4jProgram
+
+import examples.program.FactorialTrait
+
+import examples.program.writing.log.PointfreeLoggingFactorialTrait
+
+object PointfreeLoggingFactorialUsingSl4jMain {
+
+  object pointfreeLoggingFactorialUsingSl4jObject 
+    extends PointfreeLoggingFactorialTrait[`>-al->`]() 
+    with FactorialTrait[`>-al->`]()
+
+  import pointfreeLoggingFactorialUsingSl4jObject._
+
+  def main(args: Array[String]): Unit = {    
+
+    executePointfreeLoggingFactorialProgram
+
+  }
+
+}
+```
+
+The code above mainly consists of bringing the necessary artifacts in scope, using
+
+ - an appropriate `import` of an `implicit`,
+ - an appropriate `object` and an `import` that comes with it.
+
+#### running `PointfreeLoggingFactorialUsingSl4jMain` using `activeLoggingUsingSl4jProgram`
+
+Ok, so let's *execute* our program.
+
+Let's try `6` for the `pointfreeLoggingFactorial` argument.
+
+```scala
+[info] Running examples.program.main.active.writing.log.sl4j.PointfreeLoggingFactorialUsingSl4jMain
+please type an integer
+6
+the factorial value of the integer is 720
+INFO  21:58:23.217 - factorial
+INFO  21:58:23.220 - isPositive
+INFO  21:58:23.220 - subtractOne
+INFO  21:58:23.220 - factorial
+INFO  21:58:23.220 - isPositive
+INFO  21:58:23.220 - subtractOne
+INFO  21:58:23.220 - factorial
+INFO  21:58:23.220 - isPositive
+INFO  21:58:23.220 - subtractOne
+INFO  21:58:23.220 - factorial
+INFO  21:58:23.220 - isPositive
+INFO  21:58:23.220 - subtractOne
+INFO  21:58:23.220 - factorial
+INFO  21:58:23.221 - isPositive
+INFO  21:58:23.221 - subtractOne
+INFO  21:58:23.221 - factorial
+INFO  21:58:23.221 - isPositive
+INFO  21:58:23.221 - subtractOne
+INFO  21:58:23.221 - factorial
+INFO  21:58:23.221 - isPositive
+INFO  21:58:23.221 - one
+INFO  21:58:23.221 - multiply
+INFO  21:58:23.221 - multiply
+INFO  21:58:23.221 - multiply
+INFO  21:58:23.221 - multiply
+INFO  21:58:23.221 - multiply
+INFO  21:58:23.221 - multiply
+```
+
+### `pointfulLoggingFactorial` using `activeLoggingUsingSl4jProgram`
+
+Consider
+
+```scala
+package examples.program.writing.log
+
+import pdbp.types.log.logTypes._
+
+import pdbp.program.Program
+
+import pdbp.program.writing.Writing
+
+import pdbp.program.writing.log.Logging
+
+import examples.program.FactorialTrait
+
+trait PointfulLoggingFactorialTrait
+   [>-->[- _, + _]: Program : [>-->[- _, + _]] => Logging[>-->]]
+     extends FactorialTrait[>-->] {
+
+  import implicitProgram._
+
+  val implicitLogging = implicitly[Logging[>-->]]
+
+  import implicitLogging._  
+
+  import pdbp.program.compositionOperator._
+
+  import pdbp.utils.productUtils._
+
+  import examples.utils.functionUtils._
+
+  override val isPositive: BigInt >--> Boolean =
+    infoFunction("isPositive")(isPositiveFunction)
+
+  override val subtractOne: BigInt >--> BigInt =
+    infoFunction("subtractOne")(subtractOneFunction)
+
+  override val multiply: (BigInt && BigInt) >--> BigInt =
+    infoFunction("multiply")(multiplyFunction)
+
+  override def one[Z]: Z >--> BigInt =
+    infoFunction("one")(oneFunction)  
+
+  def pointfulLoggingFactorial: BigInt >--> BigInt =
+    info("factorial") {
+      `if`(isPositive) {
+        `let` {
+          subtractOne >-->
+            pointfulLoggingFactorial  
+        } `in`
+          multiply
+      } `else` {
+        one
+      } 
+    }
+
+  val pointfulLoggingFactorialProgram: Unit >--> Unit =
+    producer >-->
+      pointfulLoggingFactorial >-->
+      consumer
+
+  def executePointfulLoggingFactorialProgram: Unit =
+    execute(pointfulLoggingFactorialProgram)     
+
+}
+```
+
+The `pointfulLoggingFactorial` version of `factorial` makes use of `infoFunction` to do the pointful logging (we'll see this when running the example). Pointful logging is done for *functions* only (for `factorial` itself, pointfree logging is done). Think of `infoFunction` as a pointful info logging version of `function`.
+
+### `PointfulLoggingFactorialUsingSl4jMain` using `activeLoggingUsingSl4jProgram`
+
+Finally we can define a *runnable program*.
+
+```scala
+package examples.program.main.active.writing.log.sl4j
+
+import pdbp.types.active.writing.log.activeLoggingTypes.`>-al->`
+
+import pdbp.program.implicits.active.writing.log.sl4j.implicits.implicitActiveLoggingUsingSl4jProgram
+
+import examples.program.FactorialTrait
+
+import examples.program.writing.log.PointfulLoggingFactorialTrait
+
+object PointfulLoggingFactorialUsingSl4jMain {
+
+  object pointfulLoggingFactorialUsingSl4jObject 
+    extends PointfulLoggingFactorialTrait[`>-al->`]() 
+    with FactorialTrait[`>-al->`]()
+
+  import pointfulLoggingFactorialUsingSl4jObject._
+
+  def main(args: Array[String]): Unit = {    
+
+    executePointfulLoggingFactorialProgram
+
+  }
+
+}
+```
+
+The code above mainly consists of bringing the necessary artifacts in scope, using
+
+ - an appropriate `import` of an `implicit`,
+ - an appropriate `object` and an `import` that comes with it.
+
+#### running `PointfulLoggingFactorialUsingSl4jMain` using `activeLoggingUsingSl4jProgram`
+
+Ok, so let's *execute* our program.
+
+Let's try `6` for the `pointfulLoggingFactorial` argument.
+
+```scala
+[info] Running examples.program.main.active.writing.log.sl4j.PointfulLoggingFactorialUsingSl4jMain
+please type an integer
+6
+the factorial value of the integer is 720
+INFO  22:05:20.855 - factorial
+INFO  22:05:20.858 - isPositive(6)
+INFO  22:05:20.858 - subtractOne(6)
+INFO  22:05:20.858 - factorial
+INFO  22:05:20.858 - isPositive(5)
+INFO  22:05:20.858 - subtractOne(5)
+INFO  22:05:20.858 - factorial
+INFO  22:05:20.858 - isPositive(4)
+INFO  22:05:20.859 - subtractOne(4)
+INFO  22:05:20.859 - factorial
+INFO  22:05:20.859 - isPositive(3)
+INFO  22:05:20.859 - subtractOne(3)
+INFO  22:05:20.859 - factorial
+INFO  22:05:20.859 - isPositive(2)
+INFO  22:05:20.859 - subtractOne(2)
+INFO  22:05:20.859 - factorial
+INFO  22:05:20.859 - isPositive(1)
+INFO  22:05:20.859 - subtractOne(1)
+INFO  22:05:20.859 - factorial
+INFO  22:05:20.859 - isPositive(0)
+INFO  22:05:20.859 - one(0)
+INFO  22:05:20.859 - multiply((1,1))
+INFO  22:05:20.859 - multiply((2,1))
+INFO  22:05:20.859 - multiply((3,2))
+INFO  22:05:20.860 - multiply((4,6))
+INFO  22:05:20.860 - multiply((5,24))
+INFO  22:05:20.860 - multiply((6,120))
+[success] Total time: 3 s, completed Feb 3, 2018 10:05:21 PM
+```
 
 
 <!--
