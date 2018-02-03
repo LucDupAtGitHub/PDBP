@@ -2222,7 +2222,7 @@ We have no problem here any more. The active free program instance *is stack saf
 
 ### Introduction
 
-In sections `Program` and `Computation` we presented the *basic* programming and computation capabilities. In this section we introduce the first *extra* programming capability: *reading*. In a way we already used some form of reading using *producers* that are used together with *consumers* to turn programs of type `Z >--> Y` into programs of type `Unit >--> Unit` that are ready to be *executed*. Think, for example, of the reading capability of this section as *configuration* related.
+In sections `Program` and `Computation` we presented the *basic* programming and computation capabilities. In this section we introduce the first *extra* programming capability: *reading*. In a way we already used some form of reading using *producers* that are used together with *consumers* to turn programs of type `Z >--> Y` into programs of type `Unit >--> Unit` that are ready to be *executed*. Think, for example, of the capability of this section as being able to read *configuration before program execution*.
 
 ### `Reading`
 
@@ -2615,7 +2615,7 @@ the factorial value of the integer multiplied by the integer read is 240
 
 ### Introduction
 
-In sections `Reading` we presented a *first* extra programming and computation capability. In this section we introduce the *next* extra programming capability: *writing*. In a way we already used some form of writing using *consumers* that are used together with *producers* to turn programs of type `Z >--> Y` into programs of type `Unit >--> Unit` that are ready to be *executed*. Think for example, of the writing capability of this section as *logging* related.
+In sections `Reading` we presented a *first* extra programming and computation capability. In this section we introduce the *next* extra programming capability: *writing*. In a way we already used some form of writing using *consumers* that are used together with *producers* to turn programs of type `Z >--> Y` into programs of type `Unit >--> Unit` that are ready to be *executed*. Think, for example, of the capability of this section as being able to write *log information after program execution*.
 
 Reading works with *any* type `R` involved. Writing requires the type `W` involved to have it's own *can be written capabilities* as explained in the following three sections.
 
@@ -2908,7 +2908,7 @@ Since there is a type parameter `W` involved, we defined the computation instanc
 
 ### `Logging`
 
-In the `Reading` section we, eventually, substituted `BigInt` for `R`. In the beginning of this section we mentioned *logging*. In this section we, eventually, substitute `Log` for `R`, where `Log` is defined below
+In the `Reading` section we, eventually, substituted `BigInt` for `R`. In the beginning of this section we mentioned *log information*. In this `Writing` section we, eventually, substitute `Log` for `R`, where `Log` is defined below
 
 ```scala
 package pdbp.types.log
@@ -3073,7 +3073,7 @@ object activeLoggingTypes {
 }
 ```
 
-If we instantiate `W` with a concrete type `Log`, and define *how* to log information (using *sl4j*), then we can define an `object activeLoggingUsingSl4jProgram`. Note that the actual *execution* of the logging side effect happens in `execute`. Again we pushed the *impure* parts of our programs to the edges of those programs.
+If we instantiate `W` with a concrete type `Log`, and define *how* to log information (using *sl4j*), then we can define an `object activeLoggingUsingSl4jProgram`. Note that the actual *execution* of the logging side effect happens in `execute`. We pushed the *impure* parts of our programs to the edges of those programs. Finally, note that we do not log *instantaniously*,  we *accumulate log information* that we write after program execution.
 
 
 
