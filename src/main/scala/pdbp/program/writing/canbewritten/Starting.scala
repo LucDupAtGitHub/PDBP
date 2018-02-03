@@ -1,4 +1,4 @@
-package pdbp.program.writing.canbewritten
+package pdbp.program.writing.folding
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -12,15 +12,16 @@ package pdbp.program.writing.canbewritten
 
 import pdbp.types.const.constType._
 
-import pdbp.utils.productUtils._
+import pdbp.lifting.LiftingObject
 
-import pdbp.lifting.LiftOperator
+private[pdbp] trait Starting[W] 
+  extends LiftingObject[Const[W]] {
 
-private[pdbp] trait Append[W] extends LiftOperator[Const[W]] {
+  private[pdbp] val start: W
 
-  private[pdbp] val append: W && W => W
-
-  override private[pdbp] def liftOperator[Z, Y, X](
-    `(z&&y)=>x`: (Z && Y) => X): (W && W) => W = append
+  override private[pdbp] def liftObject[Z]: Z => W = { _ =>
+    start
+  }  
 
 }
+

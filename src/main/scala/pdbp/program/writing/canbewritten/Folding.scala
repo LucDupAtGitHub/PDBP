@@ -1,4 +1,4 @@
-package pdbp.program.writing.canbewritten
+package pdbp.program.writing.folding
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -16,9 +16,9 @@ import pdbp.utils.functionUtils._
 
 import pdbp.lifting.Lifting
 
-private[pdbp] trait CanBeWritten[M]
-    extends Empty[M]
-    with Append[M]
+private[pdbp] trait Folding[M]
+    extends Starting[M]
+    with Appending[M]
     with Lifting[Const[M]] {
 
   override private[pdbp] def liftFunction[Z, Y](`z=>y`: Z => Y): M => M =

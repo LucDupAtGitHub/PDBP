@@ -1,4 +1,4 @@
-package pdbp.program.writing.canbewritten
+package pdbp.lifting
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -9,19 +9,10 @@ package pdbp.program.writing.canbewritten
 //  \_\/       \______\/  \______\/      \_\/
 //                                           v1.0
 //  Program Description Based Programming Library
+//  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.const.constType._
+private[pdbp] trait LiftingFunction[M[+ _]] {
 
-import pdbp.lifting.LiftObject
-
-private[pdbp] trait Empty[W] 
-  extends LiftObject[Const[W]] {
-
-  private[pdbp] val empty: W
-
-  override private[pdbp] def liftObject[Z]: Z => W = { _ =>
-    empty
-  }  
+  private[pdbp] def liftFunction[Z, Y](`z=>y`: Z => Y): M[Z] => M[Y]
 
 }
-

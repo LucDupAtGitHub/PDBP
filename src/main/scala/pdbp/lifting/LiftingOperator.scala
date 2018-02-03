@@ -11,8 +11,22 @@ package pdbp.lifting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-private[pdbp] trait LiftObject[M[+ _]] {
+import pdbp.utils.productUtils._
 
-  private[pdbp] def liftObject[Z]: Z => M[Z]
+private[pdbp] trait LiftingOperator[M[+ _]] {
+
+  private[pdbp] def liftOperator[Z, Y, X](
+      `(z&&y)=>x`: (Z && Y) => X): (M[Z] && M[Y]) => M[X] = { (mz, my) =>
+    liftOperator[Z, Y, X] { (z, y) =>
+      `(z&&y)=>x`(z, y)
+    }(mz, my)
+  }
+
+  private[pdbp] def liftOperator[Z, Y, X](
+      `(z,y)=>x`: (Z, Y) => X): (M[Z], M[Y]) => M[X] = { (mz, my) =>
+    liftOperator[Z, Y, X] { (z, y) =>
+      `(z,y)=>x`(z, y)
+    }(mz, my)
+  }
 
 }

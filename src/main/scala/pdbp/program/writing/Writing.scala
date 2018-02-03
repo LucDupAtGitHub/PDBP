@@ -18,9 +18,9 @@ import pdbp.program.Composition
 
 import pdbp.program.Construction
 
-import pdbp.program.writing.canbewritten.CanBeWritten
+import pdbp.program.writing.folding.Folding
 
-trait Writing[W: CanBeWritten, >-->[- _, + _]] {
+trait Writing[W: Folding, >-->[- _, + _]] {
   this: Function[>-->] & Composition[>-->] & Construction[>-->] =>
 
   private[pdbp] val `w>-->u`: W >--> Unit
@@ -32,6 +32,6 @@ trait Writing[W: CanBeWritten, >-->[- _, + _]] {
   private[pdbp] def write[Z, Y](w: W): (Z >--> Y) => (Z >--> Y) = 
     writing(`w=>(z>-->w)`(w))     
 
-  private[pdbp] def write[Z, Y](`z=>(w,y)`: Z => W && Y): Z >--> Y
+  private[pdbp] def functionWithWrite[Z, Y](`z=>(w,y)`: Z => W && Y): Z >--> Y
 
 }

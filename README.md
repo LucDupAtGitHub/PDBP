@@ -1280,12 +1280,12 @@ Consider
 package pdbp.lifting
 
 private[pdbp] trait Lifting[M[+ _]]
-    extends LiftObject[M]
-    with LiftFunction[M]
-    with LiftOperator[M]
+    extends LiftingObject[M]
+    with LiftingFunction[M]
+    with LiftingOperator[M]
 ```
 
-`trait Lifting` is a *type class* that will gradually be explained later in this document. `trait LiftObject`, `trait LiftFunction`  and `trait LiftOperator` will be explained later in this section. `trait Lifting` declares *lifting capabilities* of *computational descriptions*. The programming capabilities of `Lifting` correspond to *applicatives* (a.k.a. *idioms*). 
+`trait Lifting` is a *type class* that will gradually be explained later in this document. `trait LiftingObject`, `trait LiftingFunction`  and `trait LiftingOperator` will be explained later in this section. `trait Lifting` declares *lifting capabilities* of *computational descriptions*. The programming capabilities of `Lifting` correspond to *applicatives* (a.k.a. *idioms*). 
 
 Note that we were a bit sloppy by not showing `[M]`
 
@@ -1321,14 +1321,14 @@ val ey: Expression[Y] = <function1>
 scala> 
 ```
 
-### `LiftObject`
+### `LiftingObject`
 
 Consider
 
 ```scala
 package pdbp.lifting
 
-private[pdbp] trait LiftObject[M[+ _]] {
+private[pdbp] trait LiftingObject[M[+ _]] {
 
   private[pdbp] def liftObject[Z]: Z => M[Z]
 
@@ -1337,14 +1337,14 @@ private[pdbp] trait LiftObject[M[+ _]] {
 
 `liftObject` is a function that *lifts* an *object* `z` to a *computation* with *result* `z`.
 
-### `LiftFunction`
+### `LiftingFunction`
 
 Consider
 
 ```scala
 package pdbp.lifting
 
-private[pdbp] trait LiftFunction[M[+ _]] {
+private[pdbp] trait LiftingFunction[M[+ _]] {
 
   private[pdbp] def liftFunction[Z, Y](`z=>y`: Z => Y): M[Z] => M[Y]
 
@@ -1353,7 +1353,7 @@ private[pdbp] trait LiftFunction[M[+ _]] {
 
 `liftFunction` is a function that *lifts* an *object-level function* to a *computation-level function*.
 
-### `LiftOperator`
+### `LiftingOperator`
 
 Consider
 
@@ -1362,7 +1362,7 @@ package pdbp.lifting
 
 import pdbp.utils.productUtils._
 
-private[pdbp] trait LiftOperator[M[+ _]] {
+private[pdbp] trait LiftingOperator[M[+ _]] {
 
   private[pdbp] def liftOperator[Z, Y, X](
       `(z&&y)=>x`: (Z && Y) => X): (M[Z] && M[Y]) => M[X] = { (mz, my) =>
@@ -1393,9 +1393,9 @@ Lifting comes with some other interesting computational capabilities. Add all th
 
 ```scala
 private[pdbp] trait Lifting[M[+ _]]
-    extends LiftObject[M]
-    with LiftFunction[M]
-    with LiftOperator[M] {
+    extends LiftingObject[M]
+    with LiftingFunction[M]
+    with LiftingOperator[M] {
 
     // add capabilities here
 
@@ -1906,7 +1906,7 @@ package pdbp.computation.transformer
 
 import pdbp.types.kleisli.kleisliFunctionType._
 
-import pdbp.lifting.LiftObject
+import pdbp.lifting.LiftingObject
 
 import pdbp.computation.Computation
 
@@ -1914,7 +1914,7 @@ import pdbp.program.transformer.ProgramTransformer
 
 trait ComputationTransformer[D[+ _]: Computation, U[+ _]]
     extends ProgramTransformer[Kleisli[D], Kleisli[U]]
-    with LiftObject[U] {
+    with LiftingObject[U] {
 
   private[pdbp] def liftComputation[Z](dz: D[Z]): U[Z]
 
@@ -1940,7 +1940,7 @@ A *computation transformer* has a member `liftComputation` that *lifts* a comput
 
 We added `val implicitComputation` since we need it in `trait ComputationTransformer` as well as in `trait`'s extending `trait ComputationTransformer`.
 
-`trait ComputationTransformer` extends both `ProgramTransformer[Kleisli[D], Kleisli[U]]` and `LiftObject[U]`.
+`trait ComputationTransformer` extends both `ProgramTransformer[Kleisli[D], Kleisli[U]]` and `LiftingObject[U]`.
 
 Frankly, a computation transformer is more of a *computation lifter*, lifting computations to a higher level.
 
@@ -1961,7 +1961,7 @@ private[pdbp] object freeTransformer {
 
   sealed trait Free[M[+ _], +Z]
 
-  case class LiftObject[M[+ _], +Z](z: Z) extends Free[M, Z]
+  case class LiftingObject[M[+ _], +Z](z: Z) extends Free[M, Z]
   case class Bind[M[+ _], -Z, ZZ <: Z, +Y](fmzz: Free[M, ZZ],
                                            `z=>fmy`: Z => Free[M, Y])
       extends Free[M, Y]
@@ -1971,7 +1971,7 @@ private[pdbp] object freeTransformer {
 }
 ```
 
-`trait Free` is an *abstract data type* that has a `case class LiftObject` and a `case class Bind` for the members `liftObject` and `bind` of `trait Computation`. Think of `Free[M, Z]` as a *free computation* wrapped around `M` as described in [Data types a la carte](http://www.cs.ru.nl/~W.Swierstra/Publications/DataTypesALaCarte.pdf). We use the same vocabulary for corresponding programs.
+`trait Free` is an *abstract data type* that has a `case class LiftingObject` and a `case class Bind` for the members `liftObject` and `bind` of `trait Computation`. Think of `Free[M, Z]` as a *free computation* wrapped around `M` as described in [Data types a la carte](http://www.cs.ru.nl/~W.Swierstra/Publications/DataTypesALaCarte.pdf). We use the same vocabulary for corresponding programs.
 
 `type FreeTransformed[M]` is a *free transformed computation*. 
 
@@ -2003,7 +2003,7 @@ private[pdbp] trait FreeTransformer[M[+ _]: Computation]
       "Impossible, since, for 'FreeTransformer', 'liftComputation' is used nowhere")
 
   override private[pdbp] def liftObject[Z]: Z => FTM[Z] = { z =>
-    LiftObject[M, Z](z)
+    LiftingObject[M, Z](z)
   }
 
   override private[pdbp] def bind[Z, Y](ftmz: FTM[Z],
@@ -2027,11 +2027,11 @@ private[pdbp] trait FreeTransformer[M[+ _]: Computation]
       case Bind(Bind(mx, x2ftmy), y2ftmz) =>
         // step(bind(mx, x => bind(x2ftmy(x), y2ftmz)))
         step(bind(mx, compose(x2ftmy, y2ftmz)))
-      case Bind(LiftObject(y), y2ftmz) => step(y2ftmz(y))
+      case Bind(LiftingObject(y), y2ftmz) => step(y2ftmz(y))
       case              _              => ftmz
     }
     step(`z>=ftk=>y`(z)) match {
-      case LiftObject(z) => resultM(z)
+      case LiftingObject(z) => resultM(z)
       case _ =>
         sys.error(
           "Impossible, since, for 'FreeTransformer', 'step' eliminates this case")
@@ -2046,7 +2046,7 @@ Note that we use names like `x2ftmy` instead of `` `x>=ftk=>y` `` because they a
 `trait FreeTransformer` transforms `FreeTransformed[M]` to a computation and `Kleisli[FreeTransformed[M]]` to a program. 
 
  - `liftComputation` is used nowhere,
- - `liftObject` is trivially defined using `LiftObject`,
+ - `liftObject` is trivially defined using `LiftingObject`,
  - `bind` is defined using `Bind`,  
  - `execute` is defined using `lower` which *lowers* a lifted free program back down the program it wraps
  - `lower` is a *tail recursive* `step`*-wise* *folding* of a of free computation of type `FreeTransformed[M][Z]` to a computation of type `M[Z]`
@@ -2617,26 +2617,27 @@ the factorial value of the integer multiplied by the integer read is 240
 
 In sections `Reading` we presented a *first* extra programming and computation capability. In this section we introduce the *next* extra programming capability: *writing*. In a way we already used some form of writing using *consumers* that are used together with *producers* to turn programs of type `Z >--> Y` into programs of type `Unit >--> Unit` that are ready to be *executed*. Think, for example, of the capability of this section as being able to write *log information after program execution*.
 
-Reading works with *any* type `R` involved. Writing requires the type `W` involved to have it's own *can be written capabilities* as explained in the following three sections.
+Reading works with *any* type `R` involved. Writing requires the type `W` involved to have *folding capabilities*. The following three sections define folding in terms of *starting* and "appending". The *folding* capability itself, which is related to *sequencing* and *aggregation*, will be explaned later.
 
-### `Empty`
+
+### `Starting`
 
 Consider
 
 ```scala
-package pdbp.program.writing.canbewritten
+package pdbp.program.writing.folding
 
 import pdbp.types.const.constType._
 
-import pdbp.lifting.LiftObject
+import pdbp.lifting.LiftingObject
 
-private[pdbp] trait Empty[W] 
-  extends LiftObject[Const[W]] {
+private[pdbp] trait Starting[W] 
+  extends LiftingObject[Const[W]] {
 
-  private[pdbp] val empty: W
+  private[pdbp] val start: W
 
   override private[pdbp] def liftObject[Z]: Z => W = { _ =>
-    empty
+    start
   }  
 
 }
@@ -2654,24 +2655,24 @@ object constType {
 }
 ```
 
-`empty` does not write anything.
+`start` is an *object* that is used to *start the folding*.
 
-Note that, in a somewhat special way (via `type Const`), `Empty` and `LiftObject` are related.
+Note that, in a somewhat special way (via `type Const`), `Starting` and `LiftingObject` are related.
 
-### `Append`
+### `Appending`
 
 Consider
 
 ```scala
-package pdbp.program.writing.canbewritten
+package pdbp.program.writing.folding
 
 import pdbp.types.const.constType._
 
 import pdbp.utils.productUtils._
 
-import pdbp.lifting.LiftOperator
+import pdbp.lifting.LiftingOperator
 
-private[pdbp] trait Append[W] extends LiftOperator[Const[W]] {
+private[pdbp] trait Appending[W] extends LiftingOperator[Const[W]] {
 
   private[pdbp] val append: W && W => W
 
@@ -2681,16 +2682,16 @@ private[pdbp] trait Append[W] extends LiftOperator[Const[W]] {
 }
 ```
 
-`append` does two writings.
+`append` is an *operator* that is used to *while folding*.
 
-Note that, in a somewhat special way (via `type Const`), `Append` and `LiftOperator` are related.
+Note that, in a somewhat special way (via `type Const`), `Append` and `LiftingOperator` are related.
 
-### `CanBeWritten`
+### `Folding`
 
 Consider
 
 ```scala
-package pdbp.program.writing.canbewritten
+package pdbp.program.writing.folding
 
 import pdbp.types.const.constType._
 
@@ -2698,20 +2699,20 @@ import pdbp.utils.functionUtils._
 
 import pdbp.lifting.Lifting
 
-private[pdbp] trait CanBeWritten[W]
-    extends Empty[W]
-    with Append[W]
+private[pdbp] trait Folding[M]
+    extends Starting[M]
+    with Appending[M]
     with Lifting[Const[M]] {
 
-  override private[pdbp] def liftFunction[Z, Y](`z=>y`: Z => Y): W => W =
+  override private[pdbp] def liftFunction[Z, Y](`z=>y`: Z => Y): M => M =
     `m=>m`
 
 }
 ```
 
-Note that, for completeness, we added , in a somewhat special way (via `type Const`), a member relating `CanBeWritten` and `Lifting`.
+Note that, for completeness, we added , in a somewhat special way (via `type Const`), a (trivial) member relating `Folding` and `Lifting`.
 
-The *can be written capabilities* correspond to a *monoid*. [*Monoids*](https://en.wikipedia.org/wiki/Monoid) are ubiquitous in functional programming.
+The folding capabilities correspond to a *monoid*. [*Monoids*](https://en.wikipedia.org/wiki/Monoid) (in particular, see *Monoids in computer science* on that Wiki page).
 
 ### `Writing`
 
@@ -2728,9 +2729,9 @@ import pdbp.program.Composition
 
 import pdbp.program.Construction
 
-import pdbp.program.writing.canbewritten.CanBeWritten
+import pdbp.program.writing.folding.Folding
 
-trait Writing[W: CanBeWritten, >-->[- _, + _]] {
+trait Writing[W: Folding, >-->[- _, + _]] {
   this: Function[>-->] & Composition[>-->] & Construction[>-->] =>
 
   private[pdbp] val `w>-->u`: W >--> Unit
@@ -2742,7 +2743,7 @@ trait Writing[W: CanBeWritten, >-->[- _, + _]] {
   private[pdbp] def write[Z, Y](w: W): (Z >--> Y) => (Z >--> Y) = 
     writing(`w=>(z>-->w)`(w))     
 
-  private[pdbp] def write[Z, Y](`z=>(w,y)`: Z => W && Y): Z >--> Y
+  private[pdbp] def functionWithWrite[Z, Y](`z=>(w,y)`: Z => W && Y): Z >--> Y
 
 }
 ```
@@ -2752,17 +2753,14 @@ trait Writing[W: CanBeWritten, >-->[- _, + _]] {
 `trait Writing` has other members 
 
  - `writing` is a more complex version of `` `w>-->u` `` that does the actual writing.
- - the first `write` is a less complex version of `writing`
- - the second specific `write` is one that will be explained later in the next section
+ - `write` is a less complex version of `writing`
+ - `functionWithWrite` will be explained later in this section
 
 ### `WritingTransformer`
 
 Consider
 
 ```scala
-package pdbp.computation.transformer.writing
-
-import pdbp.utils.productUtils._
 
 private[pdbp] object writingTransformer {
 
@@ -2784,11 +2782,11 @@ import pdbp.program.transformer.ProgramTransformer
 
 import pdbp.computation.transformer.ComputationTransformer
 
-import pdbp.program.writing.canbewritten.CanBeWritten
+import pdbp.program.writing.folding.Folding
 
 import pdbp.program.writing.Writing
 
-trait WritingTransformer[W: CanBeWritten, M[+ _]: Computation]
+trait WritingTransformer[W: Folding, M[+ _]: Computation]
     extends Computation[WritingTransformed[W, M]]
     with Program[Kleisli[WritingTransformed[W, M]]]
     with Writing[W, Kleisli[WritingTransformed[W, M]]]
@@ -2797,16 +2795,16 @@ trait WritingTransformer[W: CanBeWritten, M[+ _]: Computation]
 
   private type WTM = WritingTransformed[W, M]
 
-  val implicitCanBeWritten = implicitly[CanBeWritten[W]]
+  val implicitFolding = implicitly[Folding[W]]
 
-  import implicitCanBeWritten._
+  import implicitFolding._
 
   import implicitComputation.{bind => bindM}
   import implicitComputation.{result => resultM}
 
   override private[pdbp] def liftComputation[Z](mz: M[Z]): WTM[Z] = {
     bindM(mz, { z =>
-      resultM((empty, z))
+      resultM((start, z))
     })
   }
 
@@ -2839,7 +2837,7 @@ trait WritingTransformer[W: CanBeWritten, M[+ _]: Computation]
     resultM((w, ()))
   }
 
-  override def write[Z, Y](`z=>(w&&y)`: Z => (W && Y)): Z `>=WTK=>` Y = { z =>
+  override private[pdbp] def functionWithWrite[Z, Y](`z=>(w&&y)`: Z => (W && Y)): Z `>=WTK=>` Y = { z =>
     resultM(`z=>(w&&y)`(z))
   }
 
@@ -2848,10 +2846,10 @@ trait WritingTransformer[W: CanBeWritten, M[+ _]: Computation]
 
 Note that 
 
- - `liftComputation` (related to `liftObject` and `result`) is defined in terms of `empty`,
+ - `liftComputation` (related to `liftObject` and `result`) is defined in terms of `start`,
  - `bind` is defined in terms of `append`.
 
-Also note that the definition of the second, specific `write` is closely related to the specific `WritingTransformed` type. Anyway: both `write` methods are `private[pdbp]`.
+Also note that the definition of the `functionWithWrite` is closely related to the specific `WritingTransformed` type. Anyway: both `write` and `functionWithWrite` are `private[pdbp]`.
 
 ###  `ActiveWritingProgram`
 
@@ -2920,30 +2918,30 @@ object logTypes {
 }
 ```
 
-`Log` is a `case class` *describing* the *side effect* of doing some kind of logging. From a *pure functional programming* point of view, there is nothing wrong with *effects* (descriptions of side effects). For being useful for *writing* we need evidence that *logs can be written*.
+`Log` is a `case class` *describing* the *side effect* of doing some kind of logging. From a *pure functional programming* point of view, there is nothing wrong with *effects* (descriptions of side effects). For being useful for *writing* we need evidence that *logs can be folded*.
 
 ```scala
-package pdbp.program.writing.canbewritten.instances.log
+package pdbp.program.writing.folding.instances.log
 
 import pdbp.types.log.logTypes._
 
 import pdbp.utils.productUtils._
 
-import pdbp.program.writing.canbewritten.CanBeWritten
+import pdbp.program.writing.folding.Folding
 
-private[pdbp] object logCanBeWritten extends CanBeWritten[Log] {
+private[pdbp] object logFolding extends Folding[Log] {
 
-  override private[pdbp] val empty: Log =
-    Log(effect = { _ => () })
+  override private[pdbp] val start: Log =
+    Log { _ => () }
 
   override private[pdbp] val append: Log && Log => Log = { (l1, l2) =>
-    Log(effect = { _ => { l1.effect(()) ; l2.effect(()) } } )
+    Log { _ => { l1.effect(()) ; l2.effect(()) } }
   }   
 
 }
 ```
 
-You may argue that `empty` and `append` are defined in terms of *impure* code. Recall that the code *describes* side effects, rather than *executing* them.
+You may argue that `start` and `append` are defined in terms of *impure* code. Recall that the code *describes* side effects, rather than *executing* them.
 
 When *writing logs*, more formally, when substituting `Log` for `W` in `Writing`, it makes sense to add a few extra members that are *logging* related.
 
@@ -2971,15 +2969,13 @@ trait Logging[>-->[- _, + _]] extends Writing[Log, >-->] {
 ```
 
  - `info` does *info-level logging*,
- - `functionWithInfo` is a specific member (a combination of `function` and `info`) that will be explained late in this section.
+ - `functionWithInfo` is a specific member that will be explained late in this section.
 
-We could have defined members for other levels as well.
+We could have defined members for other levels (*debug*, "error", "warning", ...) as well.
 
 Consider
 
 ```scala
-package pdbp.program.instances.active.writing.log.sl4j
-
 import pdbp.types.implicitFunctionType.`I=>`
 
 import pdbp.types.log.logTypes._
@@ -3008,7 +3004,7 @@ import pdbp.types.active.writing.log.activeLoggingTypes._
 
 import pdbp.program.instances.active.writing.ActiveWritingProgram
 
-import pdbp.program.writing.canbewritten.implicits.log.implicits.implicitLogCanBeWritten
+import pdbp.program.writing.folding.implicits.log.implicits.implicitLogFolding
 
 object activeLoggingUsingSl4jProgram
     extends ActiveWritingProgram[Log]
@@ -3028,7 +3024,7 @@ object activeLoggingUsingSl4jProgram
     write(Log { _ => info(s) } )
 
   override def functionWithInfo[Z, Y](s : String): (Z => Y) => (Z `>-al->` Y) = {`z=>y` =>
-    write({ z => (Log { _ => logger.info(s"$s($z)") }, `z=>y`(z) )})
+    functionWithWrite({ z => (Log { _ => logger.info(s"$s($z)") }, `z=>y`(z) )})
   }    
   
   import implicitComputation.{result => resultM}
@@ -3073,7 +3069,9 @@ object activeLoggingTypes {
 }
 ```
 
-If we instantiate `W` with a concrete type `Log`, and define *how* to log information (using *sl4j*), then we can define an `object activeLoggingUsingSl4jProgram`. Note that the actual *execution* of the logging side effect happens in `execute`. We pushed the *impure* parts of our programs to the edges of those programs. Finally, note that we do not log *instantaniously*,  we *accumulate log information* that we write after program execution.
+If we instantiate `W` with a concrete type `Log`, and define *how* to log information (using *sl4j*), then we can define an `object activeLoggingUsingSl4jProgram`. Note that the actual *execution* of the logging side effect happens in `execute`. We pushed the *impure* parts of our programs to the edges of those programs. Finally, note that we do not log *instantaniously* :  we *fold log information* that we write after program execution.
+
+
 
 
 

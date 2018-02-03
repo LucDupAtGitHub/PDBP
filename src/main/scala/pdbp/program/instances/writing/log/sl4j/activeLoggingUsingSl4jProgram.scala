@@ -39,7 +39,7 @@ import pdbp.types.active.writing.log.activeLoggingTypes._
 
 import pdbp.program.instances.active.writing.ActiveWritingProgram
 
-import pdbp.program.writing.canbewritten.implicits.log.implicits.implicitLogCanBeWritten
+import pdbp.program.writing.folding.implicits.log.implicits.implicitLogFolding
 
 object activeLoggingUsingSl4jProgram
     extends ActiveWritingProgram[Log]
@@ -59,7 +59,7 @@ object activeLoggingUsingSl4jProgram
     write(Log { _ => info(s) } )
 
   override def functionWithInfo[Z, Y](s : String): (Z => Y) => (Z `>-al->` Y) = {`z=>y` =>
-    write({ z => (Log { _ => logger.info(s"$s($z)") }, `z=>y`(z) )})
+    functionWithWrite({ z => (Log { _ => logger.info(s"$s($z)") }, `z=>y`(z) )})
   }    
   
   import implicitComputation.{result => resultM}

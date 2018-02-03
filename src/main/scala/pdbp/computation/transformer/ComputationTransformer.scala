@@ -13,7 +13,7 @@ package pdbp.computation.transformer
 
 import pdbp.types.kleisli.kleisliFunctionType._
 
-import pdbp.lifting.LiftObject
+import pdbp.lifting.LiftingObject
 
 import pdbp.computation.Computation
 
@@ -21,7 +21,7 @@ import pdbp.program.transformer.ProgramTransformer
 
 trait ComputationTransformer[D[+ _]: Computation, U[+ _]]
     extends ProgramTransformer[Kleisli[D], Kleisli[U]]
-    with LiftObject[U] {
+    with LiftingObject[U] {
 
   private[pdbp] def liftComputation[Z](dz: D[Z]): U[Z]
 

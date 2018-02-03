@@ -1,4 +1,4 @@
-package pdbp.program.writing.canbewritten.implicits.log
+package pdbp.program.writing.folding.implicits.log
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -10,11 +10,11 @@ package pdbp.program.writing.canbewritten.implicits.log
 //                                           v1.0
 //  Program Description Based Programming Library
 
-import pdbp.program.writing.canbewritten.instances.log.logCanBeWritten
+import pdbp.program.writing.folding.instances.log.logFolding
 
 object implicits {
 
-  implicit val implicitLogCanBeWritten: logCanBeWritten.type = 
-    logCanBeWritten
+  implicit val implicitLogFolding: logFolding.type = 
+    logFolding
 
 }

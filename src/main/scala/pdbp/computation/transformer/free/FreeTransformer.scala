@@ -15,7 +15,7 @@ private[pdbp] object freeTransformer {
 
   sealed trait Free[M[+ _], +Z]
 
-  case class LiftObject[M[+ _], +Z](z: Z) extends Free[M, Z]
+  case class LiftingObject[M[+ _], +Z](z: Z) extends Free[M, Z]
   case class Bind[M[+ _], -Z, ZZ <: Z, +Y](fmzz: Free[M, ZZ],
                                            `z=>fmy`: Z => Free[M, Y])
       extends Free[M, Y]
@@ -51,7 +51,7 @@ private[pdbp] trait FreeTransformer[M[+ _]: Computation]
       "Impossible, since, for 'FreeTransformer', 'liftComputation' is used nowhere")
 
   override private[pdbp] def liftObject[Z]: Z => FTM[Z] = { z =>
-    LiftObject[M, Z](z)
+    LiftingObject[M, Z](z)
   }
 
   override private[pdbp] def bind[Z, Y](ftmz: FTM[Z],
@@ -80,11 +80,11 @@ private[pdbp] trait FreeTransformer[M[+ _]: Computation]
       case Bind(Bind(mx, x2ftmy), y2ftmz) =>
         // step(bind(mx, x => bind(x2ftmy(x), y2ftmz)))
         step(bind(mx, compose(x2ftmy, y2ftmz)))
-      case Bind(LiftObject(y), y2ftmz) => step(y2ftmz(y))
+      case Bind(LiftingObject(y), y2ftmz) => step(y2ftmz(y))
       case              _              => ftmz
     }
     step(`z>=ftk=>y`(z)) match {
-      case LiftObject(z) => resultM(z)
+      case LiftingObject(z) => resultM(z)
       case _ =>
         sys.error(
           "Impossible, since, for 'FreeTransformer', 'step' eliminates this case")

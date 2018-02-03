@@ -1,4 +1,4 @@
-package pdbp.program.writing.canbewritten.instances.log
+package pdbp.program.writing.folding.instances.log
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -14,11 +14,11 @@ import pdbp.types.log.logTypes._
 
 import pdbp.utils.productUtils._
 
-import pdbp.program.writing.canbewritten.CanBeWritten
+import pdbp.program.writing.folding.Folding
 
-private[pdbp] object logCanBeWritten extends CanBeWritten[Log] {
+private[pdbp] object logFolding extends Folding[Log] {
 
-  override private[pdbp] val empty: Log =
+  override private[pdbp] val start: Log =
     Log { _ => () }
 
   override private[pdbp] val append: Log && Log => Log = { (l1, l2) =>

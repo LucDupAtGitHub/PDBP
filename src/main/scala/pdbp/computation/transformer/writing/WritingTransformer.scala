@@ -33,11 +33,11 @@ import pdbp.program.transformer.ProgramTransformer
 
 import pdbp.computation.transformer.ComputationTransformer
 
-import pdbp.program.writing.canbewritten.CanBeWritten
+import pdbp.program.writing.folding.Folding
 
 import pdbp.program.writing.Writing
 
-trait WritingTransformer[W: CanBeWritten, M[+ _]: Computation]
+trait WritingTransformer[W: Folding, M[+ _]: Computation]
     extends Computation[WritingTransformed[W, M]]
     with Program[Kleisli[WritingTransformed[W, M]]]
     with Writing[W, Kleisli[WritingTransformed[W, M]]]
@@ -46,16 +46,16 @@ trait WritingTransformer[W: CanBeWritten, M[+ _]: Computation]
 
   private type WTM = WritingTransformed[W, M]
 
-  val implicitCanBeWritten = implicitly[CanBeWritten[W]]
+  val implicitFolding = implicitly[Folding[W]]
 
-  import implicitCanBeWritten._
+  import implicitFolding._
 
   import implicitComputation.{bind => bindM}
   import implicitComputation.{result => resultM}
 
   override private[pdbp] def liftComputation[Z](mz: M[Z]): WTM[Z] = {
     bindM(mz, { z =>
-      resultM((empty, z))
+      resultM((start, z))
     })
   }
 
@@ -88,7 +88,7 @@ trait WritingTransformer[W: CanBeWritten, M[+ _]: Computation]
     resultM((w, ()))
   }
 
-  override def write[Z, Y](`z=>(w&&y)`: Z => (W && Y)): Z `>=WTK=>` Y = { z =>
+  override private[pdbp] def functionWithWrite[Z, Y](`z=>(w&&y)`: Z => (W && Y)): Z `>=WTK=>` Y = { z =>
     resultM(`z=>(w&&y)`(z))
   }
 
