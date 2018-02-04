@@ -3018,8 +3018,10 @@ object activeLoggingUsingSl4jProgram
     writing(Log { _ => logger.info(s) } )
 
   override def infoFunction[Z, Y](s : String): (Z => Y) => (Z `>-al->` Y) = {`z=>y` =>
-    writingFunction({ z => (Log { _ => logger.info(s"$s($z)") }, `z=>y`(z) )})
-  }    
+    writingFunction { z => 
+      val y = `z=>y`(z) ; 
+      (Log { _ => logger.info(s"$s($z) == $y") }, y)}
+  }  
   
   import implicitComputation.{result => resultM}
   import implicitComputation.{bind => bindM}
@@ -3355,33 +3357,33 @@ Let's try `6` for the `pointfulLoggingFactorial` argument.
 please type an integer
 6
 the factorial value of the integer is 720
-INFO  22:05:20.855 - factorial
-INFO  22:05:20.858 - isPositive(6)
-INFO  22:05:20.858 - subtractOne(6)
-INFO  22:05:20.858 - factorial
-INFO  22:05:20.858 - isPositive(5)
-INFO  22:05:20.858 - subtractOne(5)
-INFO  22:05:20.858 - factorial
-INFO  22:05:20.858 - isPositive(4)
-INFO  22:05:20.859 - subtractOne(4)
-INFO  22:05:20.859 - factorial
-INFO  22:05:20.859 - isPositive(3)
-INFO  22:05:20.859 - subtractOne(3)
-INFO  22:05:20.859 - factorial
-INFO  22:05:20.859 - isPositive(2)
-INFO  22:05:20.859 - subtractOne(2)
-INFO  22:05:20.859 - factorial
-INFO  22:05:20.859 - isPositive(1)
-INFO  22:05:20.859 - subtractOne(1)
-INFO  22:05:20.859 - factorial
-INFO  22:05:20.859 - isPositive(0)
-INFO  22:05:20.859 - one(0)
-INFO  22:05:20.859 - multiply((1,1))
-INFO  22:05:20.859 - multiply((2,1))
-INFO  22:05:20.859 - multiply((3,2))
-INFO  22:05:20.860 - multiply((4,6))
-INFO  22:05:20.860 - multiply((5,24))
-INFO  22:05:20.860 - multiply((6,120))
+INFO  18:38:31.628 - factorial
+INFO  18:38:31.630 - isPositive(6) == true
+INFO  18:38:31.631 - subtractOne(6) == 5
+INFO  18:38:31.631 - factorial
+INFO  18:38:31.631 - isPositive(5) == true
+INFO  18:38:31.631 - subtractOne(5) == 4
+INFO  18:38:31.631 - factorial
+INFO  18:38:31.631 - isPositive(4) == true
+INFO  18:38:31.631 - subtractOne(4) == 3
+INFO  18:38:31.631 - factorial
+INFO  18:38:31.631 - isPositive(3) == true
+INFO  18:38:31.631 - subtractOne(3) == 2
+INFO  18:38:31.631 - factorial
+INFO  18:38:31.631 - isPositive(2) == true
+INFO  18:38:31.631 - subtractOne(2) == 1
+INFO  18:38:31.631 - factorial
+INFO  18:38:31.631 - isPositive(1) == true
+INFO  18:38:31.631 - subtractOne(1) == 0
+INFO  18:38:31.631 - factorial
+INFO  18:38:31.631 - isPositive(0) == false
+INFO  18:38:31.631 - one(0) == 1
+INFO  18:38:31.632 - multiply((1,1)) == 1
+INFO  18:38:31.632 - multiply((2,1)) == 2
+INFO  18:38:31.632 - multiply((3,2)) == 6
+INFO  18:38:31.632 - multiply((4,6)) == 24
+INFO  18:38:31.632 - multiply((5,24)) == 120
+INFO  18:38:31.632 - multiply((6,120)) == 720
 [success] Total time: 3 s, completed Feb 3, 2018 10:05:21 PM
 ```
 

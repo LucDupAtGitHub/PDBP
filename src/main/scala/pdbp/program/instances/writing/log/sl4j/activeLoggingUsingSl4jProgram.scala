@@ -58,7 +58,9 @@ object activeLoggingUsingSl4jProgram
     writing(Log { _ => logger.info(s) } )
 
   override def infoFunction[Z, Y](s : String): (Z => Y) => (Z `>-al->` Y) = {`z=>y` =>
-    writingFunction({ z => (Log { _ => logger.info(s"$s($z)") }, `z=>y`(z) )})
+    writingFunction { z => 
+      val y = `z=>y`(z) ; 
+      (Log { _ => logger.info(s"$s($z) == $y") }, y)}
   }    
   
   import implicitComputation.{result => resultM}
