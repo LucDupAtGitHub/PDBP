@@ -6,8 +6,7 @@ Expect frequent changes. In the file Changes.md, we describe some of the more im
 
 ### Note
 
-The code has been refactored a bit (still needs a bit of cleanup as well).
-The documentation is, temporarily, not 100% in sync with the refactored code.
+The documentation is, temporarily, not 100% in sync with the code. The code already contains *readingWithWriting*.
 
 ## Introduction
 
@@ -416,7 +415,7 @@ trait Composition[>-->[- _, + _]] {
 
 `composition` makes a  *program* `` composition(`z>-->y`, `y>-->x`) `` that is *composed* from *simpler programs*, `` `z>-->y` `` and `` `y>-->x` ``.
 
-The program `` composition(`z>-->y`, `y>-->x`) `` is the *sequential composition* of the program `` `z>-->y` `` and the program `` `y>-->x` ``. The result of program `` `z>-->y` `` is the argument of the *subsequent* program `` `y>-->x` ``. Note that `` `y>-->x` `` is a *call-by-name parameter*. Program `` `z>-->y` `` may *fail*. 
+The program `` composition(`z>-->y`, `y>-->x`) `` is the *sequential composition* of the program `` `z>-->y` `` and the program `` `y>-->x` ``. The result of program `` `z>-->y` `` is the argument of the *subsequent* program `` `y>-->x` ``. Note that `` `y>-->x` `` is a *call-by-name parameter*. Program `` `y>-->x` `` may never be used, for example since program `` `z>-->y` `` may *fail*. 
 
 Consider
 
@@ -715,6 +714,7 @@ trait Execution[>-->[- _, + _]] {
 
 }
 ```
+**Note:** the `Execution` code above is *not* the final one: it will be changed in section `Reading`.
 
 A program `` `z>-->y` `` of type `Z >--> Y` can be composed
 
@@ -1391,7 +1391,6 @@ private[pdbp] trait LiftingOperator[M[+ _]] {
  - one with *one parameter* of type `Z && Y` resp. `M[Z] && M[Y]`,
  - one with *two parameters* of type `Z` and `Y` resp. `M[Z]` and `M[Y]`.
 
-
 #### `Lifting` examples
 
 Lifting comes with some other interesting computational capabilities. Add all those capabilities to `trait Lifting`.
@@ -1666,13 +1665,13 @@ We are ready for our next program instance.
 ```scala
 package pdbp.program.instances.active
 
+import pdbp.types.active.activeTypes._
+
 import pdbp.utils.functionUtils._
 
 import pdbp.program.Program
 
 import pdbp.computation.Computation
-
-import pdbp.types.active.activeTypes._
 
 object activeProgram extends Computation[Active] with Program[`>-a->`] {
 
@@ -1889,7 +1888,7 @@ package pdbp.program.transformer
 
 import pdbp.program.Program
 
-trait ProgramTransformer[`>-D->`[- _, + _]: Program, `>-U->`[- _, + _]] {
+private[pdbp] trait ProgramTransformer[`>-D->`[- _, + _]: Program, `>-U->`[- _, + _]] {
 
   private[pdbp] val implicitProgram = implicitly[Program[`>-D->`]]
 
@@ -1917,7 +1916,7 @@ import pdbp.computation.Computation
 
 import pdbp.program.transformer.ProgramTransformer
 
-trait ComputationTransformer[D[+ _]: Computation, U[+ _]]
+private[pdbp] trait ComputationTransformer[D[+ _]: Computation, U[+ _]]
     extends ProgramTransformer[Kleisli[D], Kleisli[U]]
     with LiftingObject[U] {
 
@@ -2068,6 +2067,10 @@ The next computation instance (and corresponding program instance) that we prese
 ```scala
 package pdbp.program.instances.active.free
 
+import pdbp.types.active.activeTypes._
+
+import pdbp.types.active.free.activeFreeTypes._
+
 import pdbp.program.Program
 
 import pdbp.computation.Computation
@@ -2078,11 +2081,7 @@ import pdbp.computation.transformer.ComputationTransformer
 
 import pdbp.computation.transformer.free.FreeTransformer
 
-import pdbp.types.active.activeTypes._
-
 import pdbp.program.implicits.active.implicits.implicitActiveProgram
-
-import pdbp.types.active.free.activeFreeTypes._
 
 object activeFreeProgram
     extends Computation[ActiveFree]
@@ -2133,6 +2132,8 @@ Finally we can define an *runnable program*.
 
 ```scala
 package examples.program.main.active.free
+
+import pdbp.types.active.free.activeFreeTypes.`>-af->`
 
 import pdbp.program.implicits.active.free.implicits.implicitActiveFreeProgram
 
@@ -2295,6 +2296,18 @@ trait Execution[>-->[- _, + _]] {
 }
 ```
 
+where
+
+```scala
+package pdbp.types
+
+object implicitFunctionType {
+
+  type `I=>`[-X, +Y] = implicit X => Y 
+
+}
+```
+
 We changed the type of the member `execute` of `trait Execution` to have an *implicit function type* `` Environment `I=>` Unit `` for some type member `Environment`. `trait Execution` also has a `implicit val environment` of type `Environment`. You have to change all *usages* of `trait Execute` : an easy, slightly tedious exercise.
 
 ### `ReadingTransformer`
@@ -2320,13 +2333,13 @@ import pdbp.utils.productUtils._
 
 import pdbp.program.Program
 
+import pdbp.program.reading.Reading
+
 import pdbp.computation.Computation
 
 import pdbp.program.transformer.ProgramTransformer
 
 import pdbp.computation.transformer.ComputationTransformer
-
-import pdbp.program.reading.Reading
 
 private[pdbp] trait ReadingTransformer[R, M[+ _]: Computation]
     extends Computation[ReadingTransformed[R, M]]
@@ -2370,17 +2383,6 @@ private[pdbp] trait ReadingTransformer[R, M[+ _]: Computation]
 
 }
 ```
-where
-
-```scala
-package pdbp.types
-
-object implicitFunctionType {
-
-  type `I=>`[-X, +Y] = implicit X => Y 
-
-}
-```
 
 The type synonym `` `I=>` `` (and corresponding `RTM` and `` `>=RTK=>` `` ) above, indicate that the *implicitly* available *global* `val` is available. In fact, in `` `u>-->r` `` we use it as `implicitly`. 
 
@@ -2393,6 +2395,10 @@ The next computation instance (and corresponding program instance) that we prese
 ```scala
 package pdbp.program.instances.active.reading
 
+import pdbp.types.active.activeTypes._
+
+import pdbp.types.active.reading.activeReadingTypes._
+
 import pdbp.program.Program
 
 import pdbp.computation.Computation
@@ -2403,11 +2409,7 @@ import pdbp.computation.transformer.ComputationTransformer
 
 import pdbp.computation.transformer.reading.ReadingTransformer
 
-import pdbp.types.active.activeTypes._
-
 import pdbp.program.implicits.active.implicits.implicitActiveProgram
-
-import pdbp.types.active.reading.activeReadingTypes._
 
 trait ActiveReadingProgram[R]
     extends Computation[ActiveReading[R]]
@@ -2442,11 +2444,13 @@ Since there is a type parameter `R` involved, we defined the computation instanc
 Consider
 
 ```scala
-import pdbp.utils.runUtils._
+package pdbp.program.instances.active.reading.int.console
 
-import pdbp.program.Program
+import pdbp.types.active.activeTypes._
 
-import pdbp.computation.Computation
+import pdbp.types.active.reading.int.activeIntReadingTypes._
+
+import pdbp.program.reading.int.console.IntReadingFromConsole
 
 import pdbp.program.transformer.ProgramTransformer
 
@@ -2454,35 +2458,53 @@ import pdbp.computation.transformer.ComputationTransformer
 
 import pdbp.computation.transformer.reading.ReadingTransformer
 
-import pdbp.types.active.activeTypes._
+import pdbp.program.instances.active.reading.ActiveReadingProgram
 
 import pdbp.program.implicits.active.implicits.implicitActiveProgram
 
-import pdbp.types.active.reading.int.activeIntReadingTypes._
-
-import pdbp.program.instances.active.reading.ActiveReadingProgram
-
-object activeIntReadingFromConsoleProgram
-    extends Computation[ActiveIntReading]
-    with Program[`>-air->`]
-    with ActiveReadingProgram[BigInt]
-    with ComputationTransformer[Active, ActiveIntReading]()
-    with ProgramTransformer[`>-a->`, `>-air->`]()
-    with ReadingTransformer[BigInt, Active]() {
+trait ActiveIntReadingFromConsoleProgram
+    extends ActiveReadingProgram[BigInt]
+    with IntReadingFromConsole[`>-air->`] {
 
   implicit val implicitIntReadFromConsole: BigInt = 
-    readInt("please type an integer to read")(())
+    readIntFromConsole(())
 
-  import implicitProgram.{environment => environmentK}
+  private val environmentK = implicitProgram.environment
 
   override implicit val environment: Environment = {
     (environmentK, implicitIntReadFromConsole)
   }
 
 }
+
+object activeIntReadingFromConsoleProgram
+    extends ActiveIntReadingFromConsoleProgram()
+    with ComputationTransformer[Active, ActiveIntReading]()
+    with ProgramTransformer[`>-a->`, `>-air->`]()
+    with ReadingTransformer[BigInt, Active]()
 ```
 
 where
+
+```scala
+package pdbp.program.reading.int.console
+
+import pdbp.program.Function
+
+import pdbp.program.Composition
+
+import pdbp.program.reading.int.IntReading
+
+trait IntReadingFromConsole[>-->[- _, + _]] extends IntReading[>-->] {
+  this: Function[>-->] & Composition[>-->] =>
+  
+  val readIntFromConsole: Unit >--> BigInt = 
+    readInt("please type an integer to read")
+
+}
+```
+
+and
 
 ```scala
 package pdbp.types.active.reading.int
@@ -2507,6 +2529,8 @@ If we instantiate `R` with a concrete type `BigInt`, and define *how* to read an
 Consider
 
 ```scala
+package examples.program.reading.int
+
 import pdbp.program.Program
 
 import pdbp.program.reading.Reading
@@ -2576,7 +2600,7 @@ import pdbp.program.implicits.active.reading.int.console.implicits.implicitActiv
 
 import examples.program.FactorialTrait
 
-import examples.program.reading.int.console.FactorialMultipliedByIntReadFromConsoleTrait
+import examples.program.reading.int.FactorialMultipliedByIntReadTrait
 
 object FactorialMultipliedByIntReadFromConsoleMain {
 
@@ -2588,7 +2612,7 @@ object FactorialMultipliedByIntReadFromConsoleMain {
 
   def main(args: Array[String]): Unit = {
 
-    executeFactorialMultipliedByIntReadFromConsoleProgram
+    executeFactorialMultipliedByIntReadProgram
 
   }
 
@@ -2771,21 +2795,21 @@ private[pdbp] object writingTransformer {
 
 import writingTransformer._
 
-import pdbp.types.kleisli.kleisliFunctionType._
-
 import pdbp.types.implicitFunctionType.`I=>`
 
+import pdbp.types.kleisli.kleisliFunctionType._
+
 import pdbp.program.Program
+
+import pdbp.program.writing.folding.Folding
+
+import pdbp.program.writing.Writing
 
 import pdbp.computation.Computation
 
 import pdbp.program.transformer.ProgramTransformer
 
 import pdbp.computation.transformer.ComputationTransformer
-
-import pdbp.program.writing.folding.Folding
-
-import pdbp.program.writing.Writing
 
 private[pdbp] trait WritingTransformer[W: Folding, M[+ _]: Computation]
     extends Computation[WritingTransformed[W, M]]
@@ -2853,6 +2877,10 @@ The next computation instance (and corresponding program instance) that we prese
 ```scala
 package pdbp.program.instances.active.writing
 
+import pdbp.types.active.activeTypes._
+
+import pdbp.types.active.writing.activeWritingTypes._
+
 import pdbp.program.Program
 
 import pdbp.computation.Computation
@@ -2863,11 +2891,7 @@ import pdbp.computation.transformer.ComputationTransformer
 
 import pdbp.computation.transformer.writing.WritingTransformer
 
-import pdbp.types.active.activeTypes._
-
 import pdbp.program.implicits.active.implicits.implicitActiveProgram
-
-import pdbp.types.active.writing.activeWritingTypes._
 
 trait ActiveWritingProgram[W]
     extends Computation[ActiveWriting[W]]
@@ -2953,83 +2977,62 @@ import pdbp.program.Construction
 
 import pdbp.program.writing.Writing
 
-trait Logging[>-->[- _, + _]] extends Writing[Log, >-->] {
+trait LogWriting[>-->[- _, + _]] extends Writing[Log, >-->] {
   this: Function[>-->] & Composition[>-->] & Construction[>-->] => 
 
-  def info[Z, Y](s: String): (Z >--> Y) => (Z >--> Y)
+  def withInfo[Z, Y](s: String): (Z >--> Y) => (Z >--> Y)
 
-  def infoFunction[Z, Y](s: String): (Z => Y) => (Z >--> Y)
+  def functionWithInfo[Z, Y](s: String): (Z => Y) => (Z >--> Y)
 
 }
 ```
 
- - `info` does *info-level logging*,
- - `infoFunction` is a specific member that will be explained late in this section.
+ - `withInfo` does *info-level logging*,
+ - `functionWithInfo` is a specific member that will be explained late in this section.
 
 We could have defined members for other levels (*debug*, "error", "warning", ...) as well.
 
 Consider
 
 ```scala
+package pdbp.program.instances.active.writing.log.sl4j
+
 import pdbp.types.implicitFunctionType.`I=>`
 
 import pdbp.types.log.logTypes._
 
-import org.slf4j.LoggerFactory
+import pdbp.types.active.activeTypes._
 
-import pdbp.program.Program
-
-import pdbp.computation.Computation
+import pdbp.types.active.writing.log.activeLogWritingTypes._
 
 import pdbp.program.writing.Writing
 
-import pdbp.program.writing.log.Logging
+import pdbp.program.writing.log.sl4j.LogWritingUsingSl4j
 
 import pdbp.program.transformer.ProgramTransformer
 
-import pdbp.computation.transformer.ComputationTransformer
-
 import pdbp.computation.transformer.writing.WritingTransformer
 
-import pdbp.types.active.activeTypes._
-
-import pdbp.program.implicits.active.implicits.implicitActiveProgram
-
-import pdbp.types.active.writing.log.activeLoggingTypes._
+import pdbp.computation.transformer.ComputationTransformer
 
 import pdbp.program.instances.active.writing.ActiveWritingProgram
 
+import pdbp.program.implicits.active.implicits.implicitActiveProgram
+
 import pdbp.program.writing.folding.implicits.log.implicits.implicitLogFolding
 
-object activeLoggingUsingSl4jProgram
+trait ActiveLogWritingUsingSl4jProgram
     extends ActiveWritingProgram[Log]
-    with WritingTransformer[Log, Active]()
-    with ComputationTransformer[Active, ActiveLogging]()
-    with Computation[ActiveLogging]
-    with ProgramTransformer[`>-a->`, `>-al->`]()
-    with Program[`>-al->`] 
-    with Writing[Log, `>-al->`]() 
-    with Logging[`>-al->`] {
-
-  val logger = LoggerFactory.getLogger(this.getClass)
-  
-  override def info[Z, Y](s : String): (Z `>-al->` Y) => (Z `>-al->` Y) =
-    writing(Log { _ => logger.info(s) } )
-
-  override def infoFunction[Z, Y](s : String): (Z => Y) => (Z `>-al->` Y) = {`z=>y` =>
-    writingFunction { z => 
-      val y = `z=>y`(z) ; 
-      (Log { _ => logger.info(s"$s($z) == $y") }, y)}
-  }  
+    with LogWritingUsingSl4j[`>-alw->`] {   
   
   import implicitComputation.{result => resultM}
   import implicitComputation.{bind => bindM}
 
   import implicitProgram.{execute => executeK}
 
-  override def execute(`u>-al->u`: Unit `>-al->` Unit): Environment `I=>` Unit = {
+  override def execute(`u>-alw->u`: Unit `>-alw->` Unit): Environment `I=>` Unit = {
     executeK { u: Unit =>
-      bindM(`u>-al->u`(u), { (log, u) =>
+      bindM(`u>-alw->u`(u), { (log, u) =>
         log.effect(())
         resultM(u)
       })
@@ -3037,9 +3040,63 @@ object activeLoggingUsingSl4jProgram
   }
 
 }
+
+object activeLogWritingUsingSl4jProgram
+    extends ActiveLogWritingUsingSl4jProgram
+    with Writing[Log, `>-alw->`]()
+    with ComputationTransformer[Active, ActiveLogWriting]()
+    with ProgramTransformer[`>-a->`, `>-alw->`]()
+    with WritingTransformer[Log, Active]()
 ```
 
 where
+
+```scala
+package pdbp.program.writing.log.sl4j
+
+//       _______         __    __        _______
+//      / ___  /\       / /\  / /\      / ___  /\
+//     / /__/ / / _____/ / / / /_/__   / /__/ / /
+//    / _____/ / / ___  / / / ___  /\ /____  / /
+//   / /\____\/ / /__/ / / / /__/ / / \___/ / /
+//  /_/ /      /______/ / /______/ /     /_/ /
+//  \_\/       \______\/  \______\/      \_\/
+//                                           v1.0
+//  Program Description Based Programming Library
+
+import org.slf4j.LoggerFactory
+
+import pdbp.types.log.logTypes._
+
+import pdbp.program.Function
+
+import pdbp.program.Composition
+
+import pdbp.program.Construction
+
+import pdbp.program.writing.Writing
+
+import pdbp.program.writing.log.LogWriting
+
+trait LogWritingUsingSl4j[>-->[- _, + _]] extends LogWriting[>-->] {
+  this: Function[>-->] & Composition[>-->] & Construction[>-->] =>
+
+  private val logger = LoggerFactory.getLogger(this.getClass)  
+
+  override def withInfo[Z, Y](s : String): (Z >--> Y) => (Z >--> Y) =
+    writing(Log { _ => logger.info(s) } )
+
+  override def functionWithInfo[Z, Y](s : String): (Z => Y) => (Z >--> Y) = {`z=>y` =>
+    writingFunction { z => 
+      val y = `z=>y`(z) ; 
+      (Log { _ => logger.info(s"$s($z) == $y") }, y)
+    }
+  } 
+
+}
+```
+
+and
 
 ```scala
 package pdbp.types.active.writing.log
@@ -3059,14 +3116,25 @@ object activeLoggingTypes {
 }
 ```
 
-If we instantiate `W` with a concrete type `Log`, and define *how* to log information (using *sl4j*), then we can define an `object activeLoggingUsingSl4jProgram`. Note that the actual *execution* of the logging side effect happens in `execute`. We pushed the *impure* parts of our programs to the edges of those programs. Finally, note that we do not log *instantaniously* :  we *fold log information* that we write after program execution.
+If we instantiate `W` with a concrete type `Log`, and define *how* to log information (using *sl4j*), then we can define an `object activeLogWritingUsingSl4jProgram`. Note that the actual *execution* of the logging side effect happens in `execute`. We pushed the *impure* parts of our programs to the edges of those programs. Finally, note that we do not log *instantaniously* :  we *fold log information* that we write after program execution.
 
-### `pointfreeLoggingFactorial` using `activeLoggingUsingSl4jProgram`
+### `pointfreeLogWritingFactorial` using `activeLogWritingUsingSl4jProgram`
 
 Consider
 
 ```scala
 package examples.program.writing.log
+
+//       _______         __    __        _______
+//      / ___  /\       / /\  / /\      / ___  /\
+//     / /__/ / / _____/ / / / /_/__   / /__/ / /
+//    / _____/ / / ___  / / / ___  /\ /____  / /
+//   / /\____\/ / /__/ / / / /__/ / / \___/ / /
+//  /_/ /      /______/ / /______/ /     /_/ /
+//  \_\/       \______\/  \______\/      \_\/
+//                                           v1.0
+//  Program Description Based Programming Library
+//  author        Luc Duponcheel        2017-2018
 
 import pdbp.types.log.logTypes._
 
@@ -3074,19 +3142,19 @@ import pdbp.program.Program
 
 import pdbp.program.writing.Writing
 
-import pdbp.program.writing.log.Logging
+import pdbp.program.writing.log.LogWriting
 
 import examples.program.FactorialTrait
 
-trait PointfreeLoggingFactorialTrait
-   [>-->[- _, + _]: Program : [>-->[- _, + _]] => Logging[>-->]]
+trait PointfreeLogWritingFactorialTrait
+   [>-->[- _, + _]: Program : [>-->[- _, + _]] => LogWriting[>-->]]
      extends FactorialTrait[>-->] {
 
   import implicitProgram._
 
-  val implicitLogging = implicitly[Logging[>-->]]
+  val implicitLogWriting = implicitly[LogWriting[>-->]]
 
-  import implicitLogging._  
+  import implicitLogWriting._  
 
   import pdbp.program.compositionOperator._
 
@@ -3095,31 +3163,31 @@ trait PointfreeLoggingFactorialTrait
   import examples.utils.functionUtils._
 
   override val isPositive: BigInt >--> Boolean =
-    info("isPositive") {
+    withInfo("isPositive") {
       function(isPositiveFunction)
     }
 
   override val subtractOne: BigInt >--> BigInt =
-    info("subtractOne") {
+    withInfo("subtractOne") {
       function(subtractOneFunction)
     }
 
   override val multiply: (BigInt && BigInt) >--> BigInt =
-    info("multiply") {
+    withInfo("multiply") {
       function(multiplyFunction)
     }
 
   override def one[Z]: Z >--> BigInt =
-    info("one") {
+    withInfo("one") {
       function(oneFunction)
     }
 
-  def pointfreeLoggingFactorial: BigInt >--> BigInt =
-    info("factorial") {
+  def pointfreeLogWritingFactorial: BigInt >--> BigInt =
+    withInfo("factorial") {
       `if`(isPositive) {
         `let` {
           subtractOne >-->
-            pointfreeLoggingFactorial  
+            pointfreeLogWritingFactorial  
         } `in`
           multiply
       } `else` {
@@ -3127,20 +3195,20 @@ trait PointfreeLoggingFactorialTrait
       } 
     }
 
-  val pointfreeLoggingFactorialProgram: Unit >--> Unit =
+  val pointfreeLogWritingFactorialProgram: Unit >--> Unit =
     producer >-->
-      pointfreeLoggingFactorial >-->
+      pointfreeLogWritingFactorial >-->
       consumer
 
-  def executePointfreeLoggingFactorialProgram: Unit =
-    execute(pointfreeLoggingFactorialProgram)     
+  def executePointfreeLogWritingFactorialProgram: Unit =
+    execute(pointfreeLogWritingFactorialProgram)     
 
 }
 ```
 
-The `pointfreeLoggingFactorial` version of `factorial` makes use of `info` to do the pointfree logging (we'll see this when running the example). Note that, in contrast with `Reading`, when `Writing`, we already defined `info` in terms of `writing` in `object activeLoggingUsingSl4jProgram` where we were already concrete about *what* we are writing (a `Log`). Note that, in `object activeLoggingUsingSl4jProgram`, we also were concrete about *how* we are writing.
+The `pointfreeLogWritingFactorial` version of `factorial` makes use of `withInfo` to do the pointfree logging (we'll see this when running the example). Note that, in contrast with `Reading`, when `Writing`, we already defined `withInfo` in terms of `writing` in `trait LogWritingUsingSl4j` where we were already concrete about *what* we are writing (a `Log`). Note that, in `trait LogWritingUsingSl4j`, we also were concrete about *how* we are writing.
 
-### `PointfreeLoggingFactorialUsingSl4jMain` using `activeLoggingUsingSl4jProgram`
+### `PointfreeLogWritingFactorialUsingSl4jMain` using `activeLogWritingUsingSl4jProgram`
 
 Let's move on and define an `implicit val` that we can `import` later on. 
 
@@ -3149,10 +3217,10 @@ package pdbp.program.implicits.active.writing.log.sl4j
 
 object implicits {
 
-  import pdbp.program.instances.active.writing.log.sl4j.activeLoggingUsingSl4jProgram
+  import pdbp.program.instances.active.writing.log.sl4j.activeLogWritingUsingSl4jProgram
 
-  implicit val implicitActiveLoggingUsingSl4jProgram: activeLoggingUsingSl4jProgram.type =
-    activeLoggingUsingSl4jProgram
+  implicit val implicitActiveLogWritingUsingSl4jProgram: activeLogWritingUsingSl4jProgram.type =
+    activeLogWritingUsingSl4jProgram
 
 }
 ```
@@ -3162,29 +3230,29 @@ Finally we can define a *runnable program*.
 ```scala
 package examples.program.main.active.writing.log.sl4j
 
-import pdbp.types.active.writing.log.activeLoggingTypes.`>-al->`
+import pdbp.types.active.writing.log.activeLogWritingTypes.`>-alw->`
 
-import pdbp.program.implicits.active.writing.log.sl4j.implicits.implicitActiveLoggingUsingSl4jProgram
+import pdbp.program.implicits.active.writing.log.sl4j.implicits.implicitActiveLogWritingUsingSl4jProgram
 
 import examples.program.FactorialTrait
 
-import examples.program.writing.log.PointfreeLoggingFactorialTrait
+import examples.program.writing.log.PointfreeLogWritingFactorialTrait
 
-object PointfreeLoggingFactorialUsingSl4jMain {
+object PointfreeLogWritingFactorialUsingSl4jMain {
 
-  object pointfreeLoggingFactorialUsingSl4jObject 
-    extends PointfreeLoggingFactorialTrait[`>-al->`]() 
-    with FactorialTrait[`>-al->`]()
+  object pointfreeLogWritingFactorialUsingSl4jObject 
+    extends PointfreeLogWritingFactorialTrait[`>-alw->`]() 
+    with FactorialTrait[`>-alw->`]()
 
-  import pointfreeLoggingFactorialUsingSl4jObject._
+  import pointfreeLogWritingFactorialUsingSl4jObject._
 
   def main(args: Array[String]): Unit = {    
 
-    executePointfreeLoggingFactorialProgram
+    executePointfreeLogWritingFactorialProgram
 
   }
 
-}
+
 ```
 
 The code above mainly consists of bringing the necessary artifacts in scope, using
@@ -3192,14 +3260,14 @@ The code above mainly consists of bringing the necessary artifacts in scope, usi
  - an appropriate `import` of an `implicit`,
  - an appropriate `object` and an `import` that comes with it.
 
-#### running `PointfreeLoggingFactorialUsingSl4jMain` using `activeLoggingUsingSl4jProgram`
+#### running `PointfreeLogWritingFactorialUsingSl4jMain` using `activeLogWritingUsingSl4jProgram`
 
 Ok, so let's *execute* our program.
 
 Let's try `6` for the `pointfreeLoggingFactorial` argument.
 
 ```scala
-[info] Running examples.program.main.active.writing.log.sl4j.PointfreeLoggingFactorialUsingSl4jMain
+[info] Running examples.program.main.active.writing.log.sl4j.PointfreeLogWritingFactorialUsingSl4jMain
 please type an integer
 6
 the factorial value of the integer is 720
@@ -3232,12 +3300,23 @@ INFO  21:58:23.221 - multiply
 INFO  21:58:23.221 - multiply
 ```
 
-### `pointfulLoggingFactorial` using `activeLoggingUsingSl4jProgram`
+### `pointfulLogWritingFactorial` using `activeLogWritingUsingSl4jProgram`
 
 Consider
 
 ```scala
 package examples.program.writing.log
+
+//       _______         __    __        _______
+//      / ___  /\       / /\  / /\      / ___  /\
+//     / /__/ / / _____/ / / / /_/__   / /__/ / /
+//    / _____/ / / ___  / / / ___  /\ /____  / /
+//   / /\____\/ / /__/ / / / /__/ / / \___/ / /
+//  /_/ /      /______/ / /______/ /     /_/ /
+//  \_\/       \______\/  \______\/      \_\/
+//                                           v1.0
+//  Program Description Based Programming Library
+//  author        Luc Duponcheel        2017-2018
 
 import pdbp.types.log.logTypes._
 
@@ -3245,19 +3324,19 @@ import pdbp.program.Program
 
 import pdbp.program.writing.Writing
 
-import pdbp.program.writing.log.Logging
+import pdbp.program.writing.log.LogWriting
 
 import examples.program.FactorialTrait
 
-trait PointfulLoggingFactorialTrait
-   [>-->[- _, + _]: Program : [>-->[- _, + _]] => Logging[>-->]]
+trait PointfulLogWritingFactorialTrait
+   [>-->[- _, + _]: Program : [>-->[- _, + _]] => LogWriting[>-->]]
      extends FactorialTrait[>-->] {
 
   import implicitProgram._
 
-  val implicitLogging = implicitly[Logging[>-->]]
+  val implicitLogWriting = implicitly[LogWriting[>-->]]
 
-  import implicitLogging._  
+  import implicitLogWriting._  
 
   import pdbp.program.compositionOperator._
 
@@ -3266,23 +3345,23 @@ trait PointfulLoggingFactorialTrait
   import examples.utils.functionUtils._
 
   override val isPositive: BigInt >--> Boolean =
-    infoFunction("isPositive")(isPositiveFunction)
+    functionWithInfo("isPositive")(isPositiveFunction)
 
   override val subtractOne: BigInt >--> BigInt =
-    infoFunction("subtractOne")(subtractOneFunction)
+    functionWithInfo("subtractOne")(subtractOneFunction)
 
   override val multiply: (BigInt && BigInt) >--> BigInt =
-    infoFunction("multiply")(multiplyFunction)
+    functionWithInfo("multiply")(multiplyFunction)
 
   override def one[Z]: Z >--> BigInt =
-    infoFunction("one")(oneFunction)  
+    functionWithInfo("one")(oneFunction)  
 
-  def pointfulLoggingFactorial: BigInt >--> BigInt =
-    info("factorial") {
+  def pointfulLogWritingFactorial: BigInt >--> BigInt =
+    withInfo("factorial") {
       `if`(isPositive) {
         `let` {
           subtractOne >-->
-            pointfulLoggingFactorial  
+            pointfulLogWritingFactorial  
         } `in`
           multiply
       } `else` {
@@ -3290,45 +3369,45 @@ trait PointfulLoggingFactorialTrait
       } 
     }
 
-  val pointfulLoggingFactorialProgram: Unit >--> Unit =
+  val pointfulLogWritingFactorialProgram: Unit >--> Unit =
     producer >-->
-      pointfulLoggingFactorial >-->
+      pointfulLogWritingFactorial >-->
       consumer
 
-  def executePointfulLoggingFactorialProgram: Unit =
-    execute(pointfulLoggingFactorialProgram)     
+  def executePointfulLogWritingFactorialProgram: Unit =
+    execute(pointfulLogWritingFactorialProgram)     
 
 }
 ```
 
-The `pointfulLoggingFactorial` version of `factorial` makes use of `infoFunction` to do the pointful logging (we'll see this when running the example). Pointful logging is done for *functions* only (for `factorial` itself, pointfree logging is done). Think of `infoFunction` as a pointful info logging version of `function`.
+The `pointfulLogWritingFactorial` version of `factorial` makes use of `functionWithInfo` to do the pointful logging (we'll see this when running the example). Pointful logging is done for *functions* only (for `factorial` itself, pointfree logging is done). Think of `functionWithInfo` as a pointful info logging version of `function`.
 
-### `PointfulLoggingFactorialUsingSl4jMain` using `activeLoggingUsingSl4jProgram`
+### `PointfulLogWritingFactorialUsingSl4jMain` using `activeLogWritingUsingSl4jProgram`
 
 Finally we can define a *runnable program*.
 
 ```scala
 package examples.program.main.active.writing.log.sl4j
 
-import pdbp.types.active.writing.log.activeLoggingTypes.`>-al->`
+import pdbp.types.active.writing.log.activeLogWritingTypes.`>-alw->`
 
-import pdbp.program.implicits.active.writing.log.sl4j.implicits.implicitActiveLoggingUsingSl4jProgram
+import pdbp.program.implicits.active.writing.log.sl4j.implicits.implicitActiveLogWritingUsingSl4jProgram
 
 import examples.program.FactorialTrait
 
-import examples.program.writing.log.PointfulLoggingFactorialTrait
+import examples.program.writing.log.PointfulLogWritingFactorialTrait
 
-object PointfulLoggingFactorialUsingSl4jMain {
+object PointfulLogWritingFactorialUsingSl4jMain {
 
-  object pointfulLoggingFactorialUsingSl4jObject 
-    extends PointfulLoggingFactorialTrait[`>-al->`]() 
-    with FactorialTrait[`>-al->`]()
+  object pointfulLogWritingFactorialUsingSl4jObject 
+    extends PointfulLogWritingFactorialTrait[`>-alw->`]() 
+    with FactorialTrait[`>-alw->`]()
 
-  import pointfulLoggingFactorialUsingSl4jObject._
+  import pointfulLogWritingFactorialUsingSl4jObject._
 
   def main(args: Array[String]): Unit = {    
 
-    executePointfulLoggingFactorialProgram
+    executePointfulLogWritingFactorialProgram
 
   }
 
@@ -3340,14 +3419,14 @@ The code above mainly consists of bringing the necessary artifacts in scope, usi
  - an appropriate `import` of an `implicit`,
  - an appropriate `object` and an `import` that comes with it.
 
-#### running `PointfulLoggingFactorialUsingSl4jMain` using `activeLoggingUsingSl4jProgram`
+#### running `PointfulLogWritingFactorialUsingSl4jMain` using `activeLogWritingUsingSl4jProgram`
 
 Ok, so let's *execute* our program.
 
 Let's try `6` for the `pointfulLoggingFactorial` argument.
 
 ```scala
-[info] Running examples.program.main.active.writing.log.sl4j.PointfulLoggingFactorialUsingSl4jMain
+[info] Running examples.program.main.active.writing.log.sl4j.PointfulLogWritingFactorialUsingSl4jMain
 please type an integer
 6
 the factorial value of the integer is 720

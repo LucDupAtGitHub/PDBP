@@ -13,7 +13,7 @@ package pdbp.program.transformer
 
 import pdbp.program.Program
 
-trait ProgramTransformer[`>-D->`[- _, + _]: Program, `>-U->`[- _, + _]] {
+private[pdbp] trait ProgramTransformer[`>-D->`[- _, + _]: Program, `>-U->`[- _, + _]] {
 
   private[pdbp] val implicitProgram = implicitly[Program[`>-D->`]]
 

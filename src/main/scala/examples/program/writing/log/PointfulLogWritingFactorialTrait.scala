@@ -38,19 +38,19 @@ trait PointfulLogWritingFactorialTrait
   import examples.utils.functionUtils._
 
   override val isPositive: BigInt >--> Boolean =
-    infoFunction("isPositive")(isPositiveFunction)
+    functionWithInfo("isPositive")(isPositiveFunction)
 
   override val subtractOne: BigInt >--> BigInt =
-    infoFunction("subtractOne")(subtractOneFunction)
+    functionWithInfo("subtractOne")(subtractOneFunction)
 
   override val multiply: (BigInt && BigInt) >--> BigInt =
-    infoFunction("multiply")(multiplyFunction)
+    functionWithInfo("multiply")(multiplyFunction)
 
   override def one[Z]: Z >--> BigInt =
-    infoFunction("one")(oneFunction)  
+    functionWithInfo("one")(oneFunction)  
 
   def pointfulLogWritingFactorial: BigInt >--> BigInt =
-    info("factorial") {
+    withInfo("factorial") {
       `if`(isPositive) {
         `let` {
           subtractOne >-->

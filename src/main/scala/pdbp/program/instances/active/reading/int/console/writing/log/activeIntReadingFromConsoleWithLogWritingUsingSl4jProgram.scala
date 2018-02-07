@@ -55,24 +55,17 @@ import pdbp.types.active.writing.activeWritingTypes._
 
 import pdbp.types.active.writing.log.activeLogWritingTypes._
 
-import pdbp.program.instances.active.reading.int.console.activeIntReadingFromConsoleProgram
+import pdbp.program.instances.active.reading.int.console.activeIntReadingFromConsoleProgram._
 
 import pdbp.program.implicits.active.writing.log.sl4j.implicits.implicitActiveLogWritingUsingSl4jProgram
 
 trait ActiveIntReadingFromConsoleWithLogWritingUsingSl4jProgram
-    extends Computation[ActiveIntReadingWithLogWriting]
-    with Program[`>-airlw->`]
+    extends ActiveReadingWithWritingProgram[BigInt, Log] 
+    // with Computation[ActiveIntReadingWithLogWriting]
+    // with Program[`>-airlw->`]
     with LogWritingUsingSl4j[`>-airlw->`]    
-    with IntReadingFromConsole[`>-airlw->`]   
-    with ReadingWithWritingTransformer[BigInt, Log, ActiveLogWriting]
-
-object activeIntReadingFromConsoleWithLogWritingUsingSl4jProgram
-    extends ActiveIntReadingFromConsoleWithLogWritingUsingSl4jProgram 
-    with Writing[Log, `>-airlw->`]() 
-    with ComputationTransformer[ActiveLogWriting, ActiveIntReadingWithLogWriting]()
-    with ProgramTransformer[`>-alw->`, `>-airlw->`]() 
-    with ReadingTransformer[BigInt, ActiveLogWriting]() 
-    with ReadingWithWritingTransformer[BigInt, Log, ActiveLogWriting]() {
+    with IntReadingFromConsole[`>-airlw->`] {
+    // with ReadingWithWritingTransformer[BigInt, Log, ActiveLogWriting] 
 
   // import org.slf4j.LoggerFactory
 
@@ -91,10 +84,21 @@ object activeIntReadingFromConsoleWithLogWritingUsingSl4jProgram
   //implicit val implicitIntReadFromConsole: BigInt = 
     // intReadFromConsole(())
 
-  import implicitProgram.{environment => environmentK}
+  // import implicitProgram.{environment => environmentK}
+
+  private val environmentK = implicitProgram.environment
 
   override implicit val environment: Environment = {
-    (environmentK, activeIntReadingFromConsoleProgram.implicitIntReadFromConsole)
+    (environmentK, implicitIntReadFromConsole)
   }
 
 }
+
+object activeIntReadingFromConsoleWithLogWritingUsingSl4jProgram
+    extends ActiveIntReadingFromConsoleWithLogWritingUsingSl4jProgram 
+    with ActiveReadingWithWritingProgram[BigInt, Log]()
+    with Writing[Log, `>-airlw->`]() 
+    with ComputationTransformer[ActiveLogWriting, ActiveIntReadingWithLogWriting]()
+    with ProgramTransformer[`>-alw->`, `>-airlw->`]() 
+    with ReadingTransformer[BigInt, ActiveLogWriting]() 
+    with ReadingWithWritingTransformer[BigInt, Log, ActiveLogWriting]() 

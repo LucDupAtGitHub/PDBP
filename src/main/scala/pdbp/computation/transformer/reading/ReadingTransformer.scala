@@ -27,13 +27,13 @@ import pdbp.utils.productUtils._
 
 import pdbp.program.Program
 
+import pdbp.program.reading.Reading
+
 import pdbp.computation.Computation
 
 import pdbp.program.transformer.ProgramTransformer
 
 import pdbp.computation.transformer.ComputationTransformer
-
-import pdbp.program.reading.Reading
 
 private[pdbp] trait ReadingTransformer[R, M[+ _]: Computation]
     extends Computation[ReadingTransformed[R, M]]

@@ -23,9 +23,9 @@ import pdbp.program.writing.Writing
 trait LogWriting[>-->[- _, + _]] extends Writing[Log, >-->] {
   this: Function[>-->] & Composition[>-->] & Construction[>-->] => 
 
-  def info[Z, Y](s: String): (Z >--> Y) => (Z >--> Y)
+  def withInfo[Z, Y](s: String): (Z >--> Y) => (Z >--> Y)
 
-  def infoFunction[Z, Y](s: String): (Z => Y) => (Z >--> Y)
+  def functionWithInfo[Z, Y](s: String): (Z => Y) => (Z >--> Y)
 
 }
 

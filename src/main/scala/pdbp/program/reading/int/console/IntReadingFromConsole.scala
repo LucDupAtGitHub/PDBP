@@ -20,7 +20,7 @@ import pdbp.program.reading.int.IntReading
 trait IntReadingFromConsole[>-->[- _, + _]] extends IntReading[>-->] {
   this: Function[>-->] & Composition[>-->] =>
   
-  val intReadFromConsole: Unit >--> BigInt = 
+  val readIntFromConsole: Unit >--> BigInt = 
     readInt("please type an integer to read")
 
 }

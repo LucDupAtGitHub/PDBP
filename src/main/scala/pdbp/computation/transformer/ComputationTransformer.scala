@@ -19,7 +19,7 @@ import pdbp.computation.Computation
 
 import pdbp.program.transformer.ProgramTransformer
 
-trait ComputationTransformer[D[+ _]: Computation, U[+ _]]
+private[pdbp] trait ComputationTransformer[D[+ _]: Computation, U[+ _]]
     extends ProgramTransformer[Kleisli[D], Kleisli[U]]
     with LiftingObject[U] {
 

@@ -21,21 +21,21 @@ private[pdbp] object writingTransformer {
 
 import writingTransformer._
 
-import pdbp.types.kleisli.kleisliFunctionType._
-
 import pdbp.types.implicitFunctionType.`I=>`
 
+import pdbp.types.kleisli.kleisliFunctionType._
+
 import pdbp.program.Program
+
+import pdbp.program.writing.folding.Folding
+
+import pdbp.program.writing.Writing
 
 import pdbp.computation.Computation
 
 import pdbp.program.transformer.ProgramTransformer
 
 import pdbp.computation.transformer.ComputationTransformer
-
-import pdbp.program.writing.folding.Folding
-
-import pdbp.program.writing.Writing
 
 private[pdbp] trait WritingTransformer[W: Folding, M[+ _]: Computation]
     extends Computation[WritingTransformed[W, M]]

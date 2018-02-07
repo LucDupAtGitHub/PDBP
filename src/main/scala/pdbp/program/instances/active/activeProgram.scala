@@ -13,13 +13,13 @@ package pdbp.program.instances.active
 
 import pdbp.types.implicitFunctionType.`I=>`
 
+import pdbp.types.active.activeTypes._
+
 import pdbp.utils.functionUtils._
 
 import pdbp.program.Program
 
 import pdbp.computation.Computation
-
-import pdbp.types.active.activeTypes._
 
 object activeProgram extends Computation[Active] with Program[`>-a->`] {
 

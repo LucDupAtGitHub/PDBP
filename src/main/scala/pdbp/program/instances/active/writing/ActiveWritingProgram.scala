@@ -10,6 +10,10 @@ package pdbp.program.instances.active.writing
 //                                           v1.0
 //  Program Description Based Programming Library
 
+import pdbp.types.active.activeTypes._
+
+import pdbp.types.active.writing.activeWritingTypes._
+
 import pdbp.program.Program
 
 import pdbp.computation.Computation
@@ -20,11 +24,7 @@ import pdbp.computation.transformer.ComputationTransformer
 
 import pdbp.computation.transformer.writing.WritingTransformer
 
-import pdbp.types.active.activeTypes._
-
 import pdbp.program.implicits.active.implicits.implicitActiveProgram
-
-import pdbp.types.active.writing.activeWritingTypes._
 
 trait ActiveWritingProgram[W]
     extends Computation[ActiveWriting[W]]
