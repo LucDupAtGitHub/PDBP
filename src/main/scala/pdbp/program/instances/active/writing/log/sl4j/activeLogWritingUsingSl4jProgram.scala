@@ -23,7 +23,9 @@ import pdbp.computation.Computation
 
 import pdbp.program.writing.Writing
 
-import pdbp.program.writing.log.Logging
+import pdbp.program.writing.log.LogWriting
+
+import pdbp.program.writing.log.sl4j.LogWritingUsingSl4j
 
 import pdbp.program.transformer.ProgramTransformer
 
@@ -35,47 +37,40 @@ import pdbp.types.active.activeTypes._
 
 import pdbp.program.implicits.active.implicits.implicitActiveProgram
 
-import pdbp.types.active.writing.log.activeLoggingTypes._
+import pdbp.types.active.writing.log.activeLogWritingTypes._
 
 import pdbp.program.instances.active.writing.ActiveWritingProgram
 
 import pdbp.program.writing.folding.implicits.log.implicits.implicitLogFolding
 
-object activeLoggingUsingSl4jProgram
-    extends Computation[ActiveLogging]
-    with Program[`>-al->`] 
-    with ActiveWritingProgram[Log]
-    with Writing[Log, `>-al->`]() 
-    with Logging[`>-al->`]    
-    with ComputationTransformer[Active, ActiveLogging]()
-    with ProgramTransformer[`>-a->`, `>-al->`]()
-    with WritingTransformer[Log, Active]() 
-    {
+trait ActiveLogWritingUsingSl4jProgram
+    extends Computation[ActiveLogWriting]
+    with Program[`>-alw->`] 
+    with Writing[Log, `>-alw->`] 
+    with LogWritingUsingSl4j[`>-alw->`]    
+    with ComputationTransformer[Active, ActiveLogWriting]
+    with ProgramTransformer[`>-a->`, `>-alw->`]
+    with WritingTransformer[Log, Active] { 
 
-  val logger = LoggerFactory.getLogger(this.getClass)
+  // private val logger = LoggerFactory.getLogger(this.getClass)
   
-  override def info[Z, Y](s : String): (Z `>-al->` Y) => (Z `>-al->` Y) =
-    writing(Log { _ => logger.info(s) } )
+  // override def info[Z, Y](s : String): (Z `>-alw->` Y) => (Z `>-alw->` Y) =
+  //   writing(Log { _ => logger.info(s) } )
 
-  override def infoFunction[Z, Y](s : String): (Z => Y) => (Z `>-al->` Y) = {`z=>y` =>
-    writingFunction { z => 
-      val y = `z=>y`(z) ; 
-      (Log { _ => logger.info(s"$s($z) == $y") }, y)}
-  }    
+  // override def infoFunction[Z, Y](s : String): (Z => Y) => (Z `>-alw->` Y) = {`z=>y` =>
+  //   writingFunction { z => 
+  //     val y = `z=>y`(z) ; 
+  //     (Log { _ => logger.info(s"$s($z) == $y") }, y)}
+  // }    
   
   import implicitComputation.{result => resultM}
   import implicitComputation.{bind => bindM}
 
-  import implicitProgram.{environment => environmentK}
   import implicitProgram.{execute => executeK}
 
-  override implicit val environment: Environment = {
-    environmentK
-  }
-
-  override def execute(`u>-al->u`: Unit `>-al->` Unit): Environment `I=>` Unit = {
+  override def execute(`u>-alw->u`: Unit `>-alw->` Unit): Environment `I=>` Unit = {
     executeK { u: Unit =>
-      bindM(`u>-al->u`(u), { (log, u) =>
+      bindM(`u>-alw->u`(u), { (log, u) =>
         log.effect(())
         resultM(u)
       })
@@ -83,3 +78,11 @@ object activeLoggingUsingSl4jProgram
   }
 
 }
+
+object activeLogWritingUsingSl4jProgram
+    extends ActiveLogWritingUsingSl4jProgram
+    with Writing[Log, `>-alw->`]()
+    with ComputationTransformer[Active, ActiveLogWriting]()
+    with ProgramTransformer[`>-a->`, `>-alw->`]()
+    with WritingTransformer[Log, Active]()
+

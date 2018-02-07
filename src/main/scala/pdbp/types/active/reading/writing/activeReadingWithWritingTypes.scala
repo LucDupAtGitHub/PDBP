@@ -1,4 +1,4 @@
-package pdbp.types.active.writing.log
+package pdbp.types.active.reading.writing
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -12,14 +12,15 @@ package pdbp.types.active.writing.log
 
 import pdbp.types.kleisli.kleisliFunctionType._
 
-import pdbp.types.log.logTypes._
+import pdbp.computation.transformer.reading.readingTransformer._
 
-import pdbp.types.active.writing.activeWritingTypes._ 
+import pdbp.types.active.writing.activeWritingTypes._
 
-object activeLoggingTypes {
+object activeReadingWithWritingTypes {
 
-  type ActiveLogging = ActiveWriting[Log]
+  type ActiveReadingWithWriting = [R, W] => ReadingTransformed[R, ActiveWriting[W]]
 
-  type `>-al->`= `>-aw->`[Log]
+  type `>-arw->`= [R, W] => Kleisli[ActiveReadingWithWriting[R, W]]
 
 }
+

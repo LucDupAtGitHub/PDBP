@@ -1,4 +1,4 @@
-package pdbp.program.implicits.active.writing.log.sl4j
+package pdbp.types.active.reading.writing.log
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -10,11 +10,16 @@ package pdbp.program.implicits.active.writing.log.sl4j
 //                                           v1.0
 //  Program Description Based Programming Library
 
-object implicits {
+import pdbp.types.kleisli.kleisliFunctionType._
 
-  import pdbp.program.instances.active.writing.log.sl4j.activeLoggingUsingSl4jProgram
+import pdbp.types.log.logTypes._
 
-  implicit val implicitActiveLoggingUsingSl4jProgram: activeLoggingUsingSl4jProgram.type =
-    activeLoggingUsingSl4jProgram
+import pdbp.types.active.reading.writing.activeReadingWithWritingTypes._ 
+
+object activeReadingWithLogWritingTypes {
+
+  type ActiveReadingWithLogWriting = [R] => ActiveReadingWithWriting[R, Log]
+
+  type `>-arlw->`= [R] => Kleisli[ActiveReadingWithLogWriting[R]]
 
 }

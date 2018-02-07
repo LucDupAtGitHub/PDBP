@@ -4,6 +4,11 @@
 
 Expect frequent changes. In the file Changes.md, we describe some of the more important changes. 
 
+### Note
+
+The code has been refactored a bit (still needs a bit of cleanup as well).
+The documentation is, temporarily, not 100% in sync with the refactored code.
+
 ## Introduction
 
 When writing an introduction it is challenging to find the right balance between providing *too many details* or *too few details*. This introduction provides many details. It is perfectly fine to read it diagonally.
@@ -2782,7 +2787,7 @@ import pdbp.program.writing.folding.Folding
 
 import pdbp.program.writing.Writing
 
-trait WritingTransformer[W: Folding, M[+ _]: Computation]
+private[pdbp] trait WritingTransformer[W: Folding, M[+ _]: Computation]
     extends Computation[WritingTransformed[W, M]]
     with Program[Kleisli[WritingTransformed[W, M]]]
     with Writing[W, Kleisli[WritingTransformed[W, M]]]
@@ -2814,19 +2819,13 @@ trait WritingTransformer[W: Folding, M[+ _]: Computation]
   private type `>=WTK=>` = Kleisli[WTM]
 
   import implicitProgram.{Environment => EnvironmentK}
+  import implicitProgram.{environment => environmentK}
   import implicitProgram.{execute => executeK}
 
   override type Environment = EnvironmentK
 
-  override def execute(
-      `u>=wtk=>u`: Unit `>=WTK=>` Unit): Environment `I=>` Unit = {
-    implicit environment =>
-      executeK { u: Unit =>
-        bindM(`u>=wtk=>u`(u), {
-          case (_, u) =>
-            resultM(u)
-        })
-      }
+  override implicit val environment: Environment = {
+    environmentK
   }
 
   override private[pdbp] val `w>-->u`: W `>=WTK=>` Unit = { w =>
@@ -3026,12 +3025,7 @@ object activeLoggingUsingSl4jProgram
   import implicitComputation.{result => resultM}
   import implicitComputation.{bind => bindM}
 
-  import implicitProgram.{environment => environmentK}
   import implicitProgram.{execute => executeK}
-
-  override implicit val environment: Environment = {
-    environmentK
-  }
 
   override def execute(`u>-al->u`: Unit `>-al->` Unit): Environment `I=>` Unit = {
     executeK { u: Unit =>

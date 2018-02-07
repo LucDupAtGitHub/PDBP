@@ -37,7 +37,7 @@ import pdbp.program.writing.folding.Folding
 
 import pdbp.program.writing.Writing
 
-trait WritingTransformer[W: Folding, M[+ _]: Computation]
+private[pdbp] trait WritingTransformer[W: Folding, M[+ _]: Computation]
     extends Computation[WritingTransformed[W, M]]
     with Program[Kleisli[WritingTransformed[W, M]]]
     with Writing[W, Kleisli[WritingTransformed[W, M]]]
@@ -69,19 +69,13 @@ trait WritingTransformer[W: Folding, M[+ _]: Computation]
   private type `>=WTK=>` = Kleisli[WTM]
 
   import implicitProgram.{Environment => EnvironmentK}
+  import implicitProgram.{environment => environmentK}
   import implicitProgram.{execute => executeK}
 
   override type Environment = EnvironmentK
 
-  override def execute(
-      `u>=wtk=>u`: Unit `>=WTK=>` Unit): Environment `I=>` Unit = {
-    implicit environment =>
-      executeK { u: Unit =>
-        bindM(`u>=wtk=>u`(u), {
-          case (_, u) =>
-            resultM(u)
-        })
-      }
+  override implicit val environment: Environment = {
+    environmentK
   }
 
   override private[pdbp] val `w>-->u`: W `>=WTK=>` Unit = { w =>

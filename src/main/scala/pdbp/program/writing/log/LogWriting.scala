@@ -20,7 +20,7 @@ import pdbp.program.Construction
 
 import pdbp.program.writing.Writing
 
-trait Logging[>-->[- _, + _]] extends Writing[Log, >-->] {
+trait LogWriting[>-->[- _, + _]] extends Writing[Log, >-->] {
   this: Function[>-->] & Composition[>-->] & Construction[>-->] => 
 
   def info[Z, Y](s: String): (Z >--> Y) => (Z >--> Y)
@@ -28,3 +28,5 @@ trait Logging[>-->[- _, + _]] extends Writing[Log, >-->] {
   def infoFunction[Z, Y](s: String): (Z => Y) => (Z >--> Y)
 
 }
+
+

@@ -11,25 +11,25 @@ package examples.program.main.active.writing.log.sl4j
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.active.writing.log.activeLoggingTypes.`>-al->`
+import pdbp.types.active.writing.log.activeLogWritingTypes.`>-alw->`
 
-import pdbp.program.implicits.active.writing.log.sl4j.implicits.implicitActiveLoggingUsingSl4jProgram
+import pdbp.program.implicits.active.writing.log.sl4j.implicits.implicitActiveLogWritingUsingSl4jProgram
 
 import examples.program.FactorialTrait
 
-import examples.program.writing.log.PointfulLoggingFactorialTrait
+import examples.program.writing.log.PointfulLogWritingFactorialTrait
 
-object PointfulLoggingFactorialUsingSl4jMain {
+object PointfulLogWritingFactorialUsingSl4jMain {
 
-  object pointfulLoggingFactorialUsingSl4jObject 
-    extends PointfulLoggingFactorialTrait[`>-al->`]() 
-    with FactorialTrait[`>-al->`]()
+  object pointfulLogWritingFactorialUsingSl4jObject 
+    extends PointfulLogWritingFactorialTrait[`>-alw->`]() 
+    with FactorialTrait[`>-alw->`]()
 
-  import pointfulLoggingFactorialUsingSl4jObject._
+  import pointfulLogWritingFactorialUsingSl4jObject._
 
   def main(args: Array[String]): Unit = {    
 
-    executePointfulLoggingFactorialProgram
+    executePointfulLogWritingFactorialProgram
 
   }
 

@@ -10,9 +10,11 @@ package pdbp.program.instances.active.reading.int.console
 //                                           v1.0
 //  Program Description Based Programming Library
 
-import pdbp.utils.runUtils._
+// import pdbp.utils.runUtils._
 
 import pdbp.program.Program
+
+import pdbp.program.reading.int.console.IntReadingFromConsole
 
 import pdbp.computation.Computation
 
@@ -30,21 +32,54 @@ import pdbp.types.active.reading.int.activeIntReadingTypes._
 
 import pdbp.program.instances.active.reading.ActiveReadingProgram
 
-object activeIntReadingFromConsoleProgram
+// object activeIntReadingFromConsoleProgram
+//     extends Computation[ActiveIntReading]
+//     with Program[`>-air->`]
+//     with ActiveReadingProgram[BigInt]
+//     with ComputationTransformer[Active, ActiveIntReading]()
+//     with ProgramTransformer[`>-a->`, `>-air->`]()
+//     with ReadingTransformer[BigInt, Active]() {
+
+//   implicit val implicitIntReadFromConsole: BigInt = 
+//     readInt("please type an integer to read")(())
+
+//   import implicitProgram.{environment => environmentK}
+
+//   override implicit val environment: Environment = {
+//     (environmentK, implicitIntReadFromConsole)
+//   }
+
+// }
+
+trait ActiveIntReadingFromConsoleProgram
     extends Computation[ActiveIntReading]
     with Program[`>-air->`]
     with ActiveReadingProgram[BigInt]
-    with ComputationTransformer[Active, ActiveIntReading]()
-    with ProgramTransformer[`>-a->`, `>-air->`]()
-    with ReadingTransformer[BigInt, Active]() {
+    with ComputationTransformer[Active, ActiveIntReading]
+    with ProgramTransformer[`>-a->`, `>-air->`]
+    with ReadingTransformer[BigInt, Active] 
+    with IntReadingFromConsole[`>-air->`] {
 
   implicit val implicitIntReadFromConsole: BigInt = 
-    readInt("please type an integer to read")(())
+    intReadFromConsole(())
+    // readInt("please type an integer to read")(())
 
-  import implicitProgram.{environment => environmentK}
+  // not better
+  // private val implicitProgram = implicitly[Program[`>-air->`]]
+
+  // leads to trouble
+  // import implicitProgram.{environment => environmentK}
 
   override implicit val environment: Environment = {
-    (environmentK, implicitIntReadFromConsole)
+    (implicitProgram.environment, implicitIntReadFromConsole)
   }
 
 }
+
+object activeIntReadingFromConsoleProgram
+    extends ActiveIntReadingFromConsoleProgram()
+    with ComputationTransformer[Active, ActiveIntReading]()
+    with ProgramTransformer[`>-a->`, `>-air->`]()
+    with ReadingTransformer[BigInt, Active]()
+
+    

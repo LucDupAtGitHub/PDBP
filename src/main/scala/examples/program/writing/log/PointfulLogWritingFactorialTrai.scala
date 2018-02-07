@@ -17,19 +17,19 @@ import pdbp.program.Program
 
 import pdbp.program.writing.Writing
 
-import pdbp.program.writing.log.Logging
+import pdbp.program.writing.log.LogWriting
 
 import examples.program.FactorialTrait
 
-trait PointfulLoggingFactorialTrait
-   [>-->[- _, + _]: Program : [>-->[- _, + _]] => Logging[>-->]]
+trait PointfulLogWritingFactorialTrait
+   [>-->[- _, + _]: Program : [>-->[- _, + _]] => LogWriting[>-->]]
      extends FactorialTrait[>-->] {
 
   import implicitProgram._
 
-  val implicitLogging = implicitly[Logging[>-->]]
+  val implicitLogWriting = implicitly[LogWriting[>-->]]
 
-  import implicitLogging._  
+  import implicitLogWriting._  
 
   import pdbp.program.compositionOperator._
 
@@ -49,12 +49,12 @@ trait PointfulLoggingFactorialTrait
   override def one[Z]: Z >--> BigInt =
     infoFunction("one")(oneFunction)  
 
-  def pointfulLoggingFactorial: BigInt >--> BigInt =
+  def pointfulLogWritingFactorial: BigInt >--> BigInt =
     info("factorial") {
       `if`(isPositive) {
         `let` {
           subtractOne >-->
-            pointfulLoggingFactorial  
+            pointfulLogWritingFactorial  
         } `in`
           multiply
       } `else` {
@@ -62,12 +62,12 @@ trait PointfulLoggingFactorialTrait
       } 
     }
 
-  val pointfulLoggingFactorialProgram: Unit >--> Unit =
+  val pointfulLogWritingFactorialProgram: Unit >--> Unit =
     producer >-->
-      pointfulLoggingFactorial >-->
+      pointfulLogWritingFactorial >-->
       consumer
 
-  def executePointfulLoggingFactorialProgram: Unit =
-    execute(pointfulLoggingFactorialProgram)     
+  def executePointfulLogWritingFactorialProgram: Unit =
+    execute(pointfulLogWritingFactorialProgram)     
 
 }
