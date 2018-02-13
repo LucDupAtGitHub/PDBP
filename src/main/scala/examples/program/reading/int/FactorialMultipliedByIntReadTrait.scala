@@ -13,17 +13,16 @@ package examples.program.reading.int
 
 import pdbp.program.Program
 
-import pdbp.program.reading.Reading
+import pdbp.program.reading.int.IntReading
 
 import examples.program.FactorialTrait
 
-trait FactorialMultipliedByIntReadTrait
-  [>-->[- _, + _]: Program : [>-->[- _, + _]] => Reading[BigInt, >-->]]
+trait FactorialMultipliedByIntReadTrait[>-->[- _, + _]: Program : IntReading]
     extends FactorialTrait[>-->] {
 
   import implicitProgram._
 
-  val implicitReading = implicitly[Reading[BigInt, >-->]]
+  val implicitReading = implicitly[IntReading[>-->]]
 
   import implicitReading._
 

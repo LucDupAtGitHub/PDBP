@@ -11,19 +11,21 @@ package pdbp.program.instances.active.reading.int.console.writing.log.sl4j
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.utils.runUtils._
-
-import pdbp.types.kleisli.kleisliFunctionType._
+// import pdbp.types.kleisli.kleisliFunctionType._
 
 import pdbp.types.log.logTypes._
 
+import pdbp.types.active.activeTypes._
+
+import pdbp.types.active.writing.log.activeLogWritingTypes._
+
+import pdbp.types.active.reading.int.writing.log.activeIntReadingWithLogWritingTypes._
+
 import pdbp.program.Program
 
-import pdbp.program.reading.Reading
+import pdbp.program.writing.Writing
 
 import pdbp.program.reading.int.console.IntReadingFromConsole
-
-import pdbp.program.writing.Writing
 
 import pdbp.program.writing.log.LogWriting
 
@@ -37,60 +39,23 @@ import pdbp.computation.transformer.ComputationTransformer
 
 import pdbp.computation.transformer.reading.ReadingTransformer
 
-import pdbp.program.writing.folding.implicits.log.implicits.implicitLogFolding
-
-import pdbp.computation.transformer.writing.writingTransformer._
-
 import pdbp.computation.transformer.reading.writing.ReadingWithWritingTransformer
 
 import pdbp.program.instances.active.reading.writing.ActiveReadingWithWritingProgram
 
-import pdbp.program.instances.active.writing.log.sl4j.activeLogWritingUsingSl4jProgram
-
-import pdbp.types.active.reading.int.writing.log.activeIntReadingWithLogWritingTypes._
-
-import pdbp.types.active.activeTypes._
-
-import pdbp.types.active.writing.activeWritingTypes._
-
-import pdbp.types.active.writing.log.activeLogWritingTypes._
-
 import pdbp.program.instances.active.reading.int.console.activeIntReadingFromConsoleProgram._
+
+import pdbp.program.writing.folding.implicits.log.implicits.implicitLogFolding
 
 import pdbp.program.implicits.active.writing.log.sl4j.implicits.implicitActiveLogWritingUsingSl4jProgram
 
 trait ActiveIntReadingFromConsoleWithLogWritingUsingSl4jProgram
     extends ActiveReadingWithWritingProgram[BigInt, Log] 
-    // with Computation[ActiveIntReadingWithLogWriting]
-    // with Program[`>-airlw->`]
     with LogWritingUsingSl4j[`>-airlw->`]    
     with IntReadingFromConsole[`>-airlw->`] {
-    // with ReadingWithWritingTransformer[BigInt, Log, ActiveLogWriting] 
 
-  // import org.slf4j.LoggerFactory
-
-  // private val logger = LoggerFactory.getLogger(this.getClass)
-  
-  // override def info[Z, Y](s : String): (Z `>-airlw->` Y) => (Z `>-airlw->` Y) =
-  //   writing(Log { _ => logger.info(s) } )
-
-  // override def infoFunction[Z, Y](s : String): (Z => Y) => (Z `>-airlw->` Y) = {`z=>y` =>
-  //   writingFunction { z => 
-  //     val y = `z=>y`(z) ; 
-  //     (Log { _ => logger.info(s"$s($z) == $y") }, y)}
-  // } 
-
-  // TODO: check types
-  //implicit val implicitIntReadFromConsole: BigInt = 
-    // intReadFromConsole(())
-
-  // import implicitProgram.{environment => environmentK}
-
-  private val environmentK = implicitProgram.environment
-
-  override implicit val environment: Environment = {
-    (environmentK, implicitIntReadFromConsole)
-  }
+  override implicit val environment: Environment =
+    (implicitProgram.environment, implicitIntReadFromConsole)
 
 }
 

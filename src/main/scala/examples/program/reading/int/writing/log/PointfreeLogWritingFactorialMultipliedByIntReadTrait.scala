@@ -15,9 +15,7 @@ import pdbp.types.log.logTypes._
 
 import pdbp.program.Program
 
-import pdbp.program.reading.Reading
-
-import pdbp.program.writing.Writing
+import pdbp.program.reading.int.IntReading
 
 import pdbp.program.writing.log.LogWriting
 
@@ -25,14 +23,11 @@ import examples.program.writing.log.PointfreeLogWritingFactorialTrait
 
 import examples.program.reading.int.FactorialMultipliedByIntReadTrait
 
-trait PointfreeLogWritingFactorialMultipliedByIntReadTrait
-  [>-->[- _, + _]: Program : [>-->[- _, + _]] => Reading[BigInt, >-->] : [>-->[- _, + _]] => LogWriting[>-->]]
+trait PointfreeLogWritingFactorialMultipliedByIntReadTrait[>-->[- _, + _]: Program : IntReading : LogWriting]
     extends FactorialMultipliedByIntReadTrait[>-->] 
     with PointfreeLogWritingFactorialTrait[>-->] {
 
   import implicitProgram._
-
-  import implicitReading._
 
   import implicitReading._
 

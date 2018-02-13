@@ -17,22 +17,24 @@ import pdbp.types.kleisli.kleisliFunctionType._
 
 import pdbp.utils.productUtils._
 
-import pdbp.program.writing.folding.Folding
-
-import pdbp.program.Execution
-
 import pdbp.program.reading.Reading
 
 import pdbp.program.writing.Writing
 
+import pdbp.program.writing.folding.Folding
+
+import pdbp.program.Execution
+
 import pdbp.computation.Computation
 
-import  pdbp.computation.transformer.reading.readingTransformer._
 import  pdbp.computation.transformer.reading.ReadingTransformer
+
+import  pdbp.computation.transformer.reading.readingTransformer._
 
 import pdbp.computation.transformer.writing.writingTransformer._
 
-private[pdbp] trait ReadingWithWritingTransformer[R, W : Folding, M[+ _]: Computation : [M[+ _]] => Writing[W, Kleisli[M]]]
+private[pdbp] trait ReadingWithWritingTransformer[
+  R, W : Folding, M[+ _]: Computation : [M[+ _]] => Writing[W, Kleisli[M]]]
     extends ReadingTransformer[R, M]
     with Writing[W, Kleisli[ReadingTransformed[R, M]]] {
 
@@ -42,12 +44,15 @@ private[pdbp] trait ReadingWithWritingTransformer[R, W : Folding, M[+ _]: Comput
 
   private type `>=RTK=>` = Kleisli[RTM]
 
+  import implicitWriting.{`w>-->u` => `w>-k->u`}
+  import implicitWriting.{writingFunction => writingFunctionK}
+
   override private[pdbp] val `w>-->u`: W `>=RTK=>` Unit = { w =>
-    implicitWriting.`w>-->u`(w)
+    `w>-k->u`(w)
   }
 
   override private[pdbp] def writingFunction[Z, Y](`z=>(w&&y)`: Z => (W && Y)): Z `>=RTK=>` Y = { z =>
-    implicitWriting.writingFunction(`z=>(w&&y)`: Z => (W && Y))(z)
+    writingFunctionK(`z=>(w&&y)`: Z => (W && Y))(z)
   }
 
 }      

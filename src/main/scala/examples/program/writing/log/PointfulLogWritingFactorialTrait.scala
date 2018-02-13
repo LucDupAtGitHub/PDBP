@@ -21,8 +21,7 @@ import pdbp.program.writing.log.LogWriting
 
 import examples.program.FactorialTrait
 
-trait PointfulLogWritingFactorialTrait
-   [>-->[- _, + _]: Program : [>-->[- _, + _]] => LogWriting[>-->]]
+trait PointfulLogWritingFactorialTrait[>-->[- _, + _]: Program : LogWriting]
      extends FactorialTrait[>-->] {
 
   import implicitProgram._

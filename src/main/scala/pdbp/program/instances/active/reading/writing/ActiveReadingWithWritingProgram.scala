@@ -13,9 +13,13 @@ package pdbp.program.instances.active.reading.writing
 
 import pdbp.types.kleisli.kleisliFunctionType._
 
-import pdbp.program.writing.folding.Folding
+import pdbp.types.active.writing.activeWritingTypes._
+
+import pdbp.types.active.reading.writing.activeReadingWithWritingTypes._
 
 import pdbp.program.Program
+
+import pdbp.program.writing.folding.Folding
 
 import pdbp.computation.Computation
 
@@ -24,10 +28,6 @@ import pdbp.program.transformer.ProgramTransformer
 import pdbp.computation.transformer.ComputationTransformer
 
 import pdbp.computation.transformer.reading.writing.ReadingWithWritingTransformer
-
-import pdbp.types.active.writing.activeWritingTypes._
-
-import pdbp.types.active.reading.writing.activeReadingWithWritingTypes._
 
 trait ActiveReadingWithWritingProgram[R, W : Folding]
     extends Computation[ActiveReadingWithWriting[R, W]]

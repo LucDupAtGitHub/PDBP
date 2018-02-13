@@ -2533,12 +2533,11 @@ package examples.program.reading.int
 
 import pdbp.program.Program
 
-import pdbp.program.reading.Reading
+import pdbp.program.reading.int.IntReading
 
 import examples.program.FactorialTrait
 
-trait FactorialMultipliedByIntReadTrait
-  [>-->[- _, + _]: Program : [>-->[- _, + _]] => Reading[BigInt, >-->]]
+trait FactorialMultipliedByIntReadTrait[>-->[- _, + _]: Program : IntReading]
     extends FactorialTrait[>-->] {
 
   import implicitProgram._
@@ -2644,7 +2643,7 @@ the factorial value of the integer multiplied by the integer read is 240
 
 ### Introduction
 
-In sections `Reading` we presented a *first* extra programming and computation capability. In this section we introduce the *next* extra programming capability: *writing*. In a way we already used some form of writing using *consumers* that are used together with *producers* to turn programs of type `Z >--> Y` into programs of type `Unit >--> Unit` that are ready to be *executed*. Think, for example, of the capability of this section as being able to write *log information after program execution*.
+In section `Reading` we presented a *first* extra programming and computation capability. In this section we introduce the *next* extra programming capability: *writing*. In a way we already used some form of writing using *consumers* that are used together with *producers* to turn programs of type `Z >--> Y` into programs of type `Unit >--> Unit` that are ready to be *executed*. Think, for example, of the capability of this section as being able to write *log information after program execution*.
 
 Reading works with *any* type `R` involved. Writing requires the type `W` involved to have *folding capabilities*. The following three sections define folding in terms of *starting* and "appending". The *folding* capability itself, which is related to *sequencing* and *aggregation*, will be explaned later.
 
@@ -3054,16 +3053,6 @@ where
 ```scala
 package pdbp.program.writing.log.sl4j
 
-//       _______         __    __        _______
-//      / ___  /\       / /\  / /\      / ___  /\
-//     / /__/ / / _____/ / / / /_/__   / /__/ / /
-//    / _____/ / / ___  / / / ___  /\ /____  / /
-//   / /\____\/ / /__/ / / / /__/ / / \___/ / /
-//  /_/ /      /______/ / /______/ /     /_/ /
-//  \_\/       \______\/  \______\/      \_\/
-//                                           v1.0
-//  Program Description Based Programming Library
-
 import org.slf4j.LoggerFactory
 
 import pdbp.types.log.logTypes._
@@ -3125,17 +3114,6 @@ Consider
 ```scala
 package examples.program.writing.log
 
-//       _______         __    __        _______
-//      / ___  /\       / /\  / /\      / ___  /\
-//     / /__/ / / _____/ / / / /_/__   / /__/ / /
-//    / _____/ / / ___  / / / ___  /\ /____  / /
-//   / /\____\/ / /__/ / / / /__/ / / \___/ / /
-//  /_/ /      /______/ / /______/ /     /_/ /
-//  \_\/       \______\/  \______\/      \_\/
-//                                           v1.0
-//  Program Description Based Programming Library
-//  author        Luc Duponcheel        2017-2018
-
 import pdbp.types.log.logTypes._
 
 import pdbp.program.Program
@@ -3146,8 +3124,7 @@ import pdbp.program.writing.log.LogWriting
 
 import examples.program.FactorialTrait
 
-trait PointfreeLogWritingFactorialTrait
-   [>-->[- _, + _]: Program : [>-->[- _, + _]] => LogWriting[>-->]]
+trait PointfreeLogWritingFactorialTrait[>-->[- _, + _]: Program : LogWriting]
      extends FactorialTrait[>-->] {
 
   import implicitProgram._
@@ -3307,17 +3284,6 @@ Consider
 ```scala
 package examples.program.writing.log
 
-//       _______         __    __        _______
-//      / ___  /\       / /\  / /\      / ___  /\
-//     / /__/ / / _____/ / / / /_/__   / /__/ / /
-//    / _____/ / / ___  / / / ___  /\ /____  / /
-//   / /\____\/ / /__/ / / / /__/ / / \___/ / /
-//  /_/ /      /______/ / /______/ /     /_/ /
-//  \_\/       \______\/  \______\/      \_\/
-//                                           v1.0
-//  Program Description Based Programming Library
-//  author        Luc Duponcheel        2017-2018
-
 import pdbp.types.log.logTypes._
 
 import pdbp.program.Program
@@ -3328,8 +3294,7 @@ import pdbp.program.writing.log.LogWriting
 
 import examples.program.FactorialTrait
 
-trait PointfulLogWritingFactorialTrait
-   [>-->[- _, + _]: Program : [>-->[- _, + _]] => LogWriting[>-->]]
+trait PointfulLogWritingFactorialTrait[>-->[- _, + _]: Program : LogWriting]
      extends FactorialTrait[>-->] {
 
   import implicitProgram._
@@ -3460,6 +3425,494 @@ INFO  18:38:31.632 - multiply((6,120)) == 720
 [success] Total time: 3 s, completed Feb 3, 2018 10:05:21 PM
 ```
 
+## `Reading` with `Writing`
+
+### Introduction
+
+In sectiond `Reading` and `Writing` we presented a *two* extra programming and computation capabilities. In this section we are going to *combine* them. 
+
+### `ReadingWithWritingTransformer`
+
+Consider
+
+```scala
+package pdbp.computation.transformer.reading.writing
+
+import pdbp.types.implicitFunctionType.`I=>`
+
+import pdbp.types.kleisli.kleisliFunctionType._
+
+import pdbp.utils.productUtils._
+
+import pdbp.program.reading.Reading
+
+import pdbp.program.writing.Writing
+
+import pdbp.program.writing.folding.Folding
+
+import pdbp.program.Execution
+
+import pdbp.computation.Computation
+
+import  pdbp.computation.transformer.reading.ReadingTransformer
+
+import  pdbp.computation.transformer.reading.readingTransformer._
+
+import pdbp.computation.transformer.writing.writingTransformer._
+
+private[pdbp] trait ReadingWithWritingTransformer[
+  R, W : Folding, M[+ _]: Computation : [M[+ _]] => Writing[W, Kleisli[M]]]
+    extends ReadingTransformer[R, M]
+    with Writing[W, Kleisli[ReadingTransformed[R, M]]] {
+
+  val implicitWriting: Writing[W,  Kleisli[M]] = implicitly[Writing[W, Kleisli[M]]]  
+
+  private type RTM = ReadingTransformed[R, M]
+
+  private type `>=RTK=>` = Kleisli[RTM]
+
+  import implicitWriting.{`w>-->u` => `w>-k->u`}
+  import implicitWriting.{writingFunction => writingFunctionK}
+
+  override private[pdbp] val `w>-->u`: W `>=RTK=>` Unit =
+    `w>-k->u`
+
+  override private[pdbp] def writingFunction[Z, Y](`z=>(w&&y)`: Z => (W && Y)): Z `>=RTK=>` Y =
+    writingFunctionK(`z=>(w&&y)`)
+
+}  
+```
+
+The code above uses `ReadingTransformer[R. M]` to transform a computation `M` whose corresponding program has `Writing[W, Kleisli[M]]` capabilities. Note that, since implicit functions are involved, the definitions of `` `w>-->u` `` and `writingFunction` simply delegate to the imported programming capabilities of `Kleisli[M]`.
+
+###  `ActiveReadingWithWritingProgram`
+
+The first combined computation instance (and corresponding program instance) that we present is the *active reeading with writing* instance as defined below
+
+```scala
+package pdbp.program.instances.active.reading.writing
+
+import pdbp.types.kleisli.kleisliFunctionType._
+
+import pdbp.types.active.writing.activeWritingTypes._
+
+import pdbp.types.active.reading.writing.activeReadingWithWritingTypes._
+
+import pdbp.program.Program
+
+import pdbp.program.writing.folding.Folding
+
+import pdbp.computation.Computation
+
+import pdbp.program.transformer.ProgramTransformer
+
+import pdbp.computation.transformer.ComputationTransformer
+
+import pdbp.computation.transformer.reading.writing.ReadingWithWritingTransformer
+
+trait ActiveReadingWithWritingProgram[R, W : Folding]
+    extends Computation[ActiveReadingWithWriting[R, W]]
+    with Program[`>-arw->`[R, W]]
+    with ComputationTransformer[ActiveWriting[W], ActiveReadingWithWriting[R, W]]
+    with ProgramTransformer[`>-aw->`[W], `>-arw->`[R, W]]
+    with ReadingWithWritingTransformer[R, W, ActiveWriting[W]]
+```
+
+where
+
+```scala
+package pdbp.types.active.reading.writing
+
+import pdbp.types.kleisli.kleisliFunctionType._
+
+import pdbp.types.active.writing.activeWritingTypes._
+
+import pdbp.computation.transformer.reading.readingTransformer._
+
+object activeReadingWithWritingTypes {
+
+  type ActiveReadingWithWriting = [R, W] => ReadingTransformed[R, ActiveWriting[W]]
+
+  type `>-arw->`= [R, W] => Kleisli[ActiveReadingWithWriting[R, W]]
+
+}
+```
+
+Since there is a type parameters `R` and `W` involved, we defined the computation instance as `trait ActiveReadingWithWritingProgram`.
+
+`ActiveReadingWithWriting` above is a type synonym for a *nested transformed type* `[R, W] => ReadingTransformed[R, WritingTransformed[W, Active]]`.
+
+Consider
+
+```scala
+package pdbp.program.instances.active.reading.int.console.writing.log.sl4j
+
+import pdbp.types.log.logTypes._
+
+import pdbp.types.active.activeTypes._
+
+import pdbp.types.active.writing.log.activeLogWritingTypes._
+
+import pdbp.types.active.reading.int.writing.log.activeIntReadingWithLogWritingTypes._
+
+import pdbp.program.Program
+
+import pdbp.program.writing.Writing
+
+import pdbp.program.reading.int.console.IntReadingFromConsole
+
+import pdbp.program.writing.log.LogWriting
+
+import pdbp.program.writing.log.sl4j.LogWritingUsingSl4j
+
+import pdbp.computation.Computation
+
+import pdbp.program.transformer.ProgramTransformer
+
+import pdbp.computation.transformer.ComputationTransformer
+
+import pdbp.computation.transformer.reading.ReadingTransformer
+
+import pdbp.computation.transformer.reading.writing.ReadingWithWritingTransformer
+
+import pdbp.program.instances.active.reading.writing.ActiveReadingWithWritingProgram
+
+import pdbp.program.instances.active.reading.int.console.activeIntReadingFromConsoleProgram._
+
+import pdbp.program.writing.folding.implicits.log.implicits.implicitLogFolding
+
+import pdbp.program.implicits.active.writing.log.sl4j.implicits.implicitActiveLogWritingUsingSl4jProgram
+
+trait ActiveIntReadingFromConsoleWithLogWritingUsingSl4jProgram
+    extends ActiveReadingWithWritingProgram[BigInt, Log] 
+    with LogWritingUsingSl4j[`>-airlw->`]    
+    with IntReadingFromConsole[`>-airlw->`] {
+
+  override implicit val environment: Environment =
+    (implicitProgram.environment, implicitIntReadFromConsole)
+
+}
+
+object activeIntReadingFromConsoleWithLogWritingUsingSl4jProgram
+    extends ActiveIntReadingFromConsoleWithLogWritingUsingSl4jProgram 
+    with ActiveReadingWithWritingProgram[BigInt, Log]()
+    with Writing[Log, `>-airlw->`]() 
+    with ComputationTransformer[ActiveLogWriting, ActiveIntReadingWithLogWriting]()
+    with ProgramTransformer[`>-alw->`, `>-airlw->`]() 
+    with ReadingTransformer[BigInt, ActiveLogWriting]() 
+    with ReadingWithWritingTransformer[BigInt, Log, ActiveLogWriting]() 
+```
+
+where
+
+
+```scala
+package pdbp.types.active.reading.writing.log
+
+import pdbp.types.kleisli.kleisliFunctionType._
+
+import pdbp.types.log.logTypes._
+
+import pdbp.types.active.reading.writing.activeReadingWithWritingTypes._ 
+
+object activeReadingWithLogWritingTypes {
+
+  type ActiveReadingWithLogWriting = [R] => ActiveReadingWithWriting[R, Log]
+
+  type `>-arlw->`= [R] => Kleisli[ActiveReadingWithLogWriting[R]]
+
+}
+```
+
+### `pointfreeLogWritingFactorialMultipliedByIntRead` using `activeIntReadingFromConsoleWithLogWritingUsingSl4jProgram`
+
+Consider
+
+```scala
+package examples.program.reading.int.writing.log
+
+import pdbp.types.log.logTypes._
+
+import pdbp.program.Program
+
+import pdbp.program.reading.int.IntReading
+
+import pdbp.program.writing.log.LogWriting
+
+import examples.program.writing.log.PointfreeLogWritingFactorialTrait
+
+import examples.program.reading.int.FactorialMultipliedByIntReadTrait
+
+trait PointfreeLogWritingFactorialMultipliedByIntReadTrait[>-->[- _, + _]: Program : IntReading : LogWriting]
+    extends FactorialMultipliedByIntReadTrait[>-->] 
+    with PointfreeLogWritingFactorialTrait[>-->] {
+
+  import implicitProgram._
+
+  import implicitReading._
+
+  import pdbp.program.compositionOperator._
+  import pdbp.program.constructionOperators._
+
+  lazy val pointfreeLogWritingFactorialMultipliedByIntRead
+    : BigInt >--> BigInt = (pointfreeLogWritingFactorial & readingInt) >--> multiply
+
+  val pointfreeLogWritingFactorialMultipliedByIntReadProgram: Unit >--> Unit =
+    producer >-->
+      pointfreeLogWritingFactorialMultipliedByIntRead >-->
+      consumer
+
+  def executePointfreeLogWritingFactorialMultipliedByIntReadProgram: Unit =
+    execute(pointfreeLogWritingFactorialMultipliedByIntReadProgram)
+
+}
+```
+
+The definition of `pointfreeLogWritingFactorialMultipliedByIntRead` makes use definitions of `FactorialMultipliedByIntReadTrait` and `PointfreeLogWritingFactorialTrait`. 
+
+### `PointfreeLogWritingFactorialMultipliedByIntReadFromConsoleMain` using `activeIntReadingFromConsoleWithLogWritingUsingSl4jProgram`
+
+Let's move on and define an `implicit val` that we can `import` later on. 
+
+```scala
+package pdbp.program.implicits.active.reading.int.console.writing.log.sl4j
+
+object implicits {
+
+  import pdbp.program.instances.active.reading.int.console.writing.log.sl4j.activeIntReadingFromConsoleWithLogWritingUsingSl4jProgram
+
+  implicit val implicitActiveIntReadingFromConsoleWithLogWritingUsingSl4jProgram: activeIntReadingFromConsoleWithLogWritingUsingSl4jProgram.type =
+    activeIntReadingFromConsoleWithLogWritingUsingSl4jProgram
+
+}
+```
+
+Finally we can define a *runnable program*.
+
+```scala
+package examples.program.main.active.reading.int.console.writing.log.sl4j
+
+import pdbp.types.active.reading.int.writing.log.activeIntReadingWithLogWritingTypes.`>-airlw->`
+
+import pdbp.program.implicits.active.reading.int.console.writing.log.sl4j.implicits.implicitActiveIntReadingFromConsoleWithLogWritingUsingSl4jProgram
+
+import examples.program.FactorialTrait
+
+import examples.program.reading.int.FactorialMultipliedByIntReadTrait
+
+import examples.program.writing.log.PointfreeLogWritingFactorialTrait
+
+import examples.program.reading.int.writing.log.PointfreeLogWritingFactorialMultipliedByIntReadTrait
+
+object PointfreeLogWritingFactorialMultipliedByIntReadFromConsoleMain {
+
+  object pointfreeLogWritingFactorialMultipliedByIntReadFromConsoleObject 
+    extends FactorialTrait[`>-airlw->`]()
+    with FactorialMultipliedByIntReadTrait[`>-airlw->`]()
+    with PointfreeLogWritingFactorialTrait[`>-airlw->`]()
+    with PointfreeLogWritingFactorialMultipliedByIntReadTrait[`>-airlw->`]() 
+
+  import pointfreeLogWritingFactorialMultipliedByIntReadFromConsoleObject._
+
+  def main(args: Array[String]): Unit = {
+
+    executePointfreeLogWritingFactorialMultipliedByIntReadProgram
+
+  }
+
+}
+```
+
+#### running `PointfreeLogWritingFactorialMultipliedByIntReadFromConsoleMain` using `activeIntReadingFromConsoleWithLogWritingUsingSl4jProgram`
+
+Ok, so let's *execute* our program.
+
+Let's try `6` for the `pointfreeLogWritingFactorialMultipliedByIntRead` argument.
+
+```scala
+[info] Running examples.program.main.active.reading.int.console.writing.log.sl4j.PointfreeLogWritingFactorialMultipliedByIntReadFromConsoleMain
+please type an integer to read
+6
+please type an integer
+6
+the factorial value of the integer multiplied by the integer read is 4320
+INFO  20:18:32.956 - factorial
+INFO  20:18:32.960 - isPositive
+INFO  20:18:32.960 - subtractOne
+INFO  20:18:32.960 - factorial
+INFO  20:18:32.960 - isPositive
+INFO  20:18:32.960 - subtractOne
+INFO  20:18:32.960 - factorial
+INFO  20:18:32.960 - isPositive
+INFO  20:18:32.960 - subtractOne
+INFO  20:18:32.961 - factorial
+INFO  20:18:32.961 - isPositive
+INFO  20:18:32.961 - subtractOne
+INFO  20:18:32.961 - factorial
+INFO  20:18:32.961 - isPositive
+INFO  20:18:32.961 - subtractOne
+INFO  20:18:32.961 - factorial
+INFO  20:18:32.961 - isPositive
+INFO  20:18:32.961 - subtractOne
+INFO  20:18:32.961 - factorial
+INFO  20:18:32.961 - isPositive
+INFO  20:18:32.961 - one
+INFO  20:18:32.961 - multiply
+INFO  20:18:32.961 - multiply
+INFO  20:18:32.961 - multiply
+INFO  20:18:32.961 - multiply
+INFO  20:18:32.961 - multiply
+INFO  20:18:32.962 - multiply
+INFO  20:18:32.962 - multiply
+[success] Total time: 11 s, completed Feb 13, 2018 8:18:32 PM
+```
+
+### `pointfullLogWritingFactorialMultipliedByIntRead` using `activeIntReadingFromConsoleWithLogWritingUsingSl4jProgram`
+
+Consider
+
+```scala
+package examples.program.reading.int.writing.log
+
+import pdbp.types.log.logTypes._
+
+import pdbp.program.Program
+
+import pdbp.program.reading.int.IntReading
+
+import pdbp.program.writing.log.LogWriting
+
+import examples.program.writing.log.PointfullLogWritingFactorialTrait
+
+import examples.program.reading.int.FactorialMultipliedByIntReadTrait
+
+trait PointfullLogWritingFactorialMultipliedByIntReadTrait[>-->[- _, + _]: Program : IntReading : LogWriting]
+    extends FactorialMultipliedByIntReadTrait[>-->] 
+    with PointfullLogWritingFactorialTrait[>-->] {
+
+  import implicitProgram._
+
+  import implicitReading._
+
+  import pdbp.program.compositionOperator._
+  import pdbp.program.constructionOperators._
+
+  lazy val pointfullLogWritingFactorialMultipliedByIntRead
+    : BigInt >--> BigInt = (pointfullLogWritingFactorial & readingInt) >--> multiply
+
+  val pointfullLogWritingFactorialMultipliedByIntReadProgram: Unit >--> Unit =
+    producer >-->
+      pointfullLogWritingFactorialMultipliedByIntRead >-->
+      consumer
+
+  def executePointfullLogWritingFactorialMultipliedByIntReadProgram: Unit =
+    execute(pointfullLogWritingFactorialMultipliedByIntReadProgram)
+
+}
+```
+
+The definition of `pointfullLogWritingFactorialMultipliedByIntRead` makes use definitions of `FactorialMultipliedByIntReadTrait` and `PointfullLogWritingFactorialTrait`. 
+
+### `PointfullLogWritingFactorialMultipliedByIntReadFromConsoleMain` using `activeIntReadingFromConsoleWithLogWritingUsingSl4jProgram`
+
+Let's move on and define an `implicit val` that we can `import` later on. 
+
+```scala
+package pdbp.program.implicits.active.reading.int.console.writing.log.sl4j
+
+object implicits {
+
+  import pdbp.program.instances.active.reading.int.console.writing.log.sl4j.activeIntReadingFromConsoleWithLogWritingUsingSl4jProgram
+
+  implicit val implicitActiveIntReadingFromConsoleWithLogWritingUsingSl4jProgram: activeIntReadingFromConsoleWithLogWritingUsingSl4jProgram.type =
+    activeIntReadingFromConsoleWithLogWritingUsingSl4jProgram
+
+}
+```
+
+Finally we can define a *runnable program*.
+
+```scala
+package examples.program.main.active.reading.int.console.writing.log.sl4j
+
+import pdbp.types.active.reading.int.writing.log.activeIntReadingWithLogWritingTypes.`>-airlw->`
+
+import pdbp.program.implicits.active.reading.int.console.writing.log.sl4j.implicits.implicitActiveIntReadingFromConsoleWithLogWritingUsingSl4jProgram
+
+import examples.program.FactorialTrait
+
+import examples.program.reading.int.FactorialMultipliedByIntReadTrait
+
+import examples.program.writing.log.PointfullLogWritingFactorialTrait
+
+import examples.program.reading.int.writing.log.PointfullLogWritingFactorialMultipliedByIntReadTrait
+
+object PointfullLogWritingFactorialMultipliedByIntReadFromConsoleMain {
+
+  object pointfullLogWritingFactorialMultipliedByIntReadFromConsoleObject 
+    extends FactorialTrait[`>-airlw->`]()
+    with FactorialMultipliedByIntReadTrait[`>-airlw->`]()
+    with PointfullLogWritingFactorialTrait[`>-airlw->`]()
+    with PointfullLogWritingFactorialMultipliedByIntReadTrait[`>-airlw->`]() 
+
+  import pointfullLogWritingFactorialMultipliedByIntReadFromConsoleObject._
+
+  def main(args: Array[String]): Unit = {
+
+    executePointfullLogWritingFactorialMultipliedByIntReadProgram
+
+  }
+
+}
+```
+
+#### running `PointfullLogWritingFactorialMultipliedByIntReadFromConsoleMain` using `activeIntReadingFromConsoleWithLogWritingUsingSl4jProgram`
+
+Ok, so let's *execute* our program.
+
+Let's try `7` for the `pointfullLogWritingFactorialMultipliedByIntRead` argument and `2` for the `multiply` factor.
+
+```scala
+[info] Running examples.program.main.active.reading.int.console.writing.log.sl4j.PointfulLogWritingFactorialMultipliedByIntReadFromConsoleMain
+please type an integer to read
+2
+please type an integer
+7
+the factorial value of the integer multiplied by the integer read is 10080
+INFO  20:22:17.673 - factorial
+INFO  20:22:17.675 - isPositive(7) == true
+INFO  20:22:17.675 - subtractOne(7) == 6
+INFO  20:22:17.675 - factorial
+INFO  20:22:17.675 - isPositive(6) == true
+INFO  20:22:17.675 - subtractOne(6) == 5
+INFO  20:22:17.675 - factorial
+INFO  20:22:17.675 - isPositive(5) == true
+INFO  20:22:17.675 - subtractOne(5) == 4
+INFO  20:22:17.675 - factorial
+INFO  20:22:17.675 - isPositive(4) == true
+INFO  20:22:17.675 - subtractOne(4) == 3
+INFO  20:22:17.675 - factorial
+INFO  20:22:17.675 - isPositive(3) == true
+INFO  20:22:17.675 - subtractOne(3) == 2
+INFO  20:22:17.675 - factorial
+INFO  20:22:17.675 - isPositive(2) == true
+INFO  20:22:17.676 - subtractOne(2) == 1
+INFO  20:22:17.676 - factorial
+INFO  20:22:17.676 - isPositive(1) == true
+INFO  20:22:17.676 - subtractOne(1) == 0
+INFO  20:22:17.676 - factorial
+INFO  20:22:17.676 - isPositive(0) == false
+INFO  20:22:17.676 - one(0) == 1
+INFO  20:22:17.676 - multiply((1,1)) == 1
+INFO  20:22:17.676 - multiply((2,1)) == 2
+INFO  20:22:17.676 - multiply((3,2)) == 6
+INFO  20:22:17.676 - multiply((4,6)) == 24
+INFO  20:22:17.676 - multiply((5,24)) == 120
+INFO  20:22:17.676 - multiply((6,120)) == 720
+INFO  20:22:17.676 - multiply((7,720)) == 5040
+INFO  20:22:17.676 - multiply((5040,2)) == 10080
+[success] Total time: 7 s, completed Feb 13, 2018 8:22:18 PM
+```
 
 <!--
 

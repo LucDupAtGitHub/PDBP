@@ -12,9 +12,9 @@ package pdbp.types.active.reading.writing
 
 import pdbp.types.kleisli.kleisliFunctionType._
 
-import pdbp.computation.transformer.reading.readingTransformer._
-
 import pdbp.types.active.writing.activeWritingTypes._
+
+import pdbp.computation.transformer.reading.readingTransformer._
 
 object activeReadingWithWritingTypes {
 

@@ -28,5 +28,3 @@ trait LogWriting[>-->[- _, + _]] extends Writing[Log, >-->] {
   def functionWithInfo[Z, Y](s: String): (Z => Y) => (Z >--> Y)
 
 }
-
-
