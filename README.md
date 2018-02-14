@@ -275,26 +275,23 @@ scala> val x = squareRootOfSumOfSquares(z, y)
 val x: Double = 5.0
 ```
 
-Given a tuple `(z, y)` the *square root of the sum of their squares* can be defined as
+ - Given a tuple `(z, y)` the *square root of the sum of their squares* can be defined as `sqrt(z * z + y * y)` in a *pointful*, *expression oriented* way.
+ - The *square root of the sum of a tuple of squares* can be defined as `sqrs andThen sum andThen sqrt` in a *pointfree*, *function level* way.
 
- - `sqrt(z * z + y * y)` in an *expression oriented* way 
+The REPL session above illustrates how to go from the former to the latter.
 
-The *square root of the sum of a tuple of squares* can be defined as
-
-- `sqrs andThen sum andThen sqrt` in a *function level* way
-
-The REPL session above shows how to go from the former to the latter.
-
- - Pointful programming with computations is similar to expression oriented programming (which uses *function application*).
- - Pointfree programming with programs is similar to function level programming (which uses *function composition*).
-
-# UNTIL HERE
+ - Pointful programming with computations is, in a way, similar to *function application* based expression oriented programming.
+ - Pointfree programming with programs is, in a way, similar to *function composition* function level programming.
 
 ### Why `Dotty`
 
 Program description based programming is not only about *power of expression*. 
 It is also, and probably even more, about *elegance of use*. 
-Traditionally the pointfree style has been considered to be elegant by some programmers and *abstruse* by other programmers. Luckily, the `Dotty` programming language comes to the rescue for the latter ones! `Dotty` is a *strongly typed*, *scalable* programming language. It is possible to *extend the language* in a *type safe* way at the *library* level with *internal domain specific languages*. By using a domain specific language for the domain of *programs*, program description based programming can be done in a very *concise* way.
+Traditionally the pointfree style has been considered to be elegant by some programmers and *abstruse* by other programmers. 
+Luckily, the `Dotty` programming language comes to the rescue for the latter ones! 
+`Dotty` is a *strongly typed*, *scalable* programming language. 
+It is possible to *extend the language* in a *type safe* way at the *library* level with *internal domain specific languages*. 
+By using a *domain specific language* for the domain of *programs*, program description based programming can be done in a very *concise* way.
 
 Below are both an `FP` example and a `Dotty` example illustrating difference in elegance of use.
 
@@ -306,26 +303,29 @@ Below are both an `FP` example and a `Dotty` example illustrating difference in 
 
 ![](Dotty_Factorial.png)
 
-Of course, elegance of use is a highly subjective concept. Maybe, if you are mathematically inclined, you may consider the `FP` example below to be more elegant. However, if you are a mainstream programmer, you, most probably, consider the `Dotty` example below to be more elegant.
+Of course, elegance of use is a highly subjective concept. 
+Maybe, if you are mathematically inclined, you may consider the `FP` example below to be more elegant. 
+However, if you are a mainstream programmer, you, most probably, consider the `Dotty` example below to be more elegant.
 
 ### Main goal of the library
 
-The main *goal* of the library is to illustrate that program description based programming using a pointfree style in `Dotty` is 
+The *main goal* of the library is to illustrate that program description based programming using a pointfree style in `Dotty` is 
 
- - *powerful* : you can use the full expressive power of monads
- - *elegant* : you can use a concise `Dotty` DSL syntax
- - *flexible* : you can define many meanings
- - *extendible* : you can introduce extra capabilities by need
+ - *powerful* : you can use the full expressive power of monads,
+ - *elegant* : you can use a concise `Dotty` DSL syntax,
+ - *flexible* : you can define many meanings,
+ - *extendible* : you can introduce extra capabilities by need.
 
-We claim that program description based programming using a pointfree style
-*naturally leads to deep insights into the nature of programming and computation*
-since it requires you to reason at an *appropriate level of abstraction*. 
+We claim that program description based programming using a pointfree style *naturally leads to deep insights into the nature of programming and computation* since it requires you to reason at an *appropriate level of abstraction*. 
 
 ### More about descriptions
 
 Below is a comparision between the universe of *programs* and the universe of *paintings*.
 
-Program descriptions *are* programs (code that is written using a programming language), and giving a *meaning* to program descriptions happens in the universe of programs (code that is written using a programming language). Note that we have been a bit sloppy with our vocabulary, but, hopefully, you get the point.
+Program descriptions *are* programs (code that is written using a programming language).
+Giving a *meaning* to program descriptions happens in the universe of programs (code that is written using a programming language). 
+
+Note that we have been a bit sloppy with our vocabulary, but, hopefully, you get the point.
 
 Compare this with
 
@@ -333,13 +333,16 @@ Compare this with
 
 What is figure above all about?
 
-René Magritte, the painter of [*Ceci n'est pas une pipe*](https://en.wikipedia.org/wiki/The_Treachery_of_Images) was right. His painting *is not a pipe* : it is a *painting* that is a *description of a pipe*. Note that, giving a *meaning* to paintings happens in a universe that is totally different from the universe of paintings. It happens in the universe of human minds.
+René Magritte, the painter of [*Ceci n'est pas une pipe*](https://en.wikipedia.org/wiki/The_Treachery_of_Images) was right. 
+His painting *is not a pipe* : it is a *painting* that is a *description of a pipe*. 
+Note that, giving a *meaning* to paintings happens in a universe that is totally different from the universe of paintings. 
+It happens in the universe of human minds.
 
 ### Summary
 
 For some of you this introduction may have touched upon a lot of frightening stuff.
-But, really, for now you only have to concentrate on *power of expression*,
-*elegance of use* and *flexibility of meaning*. Hopefully this will sound exiting to both programmers *with* and programmers *without* a background in computer science.
+But, really, for now you only have to concentrate on *power of expression*, *elegance of use* and *flexibility of meaning*. 
+Hopefully this will sound exiting to both programmers *with* and programmers *without* a background in computer science.
 
 ## `Program`
 
@@ -3174,17 +3177,15 @@ and
 ```scala
 package pdbp.types.active.writing.log
 
-import pdbp.types.kleisli.kleisliFunctionType._
-
 import pdbp.types.log.logTypes._
 
 import pdbp.types.active.writing.activeWritingTypes._ 
 
-object activeLoggingTypes {
+object activeLogWritingTypes {
 
-  type ActiveLogging = ActiveWriting[Log]
+  type ActiveLogWriting = ActiveWriting[Log]
 
-  type `>-al->`= `>-aw->`[Log]
+  type `>-alw->`= `>-aw->`[Log]
 
 }
 ```
@@ -3534,8 +3535,6 @@ import pdbp.program.writing.Writing
 
 import pdbp.program.writing.folding.Folding
 
-import pdbp.program.Execution
-
 import pdbp.computation.Computation
 
 import  pdbp.computation.transformer.reading.ReadingTransformer
@@ -3549,7 +3548,7 @@ private[pdbp] trait ReadingWithWritingTransformer[
     extends ReadingTransformer[R, M]
     with Writing[W, Kleisli[ReadingTransformed[R, M]]] {
 
-  val implicitWriting: Writing[W,  Kleisli[M]] = implicitly[Writing[W, Kleisli[M]]]  
+  val implicitWriting: Writing[W, Kleisli[M]] = implicitly[Writing[W, Kleisli[M]]]  
 
   private type RTM = ReadingTransformed[R, M]
 
@@ -3644,8 +3643,6 @@ import pdbp.program.Program
 import pdbp.program.writing.Writing
 
 import pdbp.program.reading.int.console.IntReadingFromConsole
-
-import pdbp.program.writing.log.LogWriting
 
 import pdbp.program.writing.log.sl4j.LogWritingUsingSl4j
 

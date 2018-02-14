@@ -1,4 +1,4 @@
-package pdbp.types.active.writing.log
+package pdbp.types.active.writing.free
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -10,16 +10,16 @@ package pdbp.types.active.writing.log
 //                                           v1.0
 //  Program Description Based Programming Library
 
-// import pdbp.types.kleisli.kleisliFunctionType._
+import pdbp.types.kleisli.kleisliFunctionType._
 
-import pdbp.types.log.logTypes._
+import pdbp.types.active.free.activeFreeTypes._
 
-import pdbp.types.active.writing.activeWritingTypes._ 
+import pdbp.computation.transformer.writing.writingTransformer._
 
-object activeLogWritingTypes {
+object activeWritingWithFreeTypes {
 
-  type ActiveLogWriting = ActiveWriting[Log]
+  type ActiveWritingWithFree = [W] => WritingTransformed[W, ActiveFree]
 
-  type `>-alw->`= `>-aw->`[Log]
+  type `>-awf->`= [W] => Kleisli[ActiveWritingWithFree[W]]
 
 }

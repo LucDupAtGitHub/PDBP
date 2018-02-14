@@ -23,8 +23,6 @@ import pdbp.program.writing.Writing
 
 import pdbp.program.writing.folding.Folding
 
-import pdbp.program.Execution
-
 import pdbp.computation.Computation
 
 import  pdbp.computation.transformer.reading.ReadingTransformer
@@ -38,7 +36,7 @@ private[pdbp] trait ReadingWithWritingTransformer[
     extends ReadingTransformer[R, M]
     with Writing[W, Kleisli[ReadingTransformed[R, M]]] {
 
-  val implicitWriting: Writing[W,  Kleisli[M]] = implicitly[Writing[W, Kleisli[M]]]  
+  val implicitWriting: Writing[W, Kleisli[M]] = implicitly[Writing[W, Kleisli[M]]]  
 
   private type RTM = ReadingTransformed[R, M]
 
