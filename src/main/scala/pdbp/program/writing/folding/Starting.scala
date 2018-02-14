@@ -12,7 +12,7 @@ package pdbp.program.writing.folding
 
 import pdbp.types.const.constType._
 
-import pdbp.lifting.LiftingObject
+import pdbp.computation.lifting.LiftingObject
 
 private[pdbp] trait Starting[W] 
   extends LiftingObject[Const[W]] {

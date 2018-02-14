@@ -13,7 +13,7 @@ package pdbp.computation.transformer
 
 import pdbp.types.kleisli.kleisliFunctionType._
 
-import pdbp.lifting.LiftingObject
+import pdbp.computation.lifting.LiftingObject
 
 import pdbp.computation.Computation
 

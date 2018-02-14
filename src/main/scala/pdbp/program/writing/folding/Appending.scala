@@ -14,7 +14,7 @@ import pdbp.types.const.constType._
 
 import pdbp.utils.productUtils._
 
-import pdbp.lifting.LiftingOperator
+import pdbp.computation.lifting.LiftingOperator
 
 private[pdbp] trait Appending[W] extends LiftingOperator[Const[W]] {
 

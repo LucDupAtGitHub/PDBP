@@ -14,7 +14,7 @@ import pdbp.types.const.constType._
 
 import pdbp.utils.functionUtils._
 
-import pdbp.lifting.Lifting
+import pdbp.computation.lifting.Lifting
 
 private[pdbp] trait Folding[M]
     extends Starting[M]

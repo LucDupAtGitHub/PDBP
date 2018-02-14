@@ -2,21 +2,20 @@
 
 ## Warning
 
-Expect frequent changes. In the file Changes.md, we describe some of the more important changes. 
-
-### Note
-
-The documentation is, temporarily, not 100% in sync with the code. The code already contains *readingWithWriting*.
+Expect frequent changes. In the file Changes.md, we describe some of the more important changes.
 
 ## Introduction
 
-When writing an introduction it is challenging to find the right balance between providing *too many details* or *too few details*. This introduction provides many details. It is perfectly fine to read it diagonally.
+When writing an introduction it is challenging to find the right balance between providing *too many details* or *too few details*. 
+This introduction provides many details. 
+It is perfectly fine to read it diagonally.
 
 Before starting, let's present a bit of history.
 
 ### History
 
-In 1977, John Backus was an [ACM A.M. Turing Award](http://amturing.acm.org/) winner. The title of his Turing Award winning lecture was 
+In 1977, John Backus was an [ACM A.M. Turing Award](http://amturing.acm.org/) winner.
+The title of his Turing Award winning lecture was 
 
 *Can programming be liberated from the von Neumann style? A functional style and it's algebra of programs.*
 
@@ -29,9 +28,9 @@ In his Turing Award winning lecture, John Backus describes a [*function level pr
 
 The `FP` programming language consists of *objects*, *programs*, *forms* and *definitions*, where
 
- - A program transforms objects to an object.
- - A form transforms programs to a program.
- - A definition defines a program or a form in terms of programs and forms.
+ - a program transforms objects to an object,
+ - a form transforms programs to a program,
+ - a definition defines a program or a form in terms of programs and forms.
 
 The `FP` forms are 
 
@@ -41,7 +40,9 @@ The `FP` forms are
  - *Condition*
  - *Aggreation*
 
-`FP` does not really have an aggregation form. It does have objects that are *sequences* of objects. We included aggregation since it consists of, somehow, reducing objects of a structure of objects (for example a sequence of objects) to a single object.
+`FP` does not really have an aggregation form. 
+It does have *sequences* of objects. 
+We included aggregation since it consists of, somehow, reducing a *structure* of objects (for example a sequence of objects) to a single object.
 
 ### Mapping from `FP` to `Dotty`
 
@@ -73,47 +74,62 @@ trait Program[>-->[- _, + _]]
     with Aggregation[>-->]
     with Execution[>-->]
 ```
-The `FP` forms to `trait`'s that are mixed-in by `trait Program`.
+The `FP` forms map to `trait`'s that are mixed-in by `trait Program`.
 
-*Program descriptions* are defined in terms of the *programming capabilities* that are *declared* in `trait Program`. A *meaning* of a program description is defined by defining an `implicit object` that *defines* the programming capabilities that are declared in `trait Program`. A specific meaning can be made available using a technique, *dependency injection by* `import`, that will be used a lot in our library. For *type classes*, dependency injection in `Dotty` is as simple as doing an appropriate `import`. 
+*Program descriptions* are defined in terms of the *programming capabilities* that are *declared* in `trait Program`. 
+A *meaning* of a program description is defined by defining an `implicit object` that *defines* the programming capabilities that are declared in `trait Program`. 
+A meaning can be made available using a technique, *dependency injection by* `import`, that will be used a lot in this project. 
+For *type classes*, dependency injection in `Dotty` is as simple as doing an appropriate `import`. 
 
-By abuse of notation, we are often going to refer to both *program descriptions* and their *meaning* as *programs*. We hope that this will not lead to any confusion (especially since *program* is, generally, used to refer to *code written in some programming language*). 
+By abuse of notation, we are often going to refer to both *program descriptions* and their *meaning* as *programs*. 
+We hope that this will not lead to any confusion (especially since *program* is, generally, used to refer to *code written in some programming language*). 
 
-There is are important differences between `FP` programs and `Dotty` programs (program *descriptions*, remember). Exploiting the flexibility that comes with those differences is one of the most important themes of this project. 
+There is an important difference between `FP` programs and `Dotty` programs (program *descriptions*, remember). 
 
  - `FP` programs are *language* based.
  - `Dotty` programs are *library* based.
 
-Therefore
+Exploiting the flexibility that comes with this difference is one of the most important themes of this project.
 
  - in `FP`
-   - programs have only *one* meaning,
-   - forms cannot be extended.
+   - programs have only *one* meaning.
  - in `Dotty`
-   - programs can have *many* meanings,
-   - `trait Program` can be extended.
+   - programs can have *many* meanings. 
 
 Different meanings can be defined by defining the members of `trait Execution`.
+For example: *one* `Dotty` program for `factorial` can have both a meaning that is *not* tail recursive and a meaning that *is* tail recursive.
 
-For example:
+ - in `FP`
+   - forms *cannot* be extended.
+ - in `Dotty`
+   - `trait Program` *can* be extended.
 
- - *One* `Dotty` program for `factorial` can have both a meaning that is *not* tail recursive and a meaning that *is* tail recursive.
- - *extra programming capabilities* can be added such as
+*Extra programming capabilities* can be added such as
    - input reading,
    - output writing,
    - state manipulation,
    - failure handling,
    - latency handling (using parallelism),
-   - advanced control beyond conditional control (using delimited continuations),
+   - control transfer handling (using delimited continuations),
    - ...
 
-In a way programs generalize *functions*. A *function application* (more precisely, the *evaluation* of a *function application expression*) transforms *function arguments* to yield a *function result*. A *program execution* also, *somehow*, transforms *program arguments* to yield a *program result*. When there is no danger of confusion we are simply going to write *arguments* and *result* (not mentioning *function* or *program*).
+In a way programs generalize *functions*. 
+A *function application* (more precisely, the *evaluation* of a *function application expression*) transforms *function arguments* to yield a *function result*. 
+A *program execution* also, *somehow*, transforms *program arguments* to yield a *program result*. 
+When there is no danger of confusion we are simply going to write *arguments* and *result* (not mentioning *function* or *program*).
 
-Our library is also about *computation descriptions*. They are similar to program descriptions. By abuse of notation, we are also often going to refer to both *computation descriptions* and their *meaning* as *computations*. 
+Our library is also about *computation descriptions*. 
+They are similar to program descriptions. 
+By abuse of notation, we are also often going to refer to both *computation descriptions* and their *meaning* as *computations*. 
 
-In a way computations generalize *expressions*. An *expression evaluation* yields an *expression result*. A *computation execution* also, *somehow*, yields a *computation result*. When there is no danger of confusion we are simply going to write *result* (not mentioning *function* or *computation*).
+In a way computations generalize *expressions*. 
+An *expression evaluation* yields an *expression result*. 
+A *computation execution* also, *somehow*, yields a *computation result*. 
+When there is no danger of confusion we are simply going to write *result* (not mentioning *expression* or *computation*).
 
-Below are some `Dotty` REPL (Read-Eval-Print-Loop) sessions to illustrate the difference between a *description* and it's *meaning*. The `Dotty` code below does *not* deal with programming capabilities or computational capabilities *at all*. Instead it simply deals with *element* related capabilities.
+Below are some `Dotty` REPL (Read-Eval-Print-Loop) sessions to illustrate the difference between a *description* and it's *meaning*. 
+The `Dotty` code below does *not* deal with programming capabilities or computational capabilities *at all*. 
+Instead it simply deals with *element* related capabilities.
 
 ```scala
 scala> trait Element[E] {
@@ -128,8 +144,8 @@ defined trait Function
 
 Above are two `Dotty` *type classes* for a type `E` declaring element related capabilities.
 
- - `trait Element[E]` declares `E`'s capability to have an element, `element`.
- - `trait Function[E]` declares `E`'s capability to have an function, `function`, that transforms an argument element `e` to yield a result element `function(e)`.
+ - `trait Element[E]` declares `E`'s capability to have an *element*, `element`.
+ - `trait Function[E]` declares `E`'s capability to have a *function*, `function`, that transforms an argument element `e` to yield a result element `function(e)`.
 
 Given those *declarations* we can already start *defining* some *element descriptions* as illustrated below
 
@@ -146,11 +162,14 @@ scala> trait SomeElement[E : Element : Function] {
 defined trait SomeElement 
 ```
 
-The code above defines `trait SomeElement[E : Element : Function]`, that declares `E` to *implicitly* have the element related capabilities above. The code defines an element description `someElement` in terms of those capabilities. Think of the element description as a *recipe*:
+The code above defines `trait SomeElement[E : Element : Function]`, that declares `E` to *implicitly* have the element related capabilities above. 
+The code defines an *element description* `someElement` in terms of those capabilities. 
+Think of the description as a *recipe*:
 
  - Take `element` and apply `function` to it to make `someElement`.
 
-At this moment there is *no definition* of the declared capabilities available yet. Let's go ahead and introduce an *implicit definition* of those declared capabilities for the type `Int`:
+At this moment there is *no definition* of the declared capabilities available yet. 
+Let's go ahead and introduce an *implicit definition* of those declared capabilities for the type `Int`:
 
 ```scala
 scala> implicit object naturalNumbers extends
@@ -168,7 +187,15 @@ scala> import someIntElement.someElement
 import someIntElement.someElement
 ```
 
-The code above defines `implicit object naturalNumbers` (modeling *natural numbers*). Note that, a long as we keep `Dotty`'s type system happy, we have the *full flexibility* to define `element` and `function` in *any* way we want. We could have modeled *even natural numbers* by replacing `1` by `2`. The code above makes `someElement`, an element of type `Int` available using *dependency injection by* `import`. Now that we have *defined* `E` to be `Int`, we write *element*. When `E` was *declared* we wrote *element description*. Remember that for program descriptions and computation descriptions our notation is *not* going to be so precise. Let's go ahead and use `someElement`
+The code above defines `implicit object naturalNumbers` (modeling *natural numbers*). 
+Note that, a long as we keep `Dotty`'s type system happy, we have the *full flexibility* to define `element` and `function` in *any* way we want. 
+We could have modeled *even natural numbers* by replacing `1` by `2`. 
+The code above makes `someElement`, an *element* of type `Int` available using *dependency injection by* `import`.
+Now that we have *defined* `E` to be `Int`, we write *element*. 
+When `E` was *declared* we wrote *element description*. 
+Remember that for program descriptions and computation descriptions our notation is *not* going to be so precise. 
+
+Let's go ahead and use `someElement`
 
 ```scala
 scala> someElement 
@@ -180,9 +207,10 @@ val res0: Int = 1
 The `FP` programming language imposes a *pointfree programming style* (think of *function level* and *pointfree* as synonyms).
 
 The programming capabilities of `trait Program` also impose a pointfree programming style.
-The computational capabilities of `trait Computation` allow a *pointful programming style*(think of *object level*, *value level* and *pointful* as synonyms).
+The computational capabilities of `trait Computation` allow a *pointful programming style* (think of *object level*, *value level* and *pointful* as synonyms).
 
-Our library promotes a pointfree programming style. Therefore
+Our library promotes a pointfree programming style. 
+Therefore
 
  - We declare the members of the `trait Program` to be `public`.
  - We declare the members of the `trait Computation` to be `package` `private`.
@@ -194,23 +222,79 @@ Describing programs, resp. computations, using program descriptions, resp. compu
 In 1991, Eugenio Moggi introduced *monads* as a *computation* foundation in
 [*Notions of computation and monads*](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.79.733&rep=rep1&type=pdf).
 
-In 1992, Philip Wadler used monads in `Haskell` in [*The essence of functional programming*](http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=E09A5FD9362F6780675ADF29471B7428?doi=10.1.1.38.9516&rep=rep1&type=pdf).
+In 1992, Philip Wadler used monads in `Haskell` in 
+[*The essence of functional programming*](http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=E09A5FD9362F6780675ADF29471B7428?doi=10.1.1.38.9516&rep=rep1&type=pdf).
 
-In 1998, John Hughes introduced *arrows* as a *program* foundation and used arrows in `Haskell`
+In 1998, John Hughes introduced *arrows* as a *program* foundation and used arrows in `Haskell` in
 [*Generalizing monads to arrows*](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.29.4575&rep=rep1&type=pdf).
 
-In 2008, Conor McBride and Ross Paterson introduced *applicatives* (a.k.a. *idioms*) as a *computation* foundation and used applicatives in `Haskell` in [*Applicative programming with effects*](http://www.staff.city.ac.uk/~ross/papers/Applicative.pdf).
+In 2008, Conor McBride and Ross Paterson introduced *applicatives* (a.k.a. *idioms*) as a *computation* foundation and used applicatives in `Haskell` in 
+[*Applicative programming with effects*](http://www.staff.city.ac.uk/~ross/papers/Applicative.pdf).
 
-In 2008, Sam Lindley, Philip Wadler and Jeremy Yallop compared the *power of expression* of those three foundations in [*Idioms are oblivious, arrows are meticulous,
-monads are promiscuous*](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.187.6750&rep=rep1&type=pdf). Monads have most power of expression. Applicatives have least power of expression. 
+In 2008, Sam Lindley, Philip Wadler and Jeremy Yallop compared the *power of expression* of those three foundations in 
+[*Idioms are oblivious, arrows are meticulous, monads are promiscuous*](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.187.6750&rep=rep1&type=pdf). 
+Monads have most power of expression. Applicatives have least power of expression. 
 
-Monads naturally lead to a pointful programming style. Monad based computations can use a pointfree programming style by making use of [*Kleisli functions*](https://en.wikipedia.org/wiki/Kleisli_category). Arrows naturally lead to a pointfree programming style. Arrow based programs can use a pointful programming style by making use of [*The arrow calculus*](http://homepages.inf.ed.ac.uk/slindley/papers/arrow-calculus.pdf).
+Monads naturally lead to a pointful programming style. 
+Monad based computations can use a pointfree programming style by making use of [*Kleisli functions*](https://en.wikipedia.org/wiki/Kleisli_category). 
+Arrows naturally lead to a pointfree programming style. 
+Arrow based programs can use a pointful programming style by making use of [*The arrow calculus*](http://homepages.inf.ed.ac.uk/slindley/papers/arrow-calculus.pdf).
 
 *Our library goes for programming monads in a pointfree style using Kleisli functions.*
 
+### expression oriented programming versus function level programming
+
+The REPL session below illustrates *expression oriented programming* versus *function level programming*
+
+```scala
+scala> import scala.math.sqrt   
+import scala.math.sqrt
+scala> val z = 3.0   
+val z: Double = 3.0
+scala> val y = 4.0   
+val y: Double = 4.
+scala> val x = sqrt(z * z + y * y)  
+val x: Double = 5.0
+scala> val sqr: Double => Double = z => z * z 
+val sqr: Double => Double = $$Lambda$1366/1049650037@40230eb9
+scala> val x = sqrt(sqr(z) + sqr(y))  
+val x: Double = 5.0
+scala> val sum: Tuple2[Double, Double] => Double = (z, y) => z + y 
+val sum: ((Double, Double)) => Double = $$Lambda$1415/2022768790@39dec536
+scala> val x = sqrt(sum(sqr(z), sqr(y)))  
+val x: Double = 5.0
+scala> val sqrs: Tuple2[Double, Double] => Tuple2[Double, Double] = (z, y) => (sqr(z), sqr(y)) 
+val sqrs: Double, Double = $$Lambda$1414/2014777783@642a16aa
+scala> val x = sqrt(sum(sqrs(z, y)))  
+val x: Double = 5.0
+scala> val x = (sqrs andThen sum andThen sqrt)(z, y) 
+val x: Double = 5.0
+scala> val squareRootOfSumOfSquares: Tuple2[Double, Double] => Double = sqrs andThen sum andThen sqrt 
+val squareRootOfSumOfSquares: ((Double, Double)) => Double = <function1>
+scala> val x = squareRootOfSumOfSquares(z, y) 
+val x: Double = 5.0
+```
+
+Given a tuple `(z, y)` the *square root of the sum of their squares* can be defined as
+
+ - `sqrt(z * z + y * y)` in an *expression oriented* way 
+
+The *square root of the sum of a tuple of squares* can be defined as
+
+- `sqrs andThen sum andThen sqrt` in a *function level* way
+
+The REPL session above shows how to go from the former to the latter.
+
+ - Pointful programming with computations is similar to expression oriented programming (which uses *function application*).
+ - Pointfree programming with programs is similar to function level programming (which uses *function composition*).
+
+# UNTIL HERE
+
 ### Why `Dotty`
 
-Program description based programming is not only about *power of expression*, it is also, and probably even more, about *elegance of use*. Traditionally the pointfree style has been considered to be elegant by some programmers and *abstruse* by other programmers. Luckily, the `Dotty` programming language comes to the rescue for the latter ones! `Dotty` is a *strongly typed*, *scalable* programming language. It is possible to *extend the language* in a *type safe* way at the *library* level with *internal domain specific languages*. By using a domain specific language for the domain of *programs*, program description based programming can be done in a very *concise* way.
+Program description based programming is not only about *power of expression*. 
+It is also, and probably even more, about *elegance of use*. 
+Traditionally the pointfree style has been considered to be elegant by some programmers and *abstruse* by other programmers. Luckily, the `Dotty` programming language comes to the rescue for the latter ones! `Dotty` is a *strongly typed*, *scalable* programming language. It is possible to *extend the language* in a *type safe* way at the *library* level with *internal domain specific languages*. By using a domain specific language for the domain of *programs*, program description based programming can be done in a very *concise* way.
 
 Below are both an `FP` example and a `Dotty` example illustrating difference in elegance of use.
 
@@ -305,7 +389,7 @@ $ sbt
 [info] Set current project to pdbp (in build file:/opt/home/blog/ProgramDescriptionBasedProgramming/pdbp/)
 > compile
 [info] Compiling 7 Scala sources to /opt/home/blog/ProgramDescriptionBasedProgramming/pdbp/target/scala-0.6/classes...
-[success] Total time: 3 s, completed Jan 26, 2018 11:11:50 AM
+[success] Total time: 3 s ...
 ```
 
 `trait Program` is a *type class* that will gradually be explained later in this document. `trait Function`, `trait Composition`, `trait Construction`, `trait Condition` and `trait Execution` will be explained later in this section. `trait Aggregation` will be explained later in this document. `trait Program` declares *programming capabilities* of *program descriptions*. The programming capabilities of `Function`, `Composition` and `Construction` correspond to *arrows*. 
@@ -997,7 +1081,7 @@ Let's try `100`.
 please type an integer
 100
 the factorial value of the integer is 93326215443944152681699238856266700490715968264381621468592963895217599993229915608941463976156518286253697920827223758251185210916864000000000000000000000000
-[success] Total time: 2 s, completed Jan 27, 2018 1:09:21 PM
+[success] Total time: 2 s ...
 ```
 
 Note that the time *is not* related to `factorial` itself. It is related to *console input*.
@@ -1126,7 +1210,7 @@ Let's try `10`, `20`, `30`, `35`, `40` ... .
 please type an integer
 10
 the fibonacci value of the integer is 55
-[success] Total time: 2 s, completed Jan 27, 2018 8:54:45 PM
+[success] Total time: 2 s ...
 ```
 
 ```scala
@@ -1134,7 +1218,7 @@ the fibonacci value of the integer is 55
 please type an integer
 20
 the fibonacci value of the integer is 6765
-[success] Total time: 5 s, completed Jan 27, 2018 8:56:12 PM
+[success] Total time: 5 s ...
 ```
 
 ```scala
@@ -1142,7 +1226,7 @@ the fibonacci value of the integer is 6765
 please type an integer
 30
 the fibonacci value of the integer is 832040
-[success] Total time: 4 s, completed Jan 27, 2018 8:57:21 PM
+[success] Total time: 4 s ...
 ```
 
 ```scala
@@ -1150,7 +1234,7 @@ the fibonacci value of the integer is 832040
 please type an integer
 35
 the fibonacci value of the integer is 9227465
-[success] Total time: 16 s, completed Jan 27, 2018 8:58:00 PM
+[success] Total time: 16 s ...
 ```
 
 ```scala
@@ -1210,7 +1294,7 @@ Let's try `100`.
 please type an integer
 100
 the fibonacci value of the integer is 354224848179261915075
-[success] Total time: 4 s, completed Jan 27, 2018 9:18:35 PM
+[success] Total time: 4 s ...
 ```
 
 Note that the time *is not* related to `fibonacci` itself. It is related to *console input*.
@@ -1222,7 +1306,7 @@ Let's try `1000`.
 please type an integer
 1000
 the fibonacci value of the integer is 43466557686937456435688527675040625802564660517371780402481729089536555417949051890403879840079255169295922593080322634775209689623239873322471161642996440906533187938298969649928516003704476137795166849228875
-[success] Total time: 6 s, completed Jan 27, 2018 9:21:54 PM
+[success] Total time: 6 s ...
 ```
 
 Not too bad. Let's push the limits and try `10000`.
@@ -1746,7 +1830,7 @@ Let's try `100`.
 please type an integer
 100
 the factorial value of the integer is  93326215443944152681699238856266700490715968264381621468592963895217599993229915608941463976156518286253697920827223758251185210916864000000000000000000000000
-[success] Total time: 3 s, completed Jan 28, 2018 8:52:17 PM
+[success] Total time: 3 s ...
 ```
 
 Note that the time *is not* related to `factorial` itself. It is related to *console input*.
@@ -1807,7 +1891,7 @@ Let's try `10`, `20`, `30`, `35`, `40` ... .
 please type an integer
 10
 the fibonacci value of the integer is 55
-[success] Total time: 10 s, completed Jan 28, 2018 8:58:19 PM
+[success] Total time: 10 s ...
 ```
 
 ```scala
@@ -1815,7 +1899,7 @@ the fibonacci value of the integer is 55
 please type an integer
 20
 the fibonacci value of the integer is 6765
-[success] Total time: 3 s, completed Jan 28, 2018 8:58:24 PM
+[success] Total time: 3 s ...
 ```
 
 ```scala
@@ -1823,7 +1907,7 @@ the fibonacci value of the integer is 6765
 please type an integer
 30
 the fibonacci value of the integer is 832040
-[success] Total time: 4 s, completed Jan 28, 2018 8:58:29 PM
+[success] Total time: 4 s ...
 ```
 
 ```scala
@@ -1831,7 +1915,7 @@ the fibonacci value of the integer is 832040
 please type an integer
 35
 the fibonacci value of the integer is 9227465
-[success] Total time: 13 s, completed Jan 28, 2018 8:58:42 PM
+[success] Total time: 13 s ...
 ```
 
 ```scala
@@ -1856,7 +1940,7 @@ Let's try `100`.
 please type an integer
 100
 the fibonacci value of the integer is 354224848179261915075
-[success] Total time: 7 s, completed Jan 28, 2018 9:03:29 PM
+[success] Total time: 7 s ...
 ```
 
 Note that the time *is not* related to `fibonacci` itself. It is related to *console input*.
@@ -2170,7 +2254,7 @@ Let's try `1000`.
 please type an integer
 1000
 it's factorial value is 402387260077093773543702433923003985719374864210714632543799910429938512398629020592044208486969404800479988610197196058631666872994808558901323829669944590997424504087073759918823627727188732519779505950995276120874975462497043601418278094646496291056393887437886487337119181045825783647849977012476632889835955735432513185323958463075557409114262417474349347553428646576611667797396668820291207379143853719588249808126867838374559731746136085379534524221586593201928090878297308431392844403281231558611036976801357304216168747609675871348312025478589320767169132448426236131412508780208000261683151027341827977704784635868170164365024153691398281264810213092761244896359928705114964975419909342221566832572080821333186116811553615836546984046708975602900950537616475847728421889679646244945160765353408198901385442487984959953319101723355556602139450399736280750137837615307127761926849034352625200015888535147331611702103968175921510907788019393178114194545257223865541461062892187960223838971476088506276862967146674697562911234082439208160153780889893964518263243671616762179168909779911903754031274622289988005195444414282012187361745992642956581746628302955570299024324153181617210465832036786906117260158783520751516284225540265170483304226143974286933061690897968482590125458327168226458066526769958652682272807075781391858178889652208164348344825993266043367660176999612831860788386150279465955131156552036093988180612138558600301435694527224206344631797460594682573103790084024432438465657245014402821885252470935190620929023136493273497565513958720559654228749774011413346962715422845862377387538230483865688976461927383814900140767310446640259899490222221765904339901886018566526485061799702356193897017860040811889729918311021171229845901641921068884387121855646124960798722908519296819372388642614839657382291123125024186649353143970137428531926649875337218940694281434118520158014123344828015051399694290153483077644569099073152433278288269864602789864321139083506217095002597389863554277196742822248757586765752344220207573630569498825087968928162753848863396909959826280956121450994871701244516461260379029309120889086942028510640182154399457156805941872748998094254742173582401063677404595741785160829230135358081840096996372524230560855903700624271243416909004153690105933983835777939410970027753472000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-[success] Total time: 3 s, completed Jan 29, 2018 10:05:22 AM
+[success] Total time: 3 s ...
 ```
 
 We have no problem here any more. The active free program instance *is stack safe*.
@@ -2219,7 +2303,7 @@ Let's try `1000`.
 please type an integer
 1000
 the fibonacci value of the integer is 43466557686937456435688527675040625802564660517371780402481729089536555417949051890403879840079255169295922593080322634775209689623239873322471161642996440906533187938298969649928516003704476137795166849228875
-[success] Total time: 3 s, completed Jan 29, 2018 10:09:49 AM
+[success] Total time: 3 s ...
 ```
 
 We have no problem here any more. The active free program instance *is stack safe*.
@@ -2569,7 +2653,7 @@ trait FactorialMultipliedByIntReadTrait[>-->[- _, + _]: Program : IntReading]
 }
 ```
 
-Now that we are concrete about *what* we are reading (a `BigInt`), is natural to define an alias `readingInt` for the generic name `reading` of the reading capability of our program. The fact that, for `activeIntReadingFromConsoleProgram` (where we were concrete about *how* we are reading), `readingInt` makes use of `implicit` functions is an implementation detail (in many ways, a very important one) but we do not reflect that in the name (as we did with the name `implicitIntReadFromConsole` in `activeIntReadingFromConsoleProgram`).
+Now that we are concrete about *what* we are reading (a `BigInt`), is natural to define an alias `readingInt` for the generic name `reading` of the reading capability of our program. The fact that, for `activeIntReadingFromConsoleProgram` (where we were concrete about *how* we are reading), `readingInt` uses `implicit` functions is an implementation detail (in many ways, a very important one) but we do not reflect that in the name (as we did with the name `implicitIntReadFromConsole` in `activeIntReadingFromConsoleProgram`).
 
 ### `FactorialMultipliedByIntReadFromConsoleMain` using `activeIntReadingFromConsoleProgram`
 
@@ -2636,7 +2720,7 @@ please type an integer to read
 please type an integer
 5
 the factorial value of the integer multiplied by the integer read is 240
-[success] Total time: 8 s, completed Feb 1, 2018 3:11:44 PM
+[success] Total time: 8 s ...
 ```
 
 ## `Writing`
@@ -3183,7 +3267,7 @@ trait PointfreeLogWritingFactorialTrait[>-->[- _, + _]: Program : LogWriting]
 }
 ```
 
-The `pointfreeLogWritingFactorial` version of `factorial` makes use of `withInfo` to do the pointfree logging (we'll see this when running the example). Note that, in contrast with `Reading`, when `Writing`, we already defined `withInfo` in terms of `writing` in `trait LogWritingUsingSl4j` where we were already concrete about *what* we are writing (a `Log`). Note that, in `trait LogWritingUsingSl4j`, we also were concrete about *how* we are writing.
+The `pointfreeLogWritingFactorial` version of `factorial` uses `withInfo` to do the pointfree logging (we'll see this when running the example). Note that, in contrast with `Reading`, when `Writing`, we already defined `withInfo` in terms of `writing` in `trait LogWritingUsingSl4j` where we were already concrete about *what* we are writing (a `Log`). Note that, in `trait LogWritingUsingSl4j`, we also were concrete about *how* we are writing.
 
 ### `PointfreeLogWritingFactorialUsingSl4jMain` using `activeLogWritingUsingSl4jProgram`
 
@@ -3345,7 +3429,7 @@ trait PointfulLogWritingFactorialTrait[>-->[- _, + _]: Program : LogWriting]
 }
 ```
 
-The `pointfulLogWritingFactorial` version of `factorial` makes use of `functionWithInfo` to do the pointful logging (we'll see this when running the example). Pointful logging is done for *functions* only (for `factorial` itself, pointfree logging is done). Think of `functionWithInfo` as a pointful info logging version of `function`.
+The `pointfulLogWritingFactorial` version of `factorial` uses `functionWithInfo` to do the pointful logging (we'll see this when running the example). Pointful logging is done for *functions* only (for `factorial` itself, pointfree logging is done). Think of `functionWithInfo` as a pointful info logging version of `function`.
 
 ### `PointfulLogWritingFactorialUsingSl4jMain` using `activeLogWritingUsingSl4jProgram`
 
@@ -3422,7 +3506,7 @@ INFO  18:38:31.632 - multiply((3,2)) == 6
 INFO  18:38:31.632 - multiply((4,6)) == 24
 INFO  18:38:31.632 - multiply((5,24)) == 120
 INFO  18:38:31.632 - multiply((6,120)) == 720
-[success] Total time: 3 s, completed Feb 3, 2018 10:05:21 PM
+[success] Total time: 3 s ...
 ```
 
 ## `Reading` with `Writing`
@@ -3668,7 +3752,7 @@ trait PointfreeLogWritingFactorialMultipliedByIntReadTrait[>-->[- _, + _]: Progr
 }
 ```
 
-The definition of `pointfreeLogWritingFactorialMultipliedByIntRead` makes use definitions of `FactorialMultipliedByIntReadTrait` and `PointfreeLogWritingFactorialTrait`. 
+The definition of `pointfreeLogWritingFactorialMultipliedByIntRead` uses definitions of `FactorialMultipliedByIntReadTrait` and `PointfreeLogWritingFactorialTrait`. 
 
 ### `PointfreeLogWritingFactorialMultipliedByIntReadFromConsoleMain` using `activeIntReadingFromConsoleWithLogWritingUsingSl4jProgram`
 
@@ -3764,7 +3848,7 @@ INFO  20:18:32.961 - multiply
 INFO  20:18:32.961 - multiply
 INFO  20:18:32.962 - multiply
 INFO  20:18:32.962 - multiply
-[success] Total time: 11 s, completed Feb 13, 2018 8:18:32 PM
+[success] Total time: 11 s ...
 ```
 
 ### `pointfullLogWritingFactorialMultipliedByIntRead` using `activeIntReadingFromConsoleWithLogWritingUsingSl4jProgram`
@@ -3811,7 +3895,7 @@ trait PointfullLogWritingFactorialMultipliedByIntReadTrait[>-->[- _, + _]: Progr
 }
 ```
 
-The definition of `pointfullLogWritingFactorialMultipliedByIntRead` makes use definitions of `FactorialMultipliedByIntReadTrait` and `PointfullLogWritingFactorialTrait`. 
+The definition of `pointfullLogWritingFactorialMultipliedByIntRead` uses definitions of `FactorialMultipliedByIntReadTrait` and `PointfullLogWritingFactorialTrait`. 
 
 ### `PointfullLogWritingFactorialMultipliedByIntReadFromConsoleMain` using `activeIntReadingFromConsoleWithLogWritingUsingSl4jProgram`
 
@@ -3911,7 +3995,7 @@ INFO  20:22:17.676 - multiply((5,24)) == 120
 INFO  20:22:17.676 - multiply((6,120)) == 720
 INFO  20:22:17.676 - multiply((7,720)) == 5040
 INFO  20:22:17.676 - multiply((5040,2)) == 10080
-[success] Total time: 7 s, completed Feb 13, 2018 8:22:18 PM
+[success] Total time: 7 s ...
 ```
 
 <!--

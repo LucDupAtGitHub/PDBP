@@ -15,10 +15,10 @@ import pdbp.types.kleisli.kleisliFunctionType.Kleisli
 
 import pdbp.program.Program
 
-import pdbp.lifting.Lifting
-import pdbp.lift.Sequencing
+import pdbp.computation.lifting.Lifting
+import pdbp.computation.lifting.Sequencing
 
-import pdbp.binding.Binding
+import pdbp.computation.binding.Binding
 
 private[pdbp] trait Computation[M[+ _]]
     extends Binding[M]

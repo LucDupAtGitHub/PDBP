@@ -1,4 +1,4 @@
-package pdbp.binding
+package pdbp.computation.lifting
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,17 +11,5 @@ package pdbp.binding
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.utils.functionUtils._
+private[pdbp] trait Sequencing[M[+ _]]
 
-import pdbp.lifting.Lifting
-
-private[pdbp] trait Binding[M[+ _]] {
-  this: Lifting[M] =>
-
-  private[pdbp] def bind[Z, Y](mz: M[Z], `z=>my`: Z => M[Y]): M[Y] =
-    flatten(liftFunction(`z=>my`)(mz))
-
-  private[pdbp] def flatten[Z](mmz: M[M[Z]]): M[Z] =
-    bind(mmz, `mz=>mz`)
-
-}
