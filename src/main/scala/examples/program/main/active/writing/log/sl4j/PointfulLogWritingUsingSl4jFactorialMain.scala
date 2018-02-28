@@ -19,13 +19,13 @@ import examples.program.FactorialTrait
 
 import examples.program.writing.log.PointfulLogWritingFactorialTrait
 
-object PointfulLogWritingFactorialUsingSl4jMain {
+object PointfulLogWritingUsingSl4jFactorialUsingSl4jMain {
 
-  object pointfulLogWritingFactorialUsingSl4jObject 
+  object pointfulLogWritingUsingSl4jFactorialObject 
     extends PointfulLogWritingFactorialTrait[`>-alw->`]() 
     with FactorialTrait[`>-alw->`]()
 
-  import pointfulLogWritingFactorialUsingSl4jObject._
+  import pointfulLogWritingUsingSl4jFactorialObject._
 
   def main(args: Array[String]): Unit = {    
 

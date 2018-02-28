@@ -25,9 +25,15 @@ import pdbp.program.writing.log.sl4j.LogWritingUsingSl4j
 
 import pdbp.program.transformer.ProgramTransformer
 
-import pdbp.computation.transformer.writing.WritingTransformer
+import pdbp.computation.transformer.NaturalTransformer
 
 import pdbp.computation.transformer.ComputationTransformer
+
+import pdbp.computation.transformer.writing.WritingTransformer
+
+import pdbp.computation.transformer.writing.log.LogWritingTransformer
+
+import pdbp.computation.transformer.writing.log.sl4j.LogWritingUsingSl4jTransformer
 
 import pdbp.program.instances.active.writing.ActiveWritingProgram
 
@@ -37,28 +43,18 @@ import pdbp.program.writing.folding.implicits.log.implicits.implicitLogFolding
 
 trait ActiveLogWritingUsingSl4jProgram
     extends ActiveWritingProgram[Log]
-    with LogWritingUsingSl4j[`>-alw->`] {   
-  
-  import implicitComputation.{result => resultM}
-  import implicitComputation.{bind => bindM}
-
-  import implicitProgram.{execute => executeK}
-
-  override def execute(`u>-alw->u`: Unit `>-alw->` Unit): Environment `I=>` Unit = {
-    executeK { u: Unit =>
-      bindM(`u>-alw->u`(u), { (log, u) =>
-        log.effect(())
-        resultM(u)
-      })
-    } 
-  }
+    with LogWritingUsingSl4j[`>-alw->`] 
+    with LogWritingUsingSl4jTransformer[Active] {
 
 }
 
 object activeLogWritingUsingSl4jProgram
     extends ActiveLogWritingUsingSl4jProgram
     with Writing[Log, `>-alw->`]()
+    with NaturalTransformer[Active, ActiveLogWriting]()
     with ComputationTransformer[Active, ActiveLogWriting]()
     with ProgramTransformer[`>-a->`, `>-alw->`]()
     with WritingTransformer[Log, Active]()
+    with LogWritingTransformer[Active]()
+    with LogWritingUsingSl4jTransformer[Active]()
 

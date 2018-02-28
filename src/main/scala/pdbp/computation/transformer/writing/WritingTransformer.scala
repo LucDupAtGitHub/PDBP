@@ -50,6 +50,8 @@ private[pdbp] trait WritingTransformer[W: Folding, M[+ _]: Computation]
 
   import implicitFolding._
 
+  private[pdbp] val implicitComputation = implicitly[Computation[M]]  
+
   import implicitComputation.{bind => bindM}
   import implicitComputation.{result => resultM}
 

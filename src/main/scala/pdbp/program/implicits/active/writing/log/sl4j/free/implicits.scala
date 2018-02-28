@@ -1,4 +1,4 @@
-package pdbp.types.active.writing.free.log
+package pdbp.program.implicits.active.writing.log.sl4j.free
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -10,14 +10,11 @@ package pdbp.types.active.writing.free.log
 //                                           v1.0
 //  Program Description Based Programming Library
 
-import pdbp.types.log.logTypes._
+object implicits {
 
-import pdbp.types.active.writing.free.activeWritingWithFreeTypes._ 
+  import pdbp.program.instances.active.writing.log.sl4j.free.activeLogWritingUsingSl4jFreeProgram
 
-object activeLogWritingWithFreeTypes {
-
-  type ActiveLogWritingWithFree = ActiveWritingWithFree[Log]
-
-  type `>-alwf->`= `>-awf->`[Log]
+  implicit val implicitActiveLogWritingUsingSl4jFreeProgram: activeLogWritingUsingSl4jFreeProgram.type =
+    activeLogWritingUsingSl4jFreeProgram
 
 }

@@ -14,13 +14,19 @@ import pdbp.types.active.activeTypes._
 
 import pdbp.types.active.reading.int.activeIntReadingTypes._
 
-import pdbp.program.reading.int.console.IntReadingFromConsole
+import pdbp.program.reading.int.IntReading
 
 import pdbp.program.transformer.ProgramTransformer
+
+import pdbp.computation.transformer.NaturalTransformer
 
 import pdbp.computation.transformer.ComputationTransformer
 
 import pdbp.computation.transformer.reading.ReadingTransformer
+
+import pdbp.computation.transformer.reading.int.IntReadingTransformer
+
+import pdbp.computation.transformer.reading.int.console.ImplicitIntReadingFromConsoleTransformer
 
 import pdbp.program.instances.active.reading.ActiveReadingProgram
 
@@ -28,23 +34,17 @@ import pdbp.program.implicits.active.implicits.implicitActiveProgram
 
 trait ActiveIntReadingFromConsoleProgram
     extends ActiveReadingProgram[BigInt]
-    with IntReadingFromConsole[`>-air->`] {
-
-  implicit val implicitIntReadFromConsole: BigInt = 
-    readIntFromConsole(())
-
-  private val environmentK = implicitProgram.environment
-
-  override implicit val environment: Environment = {
-    (environmentK, implicitIntReadFromConsole)
-  }
-
-}
+    with IntReading[`>-air->`]
+    with ImplicitIntReadingFromConsoleTransformer[Active] 
 
 object activeIntReadingFromConsoleProgram
     extends ActiveIntReadingFromConsoleProgram()
+    with NaturalTransformer[Active, ActiveIntReading]()
     with ComputationTransformer[Active, ActiveIntReading]()
     with ProgramTransformer[`>-a->`, `>-air->`]()
     with ReadingTransformer[BigInt, Active]()
+    with IntReadingTransformer[Active]()
+    with ImplicitIntReadingFromConsoleTransformer[Active]()
+    
 
     

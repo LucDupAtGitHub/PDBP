@@ -1,4 +1,4 @@
-package pdbp.program.reading.int.console
+package pdbp.types.active.free.writing.log
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -9,18 +9,17 @@ package pdbp.program.reading.int.console
 //  \_\/       \______\/  \______\/      \_\/
 //                                           v1.0
 //  Program Description Based Programming Library
-//  author        Luc Duponcheel        2017-2018
 
-import pdbp.program.Function
+// import pdbp.types.kleisli.kleisliFunctionType._
 
-import pdbp.program.Composition
+import pdbp.types.log.logTypes._
 
-import pdbp.program.reading.int.IntReading
+import pdbp.types.active.free.writing.activeFreeWithWritingTypes._
 
-trait IntReadingFromConsole[>-->[- _, + _]] extends IntReading[>-->] {
-  this: Function[>-->] & Composition[>-->] =>
-  
-  val readIntFromConsole: Unit >--> BigInt = 
-    readInt("please type an integer to read")
+object activeFreeWithLogWritingTypes {
+
+  type ActiveFreeWithLogWriting = ActiveFreeWithWriting[Log]
+
+  type `>-aflw->`= `>-afw->`[Log]
 
 }

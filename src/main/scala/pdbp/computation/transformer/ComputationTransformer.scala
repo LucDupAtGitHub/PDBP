@@ -15,20 +15,29 @@ import pdbp.types.kleisli.kleisliFunctionType._
 
 import pdbp.computation.lifting.LiftingObject
 
+import pdbp.program.Execution
+
 import pdbp.computation.Computation
 
 import pdbp.program.transformer.ProgramTransformer
 
-private[pdbp] trait ComputationTransformer[D[+ _]: Computation, U[+ _]]
-    extends ProgramTransformer[Kleisli[D], Kleisli[U]]
-    with LiftingObject[U] {
+private[pdbp] trait NaturalTransformer[D[+ _], U[+ _]] {
 
   private[pdbp] def liftComputation[Z](dz: D[Z]): U[Z]
 
-  private[pdbp] val implicitComputation = implicitly[Computation[D]]
+}
+
+private[pdbp] trait ComputationTransformer[D[+ _]: LiftingObject: [N[+ _]] => Execution[Kleisli[N]], U[+ _]]
+    extends NaturalTransformer[D, U]
+    with ProgramTransformer[Kleisli[D], Kleisli[U]]
+    with LiftingObject[U] {
+
+  private[pdbp] val implicitLiftingObject = implicitly[LiftingObject[D]]
+
+  private[pdbp] val implicitExecution = implicitly[Execution[Kleisli[D]]]
 
   override private[pdbp] def liftObject[Z]: Z => U[Z] = { z =>
-    liftComputation(implicitComputation.liftObject(z))
+    liftComputation(implicitLiftingObject.liftObject(z))
   }
 
   private type `>-D->` = Kleisli[D]

@@ -48,6 +48,8 @@ private[pdbp] trait ReadingTransformer[R, M[+ _]: Computation]
     sys.error(
       "Impossible, since, for 'ReadingTransformer', 'liftComputation' is used nowhere")
 
+  private[pdbp] val implicitComputation = implicitly[Computation[M]]
+
   import implicitComputation.{result => resultM}
   import implicitComputation.{bind => bindM}
 

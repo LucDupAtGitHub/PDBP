@@ -4,6 +4,8 @@
 
 Expect frequent changes. In the file Changes.md, we describe some of the more important changes.
 
+The documentation is a bit behind the code.
+
 ## Introduction
 
 When writing an introduction it is challenging to find the right balance between providing *too many details* or *too few details*. 
