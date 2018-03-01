@@ -45,15 +45,15 @@ import pdbp.program.transformation.ProgramTransformation
 
 import pdbp.computation.transformation.NaturalTransformation
 
-import pdbp.computation.transformation.NaturalComputationTransformation
+import pdbp.computation.transformation.ComputationTransformation
 
-import pdbp.computation.recuperation.ComputationRecuperation
+import pdbp.computation.recuperation.NaturalRecuperation
 
 private[pdbp] trait FreeTransformation[M[+ _]: ObjectLifting : [M[+ _]] => Execution[Kleisli[M]]]
     extends Computation[FreeTransformed[M]]
     with Program[Kleisli[FreeTransformed[M]]]
-    with NaturalComputationTransformation[M, FreeTransformed[M]]
-    with ComputationRecuperation[FreeTransformed[M], M]
+    with ComputationTransformation[M, FreeTransformed[M]]
+    with NaturalRecuperation[FreeTransformed[M], M]
     with ProgramTransformation[Kleisli[M], Kleisli[FreeTransformed[M]]] {
 
   private type FTM = FreeTransformed[M]
@@ -103,23 +103,23 @@ private[pdbp] trait FreeTransformation[M[+ _]: ObjectLifting : [M[+ _]] => Execu
     executeK(recuperateProgram(`u>=ftk=>u`))  
 
   @annotation.tailrec
-  private final def recuperateComputationHelper[Z](ftmz: FTM[Z]): M[Z] = ftmz match {
+  private final def recuperateHelper[Z](ftmz: FTM[Z]): M[Z] = ftmz match {
     case LiftObject(z) => 
       liftObjectM(z)
     case TransformComputation(mz) =>
       mz
     case Bind(LiftObject(y), y2ftmz) => 
-      recuperateComputationHelper(y2ftmz(y)) 
+      recuperateHelper(y2ftmz(y)) 
     case Bind(Bind(mx, x2ftmy), y2ftmz) =>
-      // recuperateComputationHelper(bind(mx, x => bind(x2ftmy(x), y2ftmz)))
-      recuperateComputationHelper(bind(mx, compose(x2ftmy, y2ftmz)))          
+      // recuperateHelper(bind(mx, x => bind(x2ftmy(x), y2ftmz)))
+      recuperateHelper(bind(mx, compose(x2ftmy, y2ftmz)))          
     case any =>
       sys.error(
-        "Impossible, since, for 'FreeTransformation', 'recuperateComputationHelper' eliminates this case")
+        "Impossible, since, for 'FreeTransformation', 'recuperateHelper' eliminates this case")
     } 
 
-  override private[pdbp] def recuperateComputation[Z](ftmz: FTM[Z]): M[Z] = { 
-    recuperateComputationHelper(ftmz)
+  override private[pdbp] def recuperate[Z](ftmz: FTM[Z]): M[Z] = { 
+    recuperateHelper(ftmz)
   } 
 
 }

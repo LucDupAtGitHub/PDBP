@@ -1,4 +1,4 @@
-package pdbp.types.active.writing.free
+package pdbp.computation.recuperation
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -9,17 +9,21 @@ package pdbp.types.active.writing.free
 //  \_\/       \______\/  \______\/      \_\/
 //                                           v1.0
 //  Program Description Based Programming Library
+//  author        Luc Duponcheel        2017-2018
 
 import pdbp.types.kleisli.kleisliFunctionType._
 
-import pdbp.types.active.free.activeFreeTypes._
+private[pdbp] trait NaturalRecuperation[N[+ _], M[+ _]] {
 
-import pdbp.computation.transformation.writing.writingTransformation._
+  private[pdbp] def recuperate[Z](nz: N[Z]): M[Z]
 
-object activeWritingWithFreeTypes {
+  private type `>-M->` = Kleisli[M]
 
-  type ActiveWritingWithFree = [W] => WritingTransformed[W, ActiveFree]
+  private type `>-N->` = Kleisli[N]
 
-  type `>-awf->`= [W] => Kleisli[ActiveWritingWithFree[W]]
+  private[pdbp] def recuperateProgram[Z, Y](
+      `z>-n->y`: Z `>-N->` Y): Z `>-M->` Y = { z =>
+    recuperate(`z>-n->y`(z))
+  }
 
 }

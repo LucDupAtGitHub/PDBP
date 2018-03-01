@@ -26,7 +26,7 @@ import pdbp.computation.Computation
 
 import pdbp.program.transformation.ProgramTransformation
 
-import pdbp.computation.transformation.NaturalComputationTransformation
+import pdbp.computation.transformation.ComputationTransformation
 
 import pdbp.computation.transformation.free.FreeTransformation
 
@@ -37,6 +37,6 @@ import pdbp.computation.transformation.free.writing.FreeWithWritingTransformatio
 trait ActiveFreeWithWritingProgram[W : Folding]
     extends Computation[ActiveFreeWithWriting[W]]
     with Program[`>-afw->`[W]]
-    with NaturalComputationTransformation[ActiveWriting[W], ActiveFreeWithWriting[W]]
+    with ComputationTransformation[ActiveWriting[W], ActiveFreeWithWriting[W]]
     with ProgramTransformation[`>-aw->`[W], `>-afw->`[W]]
     with FreeWithWritingTransformation[W, ActiveWriting[W]]

@@ -33,13 +33,13 @@ import pdbp.computation.Computation
 
 import pdbp.program.transformation.ProgramTransformation
 
-import pdbp.computation.transformation.NaturalComputationTransformation
+import pdbp.computation.transformation.ComputationTransformation
 
 private[pdbp] trait ReadingTransformation[R, M[+ _]: Computation]
     extends Computation[ReadingTransformed[R, M]]
     with Program[Kleisli[ReadingTransformed[R, M]]]
     with Reading[R, Kleisli[ReadingTransformed[R, M]]]
-    with NaturalComputationTransformation[M, ReadingTransformed[R, M]] 
+    with ComputationTransformation[M, ReadingTransformed[R, M]] 
     with ProgramTransformation[Kleisli[M], Kleisli[ReadingTransformed[R, M]]] {
 
   private type RTM = ReadingTransformed[R, M]      

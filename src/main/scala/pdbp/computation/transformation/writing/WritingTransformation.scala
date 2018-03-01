@@ -35,13 +35,13 @@ import pdbp.computation.Computation
 
 import pdbp.program.transformation.ProgramTransformation
 
-import pdbp.computation.transformation.NaturalComputationTransformation
+import pdbp.computation.transformation.ComputationTransformation
 
 private[pdbp] trait WritingTransformation[W: Folding, M[+ _]: Computation]
     extends Computation[WritingTransformed[W, M]]
     with Program[Kleisli[WritingTransformed[W, M]]]
     with Writing[W, Kleisli[WritingTransformed[W, M]]]
-    with NaturalComputationTransformation[M, WritingTransformed[W, M]]
+    with ComputationTransformation[M, WritingTransformed[W, M]]
     with ProgramTransformation[Kleisli[M], Kleisli[WritingTransformed[W, M]]] {
 
   private type WTM = WritingTransformed[W, M]

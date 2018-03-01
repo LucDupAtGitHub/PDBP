@@ -25,12 +25,12 @@ import pdbp.computation.transformation.free.freeTransformation._
 
 import pdbp.computation.transformation.free.writing.FreeWithWritingTransformation
 
-import pdbp.computation.recuperation.ComputationRecuperation
+import pdbp.computation.recuperation.NaturalRecuperation
 
 private[pdbp] trait FreeWithLogWritingTransformation[
   M[+ _]: ObjectLifting : [M[+ _]] => Execution[Kleisli[M]] : [M[+ _]] => LogWriting[Kleisli[M]]]
     extends FreeWithWritingTransformation[Log, M]
-    with ComputationRecuperation[FreeTransformed[M], M] {
+    with NaturalRecuperation[FreeTransformed[M], M] {
 
   private type `>=K=>` = Kleisli[M]  
 
@@ -41,25 +41,25 @@ private[pdbp] trait FreeWithLogWritingTransformation[
   import implicitObjectLifting.{liftObject => liftObjectM}
  
   @annotation.tailrec
-  private final def recuperateComputationHelper[Z](ftmz: FTM[Z]): M[Z] = ftmz match {
+  private final def recuperateHelper[Z](ftmz: FTM[Z]): M[Z] = ftmz match {
     case LiftObject(z) => 
       liftObjectM(z)
     case TransformComputation(mz) =>
       mz
     case Bind(LiftObject(y), y2ftmz) => 
-      recuperateComputationHelper(y2ftmz(y))
+      recuperateHelper(y2ftmz(y))
     case Bind(TransformComputation((Log(effect), y)), y2ftmz) =>
       effect(())
-      recuperateComputationHelper(y2ftmz(y))
+      recuperateHelper(y2ftmz(y))
     case Bind(Bind(mx, x2ftmy), y2ftmz) =>
-      recuperateComputationHelper(bind(mx, compose(x2ftmy, y2ftmz)))          
+      recuperateHelper(bind(mx, compose(x2ftmy, y2ftmz)))          
     case any =>
       sys.error(
-        "Impossible, since, for 'ActiveFreeWithLogWritingUsingSl4jProgram', 'recuperateComputationHelper' eliminates this case")
+        "Impossible, since, for 'FreeWithLogWritingTransformation', 'recuperateHelper' eliminates this case")
   } 
 
-  override private[pdbp] def recuperateComputation[Z](ftmz: FTM[Z]): M[Z] = {
-    recuperateComputationHelper(ftmz)
+  override private[pdbp] def recuperate[Z](ftmz: FTM[Z]): M[Z] = {
+    recuperateHelper(ftmz)
   }   
 
 }      

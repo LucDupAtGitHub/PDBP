@@ -11,9 +11,26 @@ package pdbp.computation.transformation
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-private[pdbp] trait ComputationTransformation[M[+ _], N[+ _]] {
+import pdbp.types.kleisli.kleisliFunctionType._
 
-  private[pdbp] def transformComputation[Z](dz: M[Z]): N[Z]
+import pdbp.program.Execution
+
+import pdbp.computation.Computation
+
+import pdbp.computation.lifting.ObjectLifting
+
+import pdbp.program.transformation.ProgramTransformation
+
+private[pdbp] trait ComputationTransformation[M[+ _]: ObjectLifting: [M[+ _]] => Execution[Kleisli[M]], N[+ _]]
+    extends NaturalTransformation[M, N]
+    with ProgramTransformation[Kleisli[M], Kleisli[N]] 
+    with ObjectLifting[N] {
+
+  private[pdbp] val implicitObjectLifting = implicitly[ObjectLifting[M]]
+
+  override private[pdbp] def liftObject[Z](z: Z) =
+    apply(implicitObjectLifting.liftObject(z))
+
+  private[pdbp] val implicitExecution = implicitly[Execution[Kleisli[M]]]
 
 }
-

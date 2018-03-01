@@ -20,7 +20,7 @@ import pdbp.computation.Computation
 
 import pdbp.program.transformation.ProgramTransformation
 
-import pdbp.computation.transformation.NaturalComputationTransformation
+import pdbp.computation.transformation.ComputationTransformation
 
 import pdbp.computation.transformation.writing.WritingTransformation
 
@@ -30,6 +30,6 @@ trait ActiveWritingProgram[W]
     extends Computation[ActiveWriting[W]]
     with Program[`>-aw->`[W]]
     with ProgramTransformation[`>-a->`, `>-aw->`[W]]
-    with NaturalComputationTransformation[Active, ActiveWriting[W]]
+    with ComputationTransformation[Active, ActiveWriting[W]]
     with WritingTransformation[W, Active]
 
