@@ -18,18 +18,18 @@ import pdbp.program.Program
 
 import pdbp.computation.Computation
 
-import pdbp.program.transformer.ProgramTransformer
+import pdbp.program.transformation.ProgramTransformation
 
-import pdbp.computation.transformer.NaturalComputationTransformer
+import pdbp.computation.transformation.NaturalComputationTransformation
 
-import pdbp.computation.transformer.reading.ReadingTransformer
+import pdbp.computation.transformation.reading.ReadingTransformation
 
 import pdbp.program.implicits.active.implicits.implicitActiveProgram
 
 trait ActiveReadingProgram[R]
     extends Computation[ActiveReading[R]]
     with Program[`>-ar->`[R]]
-    with NaturalComputationTransformer[Active, ActiveReading[R]]
-    with ProgramTransformer[`>-a->`, `>-ar->`[R]]
-    with ReadingTransformer[R, Active]
+    with NaturalComputationTransformation[Active, ActiveReading[R]]
+    with ProgramTransformation[`>-a->`, `>-ar->`[R]]
+    with ReadingTransformation[R, Active]
 

@@ -1,4 +1,4 @@
-package pdbp.types.active.reading.writing
+package pdbp.computation.recuperation
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -9,18 +9,21 @@ package pdbp.types.active.reading.writing
 //  \_\/       \______\/  \______\/      \_\/
 //                                           v1.0
 //  Program Description Based Programming Library
+//  author        Luc Duponcheel        2017-2018
 
 import pdbp.types.kleisli.kleisliFunctionType._
 
-import pdbp.types.active.writing.activeWritingTypes._
+private[pdbp] trait ComputationRecuperation[N[+ _], M[+ _]] {
 
-import pdbp.computation.transformation.reading.readingTransformation._
+  private[pdbp] def recuperateComputation[Z](nz: N[Z]): M[Z]
 
-object activeReadingWithWritingTypes {
+  private type `>-M->` = Kleisli[M]
 
-  type ActiveReadingWithWriting = [R, W] => ReadingTransformed[R, ActiveWriting[W]]
+  private type `>-N->` = Kleisli[N]
 
-  type `>-arw->`= [R, W] => Kleisli[ActiveReadingWithWriting[R, W]]
+  private[pdbp] def recuperateProgram[Z, Y](
+      `z>-n->y`: Z `>-N->` Y): Z `>-M->` Y = { z =>
+    recuperateComputation(`z>-n->y`(z))
+  }
 
 }
-

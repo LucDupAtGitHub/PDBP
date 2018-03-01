@@ -36,17 +36,17 @@ import pdbp.program.writing.folding.Folding
 
 import pdbp.computation.Computation
 
-import pdbp.program.transformer.ProgramTransformer
+import pdbp.program.transformation.ProgramTransformation
 
-import pdbp.computation.transformer.NaturalComputationTransformer
+import pdbp.computation.transformation.NaturalComputationTransformation
 
-import pdbp.computation.transformer.free.writing.FreeWithWritingTransformer
+import pdbp.computation.transformation.free.writing.FreeWithWritingTransformation
 
-import pdbp.computation.transformer.free.writing.log.FreeWithLogWritingTransformer
+import pdbp.computation.transformation.free.writing.log.FreeWithLogWritingTransformation
 
-import pdbp.computation.transformer.free.FreeTransformer
+import pdbp.computation.transformation.free.FreeTransformation
 
-import pdbp.computation.transformer.free.freeTransformer._
+import pdbp.computation.transformation.free.freeTransformation._
 
 import pdbp.program.instances.active.writing.log.sl4j.activeLogWritingUsingSl4jProgram
 
@@ -66,10 +66,10 @@ trait ActiveFreeWithLogWritingUsingSl4jProgram
 object activeFreeWithLogWritingUsingSl4jProgram
     extends ActiveFreeWithLogWritingUsingSl4jProgram
     with ActiveFreeWithWritingProgram[Log]()
-    with ProgramTransformer[`>-alw->`, `>-afw->`[Log]]()
-    with NaturalComputationTransformer[ActiveLogWriting, ActiveFreeWithLogWriting]()
-    with FreeWithLogWritingTransformer[ActiveLogWriting]()
-    with FreeWithWritingTransformer[Log, ActiveLogWriting]()
-    with FreeTransformer[ActiveLogWriting]()
+    with ProgramTransformation[`>-alw->`, `>-afw->`[Log]]()
+    with NaturalComputationTransformation[ActiveLogWriting, ActiveFreeWithLogWriting]()
+    with FreeWithLogWritingTransformation[ActiveLogWriting]()
+    with FreeWithWritingTransformation[Log, ActiveLogWriting]()
+    with FreeTransformation[ActiveLogWriting]()
     with LogWritingUsingSl4j[Kleisli[ActiveFreeWithLogWriting]]()
     with Writing[Log, Kleisli[ActiveFreeWithLogWriting]]()

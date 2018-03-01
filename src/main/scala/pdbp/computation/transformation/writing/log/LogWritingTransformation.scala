@@ -1,4 +1,4 @@
-package pdbp.types.active.writing
+package pdbp.computation.transformation.writing.log
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -9,17 +9,23 @@ package pdbp.types.active.writing
 //  \_\/       \______\/  \______\/      \_\/
 //                                           v1.0
 //  Program Description Based Programming Library
+//  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.kleisli.kleisliFunctionType._
+import pdbp.types.log.logTypes._
 
-import pdbp.types.active.activeTypes._
+import pdbp.utils.productUtils._
+
+import pdbp.computation.Computation
 
 import pdbp.computation.transformation.writing.writingTransformation._
 
-object activeWritingTypes {
+import pdbp.computation.transformation.writing.WritingTransformation
 
-  type ActiveWriting = [W] => WritingTransformed[W, Active]
+private[pdbp] object logWritingTransformation {
 
-  type `>-aw->`= [W] => Kleisli[ActiveWriting[W]]
+  type LogWritingTransformed = [M[+ _]] => WritingTransformed[Log, M]
 
 }
+
+private[pdbp] trait LogWritingTransformation[M[+ _]: Computation]
+    extends WritingTransformation[Log, M]

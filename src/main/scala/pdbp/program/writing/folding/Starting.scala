@@ -12,10 +12,10 @@ package pdbp.program.writing.folding
 
 import pdbp.types.const.constType._
 
-import pdbp.computation.lifting.LiftingObject
+import pdbp.computation.lifting.ObjectLifting
 
 private[pdbp] trait Starting[W] 
-  extends LiftingObject[Const[W]] {
+  extends ObjectLifting[Const[W]] {
 
   private[pdbp] val start: W
 

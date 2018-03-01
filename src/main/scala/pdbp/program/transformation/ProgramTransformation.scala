@@ -1,4 +1,4 @@
-package pdbp.types.active.reading.writing
+package pdbp.program.transformation
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -9,18 +9,14 @@ package pdbp.types.active.reading.writing
 //  \_\/       \______\/  \______\/      \_\/
 //                                           v1.0
 //  Program Description Based Programming Library
+//  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.kleisli.kleisliFunctionType._
+import pdbp.program.Program
 
-import pdbp.types.active.writing.activeWritingTypes._
+private[pdbp] trait ProgramTransformation[`>-KM->`[- _, + _]: Program, `>-KN->`[- _, + _]] {
 
-import pdbp.computation.transformation.reading.readingTransformation._
+  private[pdbp] val implicitProgram = implicitly[Program[`>-KM->`]]
 
-object activeReadingWithWritingTypes {
-
-  type ActiveReadingWithWriting = [R, W] => ReadingTransformed[R, ActiveWriting[W]]
-
-  type `>-arw->`= [R, W] => Kleisli[ActiveReadingWithWriting[R, W]]
+  private[pdbp] def transformProgram[Z, Y](`z>-km->y`: Z `>-KM->` Y): Z `>-KN->` Y
 
 }
-

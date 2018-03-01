@@ -23,17 +23,17 @@ import pdbp.program.writing.Writing
 
 import pdbp.program.writing.log.sl4j.LogWritingUsingSl4j
 
-import pdbp.program.transformer.ProgramTransformer
+import pdbp.program.transformation.ProgramTransformation
 
-import pdbp.computation.transformer.NaturalTransformer
+import pdbp.computation.transformation.NaturalTransformation
 
-import pdbp.computation.transformer.NaturalComputationTransformer
+import pdbp.computation.transformation.NaturalComputationTransformation
 
-import pdbp.computation.transformer.writing.WritingTransformer
+import pdbp.computation.transformation.writing.WritingTransformation
 
-import pdbp.computation.transformer.writing.log.LogWritingTransformer
+import pdbp.computation.transformation.writing.log.LogWritingTransformation
 
-import pdbp.computation.transformer.writing.log.sl4j.LogWritingUsingSl4jTransformer
+import pdbp.computation.transformation.writing.log.sl4j.LogWritingUsingSl4jTransformation
 
 import pdbp.program.instances.active.writing.ActiveWritingProgram
 
@@ -44,17 +44,17 @@ import pdbp.program.writing.folding.implicits.log.implicits.implicitLogFolding
 trait ActiveLogWritingUsingSl4jProgram
     extends ActiveWritingProgram[Log]
     with LogWritingUsingSl4j[`>-alw->`] 
-    with LogWritingUsingSl4jTransformer[Active] {
+    with LogWritingUsingSl4jTransformation[Active] {
 
 }
 
 object activeLogWritingUsingSl4jProgram
     extends ActiveLogWritingUsingSl4jProgram
     with Writing[Log, `>-alw->`]()
-    with NaturalTransformer[Active, ActiveLogWriting]()
-    with NaturalComputationTransformer[Active, ActiveLogWriting]()
-    with ProgramTransformer[`>-a->`, `>-alw->`]()
-    with WritingTransformer[Log, Active]()
-    with LogWritingTransformer[Active]()
-    with LogWritingUsingSl4jTransformer[Active]()
+    with NaturalTransformation[Active, ActiveLogWriting]()
+    with NaturalComputationTransformation[Active, ActiveLogWriting]()
+    with ProgramTransformation[`>-a->`, `>-alw->`]()
+    with WritingTransformation[Log, Active]()
+    with LogWritingTransformation[Active]()
+    with LogWritingUsingSl4jTransformation[Active]()
 

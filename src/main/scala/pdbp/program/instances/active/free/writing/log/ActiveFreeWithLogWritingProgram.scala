@@ -14,10 +14,10 @@ import pdbp.types.log.logTypes._
 
 import pdbp.types.active.writing.log.activeLogWritingTypes._
 
-import pdbp.computation.transformer.free.writing.log.FreeWithLogWritingTransformer
+import pdbp.computation.transformation.free.writing.log.FreeWithLogWritingTransformation
 
 import pdbp.program.instances.active.free.writing.ActiveFreeWithWritingProgram
 
 trait ActiveFreeWithLogWritingProgram
     extends ActiveFreeWithWritingProgram[Log]
-    with FreeWithLogWritingTransformer[ActiveLogWriting]
+    with FreeWithLogWritingTransformation[ActiveLogWriting]

@@ -23,17 +23,17 @@ import pdbp.program.writing.Writing
 
 import pdbp.program.writing.log.sl4j.LogWritingUsingSl4j
 
-import pdbp.program.transformer.ProgramTransformer
+import pdbp.program.transformation.ProgramTransformation
 
-import pdbp.computation.transformer.NaturalTransformer
+import pdbp.computation.transformation.NaturalTransformation
 
-import pdbp.computation.transformer.NaturalComputationTransformer
+import pdbp.computation.transformation.NaturalComputationTransformation
 
-import pdbp.computation.transformer.writing.WritingTransformer
+import pdbp.computation.transformation.writing.WritingTransformation
 
-import pdbp.computation.transformer.writing.log.LogWritingTransformer
+import pdbp.computation.transformation.writing.log.LogWritingTransformation
 
-import pdbp.computation.transformer.writing.log.sl4j.LogWritingUsingSl4jTransformer
+import pdbp.computation.transformation.writing.log.sl4j.LogWritingUsingSl4jTransformation
 
 import pdbp.program.instances.active.writing.free.ActiveWritingWithFreeProgram
 
@@ -44,7 +44,7 @@ import pdbp.program.implicits.active.free.implicits.implicitActiveFreeProgram
 trait ActiveLogWritingUsingSl4jFreeProgram
     extends ActiveWritingWithFreeProgram[Log]
     with LogWritingUsingSl4j[`>-alwf->`] 
-    with LogWritingUsingSl4jTransformer[ActiveFree] {   
+    with LogWritingUsingSl4jTransformation[ActiveFree] {   
 
   import pdbp.utils.productUtils._
 
@@ -56,9 +56,9 @@ trait ActiveLogWritingUsingSl4jFreeProgram
 
   import pdbp.types.active.writing.log.activeLogWritingTypes._
 
-  import pdbp.computation.transformer.writing.writingTransformer._
+  import pdbp.computation.transformation.writing.writingTransformation._
 
-  import pdbp.computation.transformer.free.freeTransformer._
+  import pdbp.computation.transformation.free.freeTransformation._
 
   import pdbp.program.instances.active.free.activeFreeProgram
 
@@ -73,14 +73,14 @@ trait ActiveLogWritingUsingSl4jFreeProgram
   override val environment: Environment = implicitProgram.environment
 
   override def execute(`u>-alwf->u`: Unit `>-alwf->` Unit): Environment `I=>` Unit =
-    activeLogWritingUsingSl4jProgram.execute(lowerProgram(`u>-alwf->u`)) 
+    activeLogWritingUsingSl4jProgram.execute(recuperateProgram(`u>-alwf->u`)) 
 
-  private final def lowerComputation[Z](lwtafz: LWTAF[Z]): LWTA[Z] = 
-    activeFreeProgram.lowerComputation(lwtafz)
+  private final def recuperateComputation[Z](lwtafz: LWTAF[Z]): LWTA[Z] = 
+    activeFreeProgram.recuperateComputation(lwtafz)
    
-  private[pdbp] def lowerProgram[Z, Y](
+  private[pdbp] def recuperateProgram[Z, Y](
       `z>-alwf->y`: Z `>-alwf->` Y): Z `>-alw->` Y = { z =>
-    lowerComputation(`z>-alwf->y`(z))
+    recuperateComputation(`z>-alwf->y`(z))
   }            
 
 }
@@ -89,9 +89,9 @@ object activeLogWritingUsingSl4jFreeProgram
     extends ActiveLogWritingUsingSl4jFreeProgram
     with ActiveWritingWithFreeProgram[Log]()
     with Writing[Log, `>-alwf->`]() 
-    with NaturalTransformer[ActiveFree, ActiveLogWritingWithFree]()
-    with NaturalComputationTransformer[ActiveFree, ActiveLogWritingWithFree]()
-    with ProgramTransformer[`>-af->`, `>-alwf->`]()
-    with WritingTransformer[Log, ActiveFree]()
-    with LogWritingTransformer[ActiveFree]()
-    with LogWritingUsingSl4jTransformer[ActiveFree]()
+    with NaturalTransformation[ActiveFree, ActiveLogWritingWithFree]()
+    with NaturalComputationTransformation[ActiveFree, ActiveLogWritingWithFree]()
+    with ProgramTransformation[`>-af->`, `>-alwf->`]()
+    with WritingTransformation[Log, ActiveFree]()
+    with LogWritingTransformation[ActiveFree]()
+    with LogWritingUsingSl4jTransformation[ActiveFree]()

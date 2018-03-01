@@ -18,20 +18,20 @@ import pdbp.program.Program
 
 import pdbp.computation.Computation
 
-import pdbp.program.transformer.ProgramTransformer
+import pdbp.program.transformation.ProgramTransformation
 
-import pdbp.computation.transformer.NaturalTransformer
+import pdbp.computation.transformation.NaturalTransformation
 
-import pdbp.computation.transformer.NaturalComputationTransformer
+import pdbp.computation.transformation.NaturalComputationTransformation
 
-import pdbp.computation.transformer.free.FreeTransformer
+import pdbp.computation.transformation.free.FreeTransformation
 
 import pdbp.program.implicits.active.implicits.implicitActiveProgram
 
 object activeFreeProgram
     extends Computation[ActiveFree]
     with Program[`>-af->`]
-    with NaturalTransformer[Active, ActiveFree]()
-    with NaturalComputationTransformer[Active, ActiveFree]()
-    with ProgramTransformer[`>-a->`, `>-af->`]()
-    with FreeTransformer[Active]()
+    with NaturalTransformation[Active, ActiveFree]()
+    with NaturalComputationTransformation[Active, ActiveFree]()
+    with ProgramTransformation[`>-a->`, `>-af->`]()
+    with FreeTransformation[Active]()

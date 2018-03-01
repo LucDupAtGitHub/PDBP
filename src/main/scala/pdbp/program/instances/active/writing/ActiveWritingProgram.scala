@@ -18,18 +18,18 @@ import pdbp.program.Program
 
 import pdbp.computation.Computation
 
-import pdbp.program.transformer.ProgramTransformer
+import pdbp.program.transformation.ProgramTransformation
 
-import pdbp.computation.transformer.NaturalComputationTransformer
+import pdbp.computation.transformation.NaturalComputationTransformation
 
-import pdbp.computation.transformer.writing.WritingTransformer
+import pdbp.computation.transformation.writing.WritingTransformation
 
 import pdbp.program.implicits.active.implicits.implicitActiveProgram
 
 trait ActiveWritingProgram[W]
     extends Computation[ActiveWriting[W]]
     with Program[`>-aw->`[W]]
-    with ProgramTransformer[`>-a->`, `>-aw->`[W]]
-    with NaturalComputationTransformer[Active, ActiveWriting[W]]
-    with WritingTransformer[W, Active]
+    with ProgramTransformation[`>-a->`, `>-aw->`[W]]
+    with NaturalComputationTransformation[Active, ActiveWriting[W]]
+    with WritingTransformation[W, Active]
 

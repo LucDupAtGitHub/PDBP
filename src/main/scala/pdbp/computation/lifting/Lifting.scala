@@ -14,9 +14,9 @@ package pdbp.computation.lifting
 import pdbp.utils.productUtils._
 
 private[pdbp] trait Lifting[M[+ _]]
-    extends LiftingObject[M]
-    with LiftingFunction[M]
-    with LiftingOperator[M] {
+    extends ObjectLifting[M]
+    with FunctionLifting[M]
+    with OperatorLifting[M] {
 
   private[pdbp] def liftedAnd[Z, Y]: (M[Z] && M[Y]) => M[Z && Y] =
     liftOperator(`(z&&y)=>(z&&y)`)

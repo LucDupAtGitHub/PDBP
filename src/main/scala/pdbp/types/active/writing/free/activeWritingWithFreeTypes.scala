@@ -14,7 +14,7 @@ import pdbp.types.kleisli.kleisliFunctionType._
 
 import pdbp.types.active.free.activeFreeTypes._
 
-import pdbp.computation.transformer.writing.writingTransformer._
+import pdbp.computation.transformation.writing.writingTransformation._
 
 object activeWritingWithFreeTypes {
 

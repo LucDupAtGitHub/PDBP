@@ -1,4 +1,4 @@
-package pdbp.program.instances.active.reading.writing.log
+package pdbp.computation.transformation.reading.writing.log
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -13,12 +13,14 @@ package pdbp.program.instances.active.reading.writing.log
 
 import pdbp.types.log.logTypes._
 
-import pdbp.types.active.writing.log.activeLogWritingTypes._
+import pdbp.types.kleisli.kleisliFunctionType._
 
-import pdbp.computation.transformation.reading.writing.log.ReadingWithLogWritingTransformation
+import pdbp.program.writing.log.LogWriting
 
-import pdbp.program.instances.active.reading.writing.ActiveReadingWithWritingProgram
+import pdbp.computation.Computation
 
-trait ActiveReadingWithLogWritingProgram[R]
-    extends ActiveReadingWithWritingProgram[R, Log]
-    with ReadingWithLogWritingTransformation[R, ActiveLogWriting]
+import pdbp.computation.transformation.reading.writing.ReadingWithWritingTransformation
+
+private[pdbp] trait ReadingWithLogWritingTransformation[
+  R, M[+ _]: Computation : [M[+ _]] => LogWriting[Kleisli[M]]]
+    extends ReadingWithWritingTransformation[R, Log, M]

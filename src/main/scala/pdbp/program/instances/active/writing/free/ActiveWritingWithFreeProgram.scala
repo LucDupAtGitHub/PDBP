@@ -24,22 +24,22 @@ import pdbp.program.writing.folding.Folding
 
 import pdbp.computation.Computation
 
-import pdbp.program.transformer.ProgramTransformer
+import pdbp.program.transformation.ProgramTransformation
 
-import pdbp.computation.transformer.NaturalComputationTransformer
+import pdbp.computation.transformation.NaturalComputationTransformation
 
-import pdbp.computation.transformer.writing.writingTransformer._
+import pdbp.computation.transformation.writing.writingTransformation._
 
-import pdbp.computation.transformer.writing.WritingTransformer
+import pdbp.computation.transformation.writing.WritingTransformation
 
 import pdbp.program.instances.active.free.activeFreeProgram
 
 trait ActiveWritingWithFreeProgram[W : Folding]
     extends Computation[ActiveWritingWithFree[W]]
     with Program[`>-awf->`[W]]
-    with NaturalComputationTransformer[ActiveFree, ActiveWritingWithFree[W]]
-    with ProgramTransformer[`>-af->`, `>-awf->`[W]]
-    with WritingTransformer[W, ActiveFree] {
+    with NaturalComputationTransformation[ActiveFree, ActiveWritingWithFree[W]]
+    with ProgramTransformation[`>-af->`, `>-awf->`[W]]
+    with WritingTransformation[W, ActiveFree] {
 
   private type AWFW = ActiveWritingWithFree[W] // WritingTransformed[W, ActiveFree]
   private type `>-awfw->` = `>-awf->`[W]
@@ -52,7 +52,7 @@ trait ActiveWritingWithFreeProgram[W : Folding]
   override private[pdbp] def bind[Z, Y](wtafz: AWFW[Z],
                                         `z=>wtafy`: Z `>-awfw->` Y): AWFW[Y] =
     bindM(wtafz, { (w1, z) =>
-      val (w2, y): W && Y = activeFreeProgram.lowerComputation(`z=>wtafy`(z))
+      val (w2, y): W && Y = activeFreeProgram.recuperateComputation(`z=>wtafy`(z))
       resultM(append(w1, w2), y)
     })
 

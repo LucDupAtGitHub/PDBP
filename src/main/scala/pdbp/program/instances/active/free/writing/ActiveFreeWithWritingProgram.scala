@@ -24,19 +24,19 @@ import pdbp.program.writing.Writing
 
 import pdbp.computation.Computation
 
-import pdbp.program.transformer.ProgramTransformer
+import pdbp.program.transformation.ProgramTransformation
 
-import pdbp.computation.transformer.NaturalComputationTransformer
+import pdbp.computation.transformation.NaturalComputationTransformation
 
-import pdbp.computation.transformer.free.FreeTransformer
+import pdbp.computation.transformation.free.FreeTransformation
 
-import pdbp.computation.transformer.free.freeTransformer._
+import pdbp.computation.transformation.free.freeTransformation._
 
-import pdbp.computation.transformer.free.writing.FreeWithWritingTransformer
+import pdbp.computation.transformation.free.writing.FreeWithWritingTransformation
 
 trait ActiveFreeWithWritingProgram[W : Folding]
     extends Computation[ActiveFreeWithWriting[W]]
     with Program[`>-afw->`[W]]
-    with NaturalComputationTransformer[ActiveWriting[W], ActiveFreeWithWriting[W]]
-    with ProgramTransformer[`>-aw->`[W], `>-afw->`[W]]
-    with FreeWithWritingTransformer[W, ActiveWriting[W]]
+    with NaturalComputationTransformation[ActiveWriting[W], ActiveFreeWithWriting[W]]
+    with ProgramTransformation[`>-aw->`[W], `>-afw->`[W]]
+    with FreeWithWritingTransformation[W, ActiveWriting[W]]

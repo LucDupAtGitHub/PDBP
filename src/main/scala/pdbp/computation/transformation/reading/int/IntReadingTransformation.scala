@@ -1,4 +1,4 @@
-package pdbp.types.active.reading.writing
+package pdbp.computation.transformation.reading.int
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -9,18 +9,19 @@ package pdbp.types.active.reading.writing
 //  \_\/       \______\/  \______\/      \_\/
 //                                           v1.0
 //  Program Description Based Programming Library
+//  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.kleisli.kleisliFunctionType._
-
-import pdbp.types.active.writing.activeWritingTypes._
+import pdbp.computation.Computation
 
 import pdbp.computation.transformation.reading.readingTransformation._
 
-object activeReadingWithWritingTypes {
+import pdbp.computation.transformation.reading.ReadingTransformation
 
-  type ActiveReadingWithWriting = [R, W] => ReadingTransformed[R, ActiveWriting[W]]
+private[pdbp] object intReadingTransformation {
 
-  type `>-arw->`= [R, W] => Kleisli[ActiveReadingWithWriting[R, W]]
+  type IntReadingTransformed = [M[+ _]] => ReadingTransformed[BigInt, M]
 
 }
 
+private[pdbp] trait IntReadingTransformation[M[+ _]: Computation]
+    extends ReadingTransformation[BigInt, M]

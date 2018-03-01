@@ -16,17 +16,17 @@ import pdbp.types.active.reading.int.activeIntReadingTypes._
 
 import pdbp.program.reading.int.IntReading
 
-import pdbp.program.transformer.ProgramTransformer
+import pdbp.program.transformation.ProgramTransformation
 
-import pdbp.computation.transformer.NaturalTransformer
+import pdbp.computation.transformation.NaturalTransformation
 
-import pdbp.computation.transformer.NaturalComputationTransformer
+import pdbp.computation.transformation.NaturalComputationTransformation
 
-import pdbp.computation.transformer.reading.ReadingTransformer
+import pdbp.computation.transformation.reading.ReadingTransformation
 
-import pdbp.computation.transformer.reading.int.IntReadingTransformer
+import pdbp.computation.transformation.reading.int.IntReadingTransformation
 
-import pdbp.computation.transformer.reading.int.console.ImplicitIntReadingFromConsoleTransformer
+import pdbp.computation.transformation.reading.int.console.ImplicitIntReadingFromConsoleTransformation
 
 import pdbp.program.instances.active.reading.ActiveReadingProgram
 
@@ -35,16 +35,16 @@ import pdbp.program.implicits.active.implicits.implicitActiveProgram
 trait ActiveIntReadingFromConsoleProgram
     extends ActiveReadingProgram[BigInt]
     with IntReading[`>-air->`]
-    with ImplicitIntReadingFromConsoleTransformer[Active] 
+    with ImplicitIntReadingFromConsoleTransformation[Active] 
 
 object activeIntReadingFromConsoleProgram
     extends ActiveIntReadingFromConsoleProgram()
-    with NaturalTransformer[Active, ActiveIntReading]()
-    with NaturalComputationTransformer[Active, ActiveIntReading]()
-    with ProgramTransformer[`>-a->`, `>-air->`]()
-    with ReadingTransformer[BigInt, Active]()
-    with IntReadingTransformer[Active]()
-    with ImplicitIntReadingFromConsoleTransformer[Active]()
+    with NaturalTransformation[Active, ActiveIntReading]()
+    with NaturalComputationTransformation[Active, ActiveIntReading]()
+    with ProgramTransformation[`>-a->`, `>-air->`]()
+    with ReadingTransformation[BigInt, Active]()
+    with IntReadingTransformation[Active]()
+    with ImplicitIntReadingFromConsoleTransformation[Active]()
     
 
     

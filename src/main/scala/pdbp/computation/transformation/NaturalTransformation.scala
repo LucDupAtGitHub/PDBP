@@ -1,4 +1,4 @@
-package pdbp.types.active.reading.writing
+package pdbp.computation.transformation
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -9,18 +9,10 @@ package pdbp.types.active.reading.writing
 //  \_\/       \______\/  \______\/      \_\/
 //                                           v1.0
 //  Program Description Based Programming Library
+//  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.kleisli.kleisliFunctionType._
+private[pdbp] trait NaturalTransformation[M[+ _], N[+ _]] {
 
-import pdbp.types.active.writing.activeWritingTypes._
-
-import pdbp.computation.transformation.reading.readingTransformation._
-
-object activeReadingWithWritingTypes {
-
-  type ActiveReadingWithWriting = [R, W] => ReadingTransformed[R, ActiveWriting[W]]
-
-  type `>-arw->`= [R, W] => Kleisli[ActiveReadingWithWriting[R, W]]
+  private[pdbp] def apply[Z](dz: M[Z]): N[Z]
 
 }
-

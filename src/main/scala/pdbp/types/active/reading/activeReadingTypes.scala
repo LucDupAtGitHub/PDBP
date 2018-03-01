@@ -14,7 +14,7 @@ import pdbp.types.kleisli.kleisliFunctionType._
 
 import pdbp.types.active.activeTypes._
 
-import pdbp.computation.transformer.reading.readingTransformer._
+import pdbp.computation.transformation.reading.readingTransformation._
 
 object activeReadingTypes {
 

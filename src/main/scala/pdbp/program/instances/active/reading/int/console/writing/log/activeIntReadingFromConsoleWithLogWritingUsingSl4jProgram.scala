@@ -33,21 +33,21 @@ import pdbp.program.writing.log.sl4j.LogWritingUsingSl4j
 
 import pdbp.computation.Computation
 
-import pdbp.program.transformer.ProgramTransformer
+import pdbp.program.transformation.ProgramTransformation
 
-import pdbp.computation.transformer.NaturalTransformer
+import pdbp.computation.transformation.NaturalTransformation
 
-import pdbp.computation.transformer.NaturalComputationTransformer
+import pdbp.computation.transformation.NaturalComputationTransformation
 
-import pdbp.computation.transformer.reading.ReadingTransformer
+import pdbp.computation.transformation.reading.ReadingTransformation
 
-import pdbp.computation.transformer.reading.int.IntReadingTransformer
+import pdbp.computation.transformation.reading.int.IntReadingTransformation
 
-import pdbp.computation.transformer.reading.int.console.ImplicitIntReadingFromConsoleTransformer
+import pdbp.computation.transformation.reading.int.console.ImplicitIntReadingFromConsoleTransformation
 
-import pdbp.computation.transformer.reading.writing.ReadingWithWritingTransformer
+import pdbp.computation.transformation.reading.writing.ReadingWithWritingTransformation
 
-import pdbp.computation.transformer.reading.writing.log.ReadingWithLogWritingTransformer
+import pdbp.computation.transformation.reading.writing.log.ReadingWithLogWritingTransformation
 
 import pdbp.program.instances.active.reading.writing.ActiveReadingWithWritingProgram
 
@@ -61,17 +61,17 @@ trait ActiveIntReadingFromConsoleWithLogWritingUsingSl4jProgram
     extends ActiveReadingWithLogWritingProgram[BigInt] 
     with IntReading[`>-airlw->`]
     with LogWritingUsingSl4j[`>-airlw->`] 
-    with ImplicitIntReadingFromConsoleTransformer[ActiveLogWriting] 
+    with ImplicitIntReadingFromConsoleTransformation[ActiveLogWriting] 
 
 object activeIntReadingFromConsoleWithLogWritingUsingSl4jProgram
     extends ActiveIntReadingFromConsoleWithLogWritingUsingSl4jProgram 
     with ActiveReadingWithWritingProgram[BigInt, Log]()
     with Writing[Log, `>-airlw->`]() 
-    with NaturalTransformer[ActiveLogWriting, ActiveIntReadingWithLogWriting]()
-    with NaturalComputationTransformer[ActiveLogWriting, ActiveIntReadingWithLogWriting]()
-    with ProgramTransformer[`>-alw->`, `>-airlw->`]() 
-    with ReadingTransformer[BigInt, ActiveLogWriting]() 
-    with IntReadingTransformer[ActiveLogWriting]()
-    with ReadingWithWritingTransformer[BigInt, Log, ActiveLogWriting]() 
-    with ReadingWithLogWritingTransformer[BigInt, ActiveLogWriting]() 
-    with ImplicitIntReadingFromConsoleTransformer[ActiveLogWriting]()
+    with NaturalTransformation[ActiveLogWriting, ActiveIntReadingWithLogWriting]()
+    with NaturalComputationTransformation[ActiveLogWriting, ActiveIntReadingWithLogWriting]()
+    with ProgramTransformation[`>-alw->`, `>-airlw->`]() 
+    with ReadingTransformation[BigInt, ActiveLogWriting]() 
+    with IntReadingTransformation[ActiveLogWriting]()
+    with ReadingWithWritingTransformation[BigInt, Log, ActiveLogWriting]() 
+    with ReadingWithLogWritingTransformation[BigInt, ActiveLogWriting]() 
+    with ImplicitIntReadingFromConsoleTransformation[ActiveLogWriting]()
