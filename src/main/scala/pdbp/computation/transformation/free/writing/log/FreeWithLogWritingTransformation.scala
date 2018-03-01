@@ -19,18 +19,18 @@ import pdbp.program.Execution
 
 import pdbp.program.writing.log.LogWriting
 
-import pdbp.computation.lifting.ObjectLifting
+import pdbp.computation.returning.Returning
 
 import pdbp.computation.transformation.free.freeTransformation._
 
 import pdbp.computation.transformation.free.writing.FreeWithWritingTransformation
 
-import pdbp.computation.recuperation.NaturalRecuperation
+import pdbp.computation.transformation.NaturalTransformation
 
 private[pdbp] trait FreeWithLogWritingTransformation[
-  M[+ _]: ObjectLifting : [M[+ _]] => Execution[Kleisli[M]] : [M[+ _]] => LogWriting[Kleisli[M]]]
+  M[+ _]: Returning : [M[+ _]] => Execution[Kleisli[M]] : [M[+ _]] => LogWriting[Kleisli[M]]]
     extends FreeWithWritingTransformation[Log, M]
-    with NaturalRecuperation[FreeTransformed[M], M] {
+    with NaturalTransformation[FreeTransformed[M], M] {
 
   private type `>=K=>` = Kleisli[M]  
 
@@ -38,28 +38,28 @@ private[pdbp] trait FreeWithLogWritingTransformation[
 
   private type `>=FTK=>` = Kleisli[FTM]  
 
-  import implicitObjectLifting.{liftObject => liftObjectM}
+  import implicitReturning.{result => resultM}
  
   @annotation.tailrec
-  private final def recuperateHelper[Z](ftmz: FTM[Z]): M[Z] = ftmz match {
+  private final def applyHelper[Z](ftmz: FTM[Z]): M[Z] = ftmz match {
     case Result(z) => 
-      liftObjectM(z)
+      resultM(z)
     case TransformComputation(mz) =>
       mz
     case Bind(Result(y), y2ftmz) => 
-      recuperateHelper(y2ftmz(y))
+      applyHelper(y2ftmz(y))
     case Bind(TransformComputation((Log(effect), y)), y2ftmz) =>
       effect(())
-      recuperateHelper(y2ftmz(y))
+      applyHelper(y2ftmz(y))
     case Bind(Bind(mx, x2ftmy), y2ftmz) =>
-      recuperateHelper(bind(mx, compose(x2ftmy, y2ftmz)))          
+      applyHelper(bind(mx, compose(x2ftmy, y2ftmz)))          
     case any =>
       sys.error(
-        "Impossible, since, for 'FreeWithLogWritingTransformation', 'recuperateHelper' eliminates this case")
+        "Impossible, since, for 'FreeWithLogWritingTransformation', 'applyHelper' eliminates this case")
   } 
 
-  override private[pdbp] def recuperate[Z](ftmz: FTM[Z]): M[Z] = {
-    recuperateHelper(ftmz)
+  override private[pdbp] def apply[Z](ftmz: FTM[Z]): M[Z] = {
+    applyHelper(ftmz)
   }   
 
 }      

@@ -35,7 +35,7 @@ import pdbp.types.kleisli.kleisliFunctionType._
 
 import pdbp.program.Program
 
-import pdbp.computation.lifting.ObjectLifting
+import pdbp.computation.returning.Returning
 
 import pdbp.program.Execution
 
@@ -47,16 +47,14 @@ import pdbp.computation.transformation.NaturalTransformation
 
 import pdbp.computation.transformation.ComputationTransformation
 
-import pdbp.computation.recuperation.NaturalRecuperation
-
-private[pdbp] trait FreeTransformation[M[+ _]: [M[+ _]] => Execution[Kleisli[M]]: ObjectLifting ]
+private[pdbp] trait FreeTransformation[M[+ _]: Returning: [M[+ _]] => Execution[Kleisli[M]]]
     extends Computation[FreeTransformed[M]]
     with Program[Kleisli[FreeTransformed[M]]]
     with ComputationTransformation[M, FreeTransformed[M]]
-    with NaturalRecuperation[FreeTransformed[M], M]
+    with NaturalTransformation[FreeTransformed[M], M]
     with ProgramTransformation[Kleisli[M], Kleisli[FreeTransformed[M]]] {
 
-  private[pdbp] val implicitObjectLifting = implicitly[ObjectLifting[M]]  
+  private[pdbp] val implicitReturning = implicitly[Returning[M]]  
 
   private type FTM = FreeTransformed[M]
 
@@ -93,7 +91,7 @@ private[pdbp] trait FreeTransformation[M[+ _]: [M[+ _]] => Execution[Kleisli[M]]
 
   private type `>=FTK=>` = Kleisli[FTM]
 
-  import implicitObjectLifting.{liftObject => liftObjectM}
+  import implicitReturning.{result => resultM}
 
   import implicitExecution.{Environment => EnvironmentK}
   import implicitExecution.{execute => executeK}
@@ -103,27 +101,28 @@ private[pdbp] trait FreeTransformation[M[+ _]: [M[+ _]] => Execution[Kleisli[M]]
   override val environment: Environment = implicitExecution.environment
 
   override def execute(`u>=ftk=>u`: Unit `>=FTK=>` Unit): Environment `I=>` Unit =
-    executeK(recuperateProgram(`u>=ftk=>u`))  
+    executeK { z => apply(`u>=ftk=>u`(z)) }
 
   @annotation.tailrec
-  private final def recuperateHelper[Z](ftmz: FTM[Z]): M[Z] = ftmz match {
+  private final def applyHelper[Z](ftmz: FTM[Z]): M[Z] = ftmz match {
     case Result(z) => 
-      liftObjectM(z)
+      resultM(z)
     case TransformComputation(mz) =>
       mz
     case Bind(Result(y), y2ftmz) => 
-      recuperateHelper(y2ftmz(y)) 
+      applyHelper(y2ftmz(y)) 
     case Bind(Bind(mx, x2ftmy), y2ftmz) =>
-      // recuperateHelper(bind(mx, x => bind(x2ftmy(x), y2ftmz)))
-      recuperateHelper(bind(mx, compose(x2ftmy, y2ftmz)))          
+      // applyHelper(bind(mx, x => bind(x2ftmy(x), y2ftmz)))
+      applyHelper(bind(mx, compose(x2ftmy, y2ftmz)))          
     case any =>
       sys.error(
-        "Impossible, since, for 'FreeTransformation', 'recuperateHelper' eliminates this case")
+        "Impossible, since, for 'FreeTransformation', 'applyHelper' eliminates this case")
     } 
 
-  override private[pdbp] def recuperate[Z](ftmz: FTM[Z]): M[Z] = { 
-    recuperateHelper(ftmz)
+  override private[pdbp] def apply[Z](ftmz: FTM[Z]): M[Z] = { 
+    applyHelper(ftmz)
   } 
 
 }
+
 
