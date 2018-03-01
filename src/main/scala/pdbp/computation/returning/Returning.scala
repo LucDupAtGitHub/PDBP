@@ -1,4 +1,4 @@
-package pdbp.computation.transformation
+package pdbp.computation.returning
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,10 +11,9 @@ package pdbp.computation.transformation
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.kleisli.kleisliFunctionType._
 
-private[pdbp] trait NaturalTransformation[M[+ _], N[+ _]] {
+private[pdbp] trait Returning[M[+ _]] {
 
-  private[pdbp] def apply[Z](dz: M[Z]): N[Z]
+  private[pdbp] def result[Z]: Z => M[Z]
 
 }

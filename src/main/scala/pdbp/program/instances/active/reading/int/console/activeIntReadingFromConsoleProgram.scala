@@ -18,8 +18,6 @@ import pdbp.program.reading.int.IntReading
 
 import pdbp.program.transformation.ProgramTransformation
 
-import pdbp.computation.transformation.NaturalTransformation
-
 import pdbp.computation.transformation.ComputationTransformation
 
 import pdbp.computation.transformation.reading.ReadingTransformation
@@ -39,7 +37,6 @@ trait ActiveIntReadingFromConsoleProgram
 
 object activeIntReadingFromConsoleProgram
     extends ActiveIntReadingFromConsoleProgram()
-    with NaturalTransformation[Active, ActiveIntReading]()
     with ComputationTransformation[Active, ActiveIntReading]()
     with ProgramTransformation[`>-a->`, `>-air->`]()
     with ReadingTransformation[BigInt, Active]()

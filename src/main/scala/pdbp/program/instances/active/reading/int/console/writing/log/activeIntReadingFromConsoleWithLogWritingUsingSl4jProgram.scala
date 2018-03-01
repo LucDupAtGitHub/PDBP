@@ -35,8 +35,6 @@ import pdbp.computation.Computation
 
 import pdbp.program.transformation.ProgramTransformation
 
-import pdbp.computation.transformation.NaturalTransformation
-
 import pdbp.computation.transformation.ComputationTransformation
 
 import pdbp.computation.transformation.reading.ReadingTransformation
@@ -67,7 +65,6 @@ object activeIntReadingFromConsoleWithLogWritingUsingSl4jProgram
     extends ActiveIntReadingFromConsoleWithLogWritingUsingSl4jProgram 
     with ActiveReadingWithWritingProgram[BigInt, Log]()
     with Writing[Log, `>-airlw->`]() 
-    with NaturalTransformation[ActiveLogWriting, ActiveIntReadingWithLogWriting]()
     with ComputationTransformation[ActiveLogWriting, ActiveIntReadingWithLogWriting]()
     with ProgramTransformation[`>-alw->`, `>-airlw->`]() 
     with ReadingTransformation[BigInt, ActiveLogWriting]() 

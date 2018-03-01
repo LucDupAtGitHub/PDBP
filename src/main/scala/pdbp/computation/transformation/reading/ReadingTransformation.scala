@@ -44,18 +44,18 @@ private[pdbp] trait ReadingTransformation[R, M[+ _]: Computation]
 
   private type RTM = ReadingTransformed[R, M]      
 
-  override private[pdbp] def apply[Z](mz: M[Z]): RTM[Z] =
+  override private[pdbp] def transformComputation[Z](mz: M[Z]): RTM[Z] =
     sys.error(
-      "Impossible, since, for 'ReadingTransformation', 'liftComputation' is used nowhere")
+      "Impossible, since, for 'ReadingTransformation', 'transformComputation' is used nowhere")
 
   private[pdbp] val implicitComputation = implicitly[Computation[M]]
 
   import implicitComputation.{result => resultM}
   import implicitComputation.{bind => bindM}
 
-  override private[pdbp] def liftObject[Z](z: Z): RTM[Z] = // { z =>
+  override private[pdbp] def result[Z]: Z => RTM[Z] = { z =>
      resultM(z)
-  // }   
+  }
 
   override private[pdbp] def bind[Z, Y](rtmz: RTM[Z], `z>=rtmy`: Z => RTM[Y]): RTM[Y] =
     bindM(rtmz, { z => `z>=rtmy`(z) })

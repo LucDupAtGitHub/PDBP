@@ -17,7 +17,7 @@ private[pdbp] object freeTransformation {
 
   sealed trait Free[M[+ _], +Z]
 
-  final case class LiftObject[M[+ _], +Z](z: Z) extends Free[M, Z]
+  final case class Result[M[+ _], +Z](z: Z) extends Free[M, Z]
   final case class TransformComputation[M[+ _], +Z](mz: M[Z]) extends Free[M, Z]
   final case class Bind[M[+ _], -Z, ZZ <: Z, +Y](fmzz: Free[M, ZZ],
                                            `z=>fmy`: Z => Free[M, Y])
@@ -49,20 +49,22 @@ import pdbp.computation.transformation.ComputationTransformation
 
 import pdbp.computation.recuperation.NaturalRecuperation
 
-private[pdbp] trait FreeTransformation[M[+ _]: ObjectLifting : [M[+ _]] => Execution[Kleisli[M]]]
+private[pdbp] trait FreeTransformation[M[+ _]: [M[+ _]] => Execution[Kleisli[M]]: ObjectLifting ]
     extends Computation[FreeTransformed[M]]
     with Program[Kleisli[FreeTransformed[M]]]
     with ComputationTransformation[M, FreeTransformed[M]]
     with NaturalRecuperation[FreeTransformed[M], M]
     with ProgramTransformation[Kleisli[M], Kleisli[FreeTransformed[M]]] {
 
+  private[pdbp] val implicitObjectLifting = implicitly[ObjectLifting[M]]  
+
   private type FTM = FreeTransformed[M]
 
-  override private[pdbp] def liftObject[Z](z: Z): FTM[Z] = // { z =>
-    LiftObject[M, Z](z)
-  // } 
+  override private[pdbp] def result[Z]: Z => FTM[Z] = { z =>
+    Result[M, Z](z) 
+  }  
 
-  override private[pdbp] def apply[Z](mz: M[Z]): FTM[Z] =
+  override private[pdbp] def transformComputation[Z](mz: M[Z]): FTM[Z] =
     TransformComputation[M, Z](mz)
 
   override private[pdbp] def bind[Z, Y](ftmz: FTM[Z],
@@ -75,7 +77,7 @@ private[pdbp] trait FreeTransformation[M[+ _]: ObjectLifting : [M[+ _]] => Execu
     import implicitComputation.{result => resultN}
     import implicitComputation.{bind => bindN}
     override def apply[Z](ftmz: FTM[Z]): N[Z] = ftmz match {
-      case LiftObject(z) => 
+      case Result(z) => 
         resultN(z)
       case TransformComputation(mz) =>
         `M~>N`(mz)
@@ -90,8 +92,9 @@ private[pdbp] trait FreeTransformation[M[+ _]: ObjectLifting : [M[+ _]] => Execu
   private type `>=K=>` = Kleisli[M]
 
   private type `>=FTK=>` = Kleisli[FTM]
-  
+
   import implicitObjectLifting.{liftObject => liftObjectM}
+
   import implicitExecution.{Environment => EnvironmentK}
   import implicitExecution.{execute => executeK}
 
@@ -104,11 +107,11 @@ private[pdbp] trait FreeTransformation[M[+ _]: ObjectLifting : [M[+ _]] => Execu
 
   @annotation.tailrec
   private final def recuperateHelper[Z](ftmz: FTM[Z]): M[Z] = ftmz match {
-    case LiftObject(z) => 
+    case Result(z) => 
       liftObjectM(z)
     case TransformComputation(mz) =>
       mz
-    case Bind(LiftObject(y), y2ftmz) => 
+    case Bind(Result(y), y2ftmz) => 
       recuperateHelper(y2ftmz(y)) 
     case Bind(Bind(mx, x2ftmy), y2ftmz) =>
       // recuperateHelper(bind(mx, x => bind(x2ftmy(x), y2ftmz)))

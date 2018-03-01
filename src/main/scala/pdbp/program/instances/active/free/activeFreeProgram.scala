@@ -20,8 +20,6 @@ import pdbp.computation.Computation
 
 import pdbp.program.transformation.ProgramTransformation
 
-import pdbp.computation.transformation.NaturalTransformation
-
 import pdbp.computation.transformation.ComputationTransformation
 
 import pdbp.computation.transformation.free.FreeTransformation
@@ -31,7 +29,6 @@ import pdbp.program.implicits.active.implicits.implicitActiveProgram
 object activeFreeProgram
     extends Computation[ActiveFree]
     with Program[`>-af->`]
-    with NaturalTransformation[Active, ActiveFree]()
     with ComputationTransformation[Active, ActiveFree]()
     with ProgramTransformation[`>-a->`, `>-af->`]()
     with FreeTransformation[Active]()

@@ -25,8 +25,6 @@ import pdbp.program.writing.log.sl4j.LogWritingUsingSl4j
 
 import pdbp.program.transformation.ProgramTransformation
 
-import pdbp.computation.transformation.NaturalTransformation
-
 import pdbp.computation.transformation.ComputationTransformation
 
 import pdbp.computation.transformation.writing.WritingTransformation
@@ -51,7 +49,6 @@ trait ActiveLogWritingUsingSl4jProgram
 object activeLogWritingUsingSl4jProgram
     extends ActiveLogWritingUsingSl4jProgram
     with Writing[Log, `>-alw->`]()
-    with NaturalTransformation[Active, ActiveLogWriting]()
     with ComputationTransformation[Active, ActiveLogWriting]()
     with ProgramTransformation[`>-a->`, `>-alw->`]()
     with WritingTransformation[Log, Active]()

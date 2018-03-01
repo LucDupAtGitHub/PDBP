@@ -42,11 +42,11 @@ private[pdbp] trait FreeWithLogWritingTransformation[
  
   @annotation.tailrec
   private final def recuperateHelper[Z](ftmz: FTM[Z]): M[Z] = ftmz match {
-    case LiftObject(z) => 
+    case Result(z) => 
       liftObjectM(z)
     case TransformComputation(mz) =>
       mz
-    case Bind(LiftObject(y), y2ftmz) => 
+    case Bind(Result(y), y2ftmz) => 
       recuperateHelper(y2ftmz(y))
     case Bind(TransformComputation((Log(effect), y)), y2ftmz) =>
       effect(())

@@ -23,7 +23,7 @@ import pdbp.computation.Computation
 
 object activeProgram extends Computation[Active] with Program[`>-a->`] {
 
-  override private[pdbp] def liftObject[Z](z: Z): Active[Z] = `z=>az`[Z](z)
+  override private[pdbp] def result[Z]: Z => Active[Z] = `z=>az`
 
   override private[pdbp] def bind[Z, Y](az: Active[Z],
                                         `z=>ay`: Z => Active[Y]): Active[Y] =

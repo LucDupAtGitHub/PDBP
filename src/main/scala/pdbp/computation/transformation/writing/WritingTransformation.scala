@@ -55,7 +55,11 @@ private[pdbp] trait WritingTransformation[W: Folding, M[+ _]: Computation]
   import implicitComputation.{bind => bindM}
   import implicitComputation.{result => resultM}
 
-  override private[pdbp] def apply[Z](mz: M[Z]): WTM[Z] = {
+  override private[pdbp] def result[Z]: Z => WTM[Z] = { z =>
+    resultM((start, z))
+  }
+
+  override private[pdbp] def transformComputation[Z](mz: M[Z]): WTM[Z] = {
     bindM(mz, { z =>
       resultM((start, z))
     })

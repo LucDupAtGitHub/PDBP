@@ -18,16 +18,15 @@ import pdbp.program.Program
 import pdbp.computation.lifting.Lifting
 import pdbp.computation.lifting.Sequencing
 
+import pdbp.computation.returning.Returning
 import pdbp.computation.binding.Binding
 
 private[pdbp] trait Computation[M[+ _]]
-    extends Binding[M]
+    extends Returning[M]
+    with Binding[M]
     with Lifting[M]
     with Sequencing[M]
     with Program[Kleisli[M]] {
-
-  private[pdbp] def result[Z]: Z => M[Z] =
-    liftObject
 
   import pdbp.utils.productUtils._
   import pdbp.utils.sumUtils._

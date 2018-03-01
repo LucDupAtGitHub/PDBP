@@ -21,16 +21,20 @@ import pdbp.computation.lifting.ObjectLifting
 
 import pdbp.program.transformation.ProgramTransformation
 
-private[pdbp] trait ComputationTransformation[M[+ _]: ObjectLifting: [M[+ _]] => Execution[Kleisli[M]], N[+ _]]
-    extends NaturalTransformation[M, N]
-    with ProgramTransformation[Kleisli[M], Kleisli[N]] 
-    with ObjectLifting[N] {
-
-  private[pdbp] val implicitObjectLifting = implicitly[ObjectLifting[M]]
-
-  override private[pdbp] def liftObject[Z](z: Z) =
-    apply(implicitObjectLifting.liftObject(z))
+private[pdbp] trait ComputationTransformation[M[+ _]: [M[+ _]] => Execution[Kleisli[M]], N[+ _]]
+    extends ProgramTransformation[Kleisli[M], Kleisli[N]] {
 
   private[pdbp] val implicitExecution = implicitly[Execution[Kleisli[M]]]
+
+  private[pdbp] def transformComputation[Z](dz: M[Z]): N[Z]
+
+  private type `>-M->` = Kleisli[M]
+
+  private type `>-N->` = Kleisli[N]  
+
+  override private[pdbp] def transformProgram[Z, Y](
+      `z>-km->y`: Z `>-M->` Y): Z `>-N->` Y = { z =>
+    transformComputation[Y](`z>-km->y`(z))
+  }   
 
 }
