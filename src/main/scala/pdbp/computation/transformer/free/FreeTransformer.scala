@@ -45,14 +45,14 @@ import pdbp.program.transformer.ProgramTransformer
 
 import pdbp.computation.transformer.NaturalTransformer
 
-import pdbp.computation.transformer.ComputationTransformer
+import pdbp.computation.transformer.NaturalComputationTransformer
 
 import pdbp.computation.lower.ComputationLower
 
 private[pdbp] trait FreeTransformer[M[+ _]: LiftingObject : [M[+ _]] => Execution[Kleisli[M]]]
     extends Computation[FreeTransformed[M]]
     with Program[Kleisli[FreeTransformed[M]]]
-    with ComputationTransformer[M, FreeTransformed[M]]
+    with NaturalComputationTransformer[M, FreeTransformed[M]]
     with ComputationLower[FreeTransformed[M], M]
     with ProgramTransformer[Kleisli[M], Kleisli[FreeTransformed[M]]] {
 
@@ -62,7 +62,7 @@ private[pdbp] trait FreeTransformer[M[+ _]: LiftingObject : [M[+ _]] => Executio
     LiftObject[M, Z](z)
   } 
 
-  override private[pdbp] def liftComputation[Z](mz: M[Z]): FTM[Z] =
+  override private[pdbp] def apply[Z](mz: M[Z]): FTM[Z] =
     LiftComputation[M, Z](mz)
 
   override private[pdbp] def bind[Z, Y](ftmz: FTM[Z],
@@ -74,13 +74,13 @@ private[pdbp] trait FreeTransformer[M[+ _]: LiftingObject : [M[+ _]] => Executio
     val implicitComputation = implicitly[Computation[N]]
     import implicitComputation.{result => resultN}
     import implicitComputation.{bind => bindN}
-    override def liftComputation[Z](ftmz: FTM[Z]): N[Z] = ftmz match {
+    override def apply[Z](ftmz: FTM[Z]): N[Z] = ftmz match {
       case LiftObject(z) => 
         resultN(z)
       case LiftComputation(mz) =>
-        `M~>N`.liftComputation(mz)
+        `M~>N`(mz)
       case Bind(my, y2ftmz) =>
-        bindN(liftComputation(my), y2ftmz andThen liftComputation)
+        bindN(apply(my), y2ftmz andThen apply)
       case _ =>
         sys.error(
           "Impossible, since, for 'FreeTransformer', 'liftComputation' eliminates this case")          

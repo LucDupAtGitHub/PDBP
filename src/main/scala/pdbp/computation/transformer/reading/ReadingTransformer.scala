@@ -33,18 +33,18 @@ import pdbp.computation.Computation
 
 import pdbp.program.transformer.ProgramTransformer
 
-import pdbp.computation.transformer.ComputationTransformer
+import pdbp.computation.transformer.NaturalComputationTransformer
 
 private[pdbp] trait ReadingTransformer[R, M[+ _]: Computation]
     extends Computation[ReadingTransformed[R, M]]
     with Program[Kleisli[ReadingTransformed[R, M]]]
     with Reading[R, Kleisli[ReadingTransformed[R, M]]]
-    with ComputationTransformer[M, ReadingTransformed[R, M]] 
+    with NaturalComputationTransformer[M, ReadingTransformed[R, M]] 
     with ProgramTransformer[Kleisli[M], Kleisli[ReadingTransformed[R, M]]] {
 
   private type RTM = ReadingTransformed[R, M]      
 
-  override private[pdbp] def liftComputation[Z](mz: M[Z]): RTM[Z] =
+  override private[pdbp] def apply[Z](mz: M[Z]): RTM[Z] =
     sys.error(
       "Impossible, since, for 'ReadingTransformer', 'liftComputation' is used nowhere")
 

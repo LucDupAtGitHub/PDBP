@@ -20,7 +20,7 @@ import pdbp.program.transformer.ProgramTransformer
 
 import pdbp.computation.transformer.NaturalTransformer
 
-import pdbp.computation.transformer.ComputationTransformer
+import pdbp.computation.transformer.NaturalComputationTransformer
 
 import pdbp.computation.transformer.reading.ReadingTransformer
 
@@ -40,7 +40,7 @@ trait ActiveIntReadingFromConsoleProgram
 object activeIntReadingFromConsoleProgram
     extends ActiveIntReadingFromConsoleProgram()
     with NaturalTransformer[Active, ActiveIntReading]()
-    with ComputationTransformer[Active, ActiveIntReading]()
+    with NaturalComputationTransformer[Active, ActiveIntReading]()
     with ProgramTransformer[`>-a->`, `>-air->`]()
     with ReadingTransformer[BigInt, Active]()
     with IntReadingTransformer[Active]()

@@ -38,7 +38,7 @@ import pdbp.computation.Computation
 
 import pdbp.program.transformer.ProgramTransformer
 
-import pdbp.computation.transformer.ComputationTransformer
+import pdbp.computation.transformer.NaturalComputationTransformer
 
 import pdbp.computation.transformer.free.writing.FreeWithWritingTransformer
 
@@ -67,7 +67,7 @@ object activeFreeWithLogWritingUsingSl4jProgram
     extends ActiveFreeWithLogWritingUsingSl4jProgram
     with ActiveFreeWithWritingProgram[Log]()
     with ProgramTransformer[`>-alw->`, `>-afw->`[Log]]()
-    with ComputationTransformer[ActiveLogWriting, ActiveFreeWithLogWriting]()
+    with NaturalComputationTransformer[ActiveLogWriting, ActiveFreeWithLogWriting]()
     with FreeWithLogWritingTransformer[ActiveLogWriting]()
     with FreeWithWritingTransformer[Log, ActiveLogWriting]()
     with FreeTransformer[ActiveLogWriting]()

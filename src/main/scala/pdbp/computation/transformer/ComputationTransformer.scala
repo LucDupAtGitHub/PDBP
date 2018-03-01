@@ -21,32 +21,41 @@ import pdbp.computation.Computation
 
 import pdbp.program.transformer.ProgramTransformer
 
-private[pdbp] trait NaturalTransformer[D[+ _], U[+ _]] {
+private[pdbp] trait ComputationTransformer[M[+ _], N[+ _]] {
 
-  private[pdbp] def liftComputation[Z](dz: D[Z]): U[Z]
+  private[pdbp] def liftComputation[Z](dz: M[Z]): N[Z]
 
 }
 
-private[pdbp] trait ComputationTransformer[D[+ _]: LiftingObject: [N[+ _]] => Execution[Kleisli[N]], U[+ _]]
-    extends NaturalTransformer[D, U]
-    with ProgramTransformer[Kleisli[D], Kleisli[U]]
-    with LiftingObject[U] {
+private[pdbp] trait NaturalTransformer[M[+ _], N[+ _]] {
 
-  private[pdbp] val implicitLiftingObject = implicitly[LiftingObject[D]]
+  private[pdbp] def apply[Z](dz: M[Z]): N[Z]
 
-  private[pdbp] val implicitExecution = implicitly[Execution[Kleisli[D]]]
+}
 
-  override private[pdbp] def liftObject[Z]: Z => U[Z] = { z =>
-    liftComputation(implicitLiftingObject.liftObject(z))
+private[pdbp] trait NaturalComputationTransformer[M[+ _]: LiftingObject: [M[+ _]] => Execution[Kleisli[M]], N[+ _]]
+    extends NaturalTransformer[M, N]
+    with LiftingObject[N]
+    with ComputationTransformer[M, N]
+    with ProgramTransformer[Kleisli[M], Kleisli[N]] {
+
+  private[pdbp] val implicitLiftingObject = implicitly[LiftingObject[M]]
+
+  private[pdbp] val implicitExecution = implicitly[Execution[Kleisli[M]]]
+
+  override private[pdbp] def liftObject[Z]: Z => N[Z] = { z =>
+    apply(implicitLiftingObject.liftObject(z))
   }
 
-  private type `>-D->` = Kleisli[D]
+  override private[pdbp] def liftComputation[Z](dz: M[Z]): N[Z] = apply(dz)
 
-  private type `>-U->` = Kleisli[U]
+  private type `>-KM->` = Kleisli[M]
+
+  private type `>-KN->` = Kleisli[N]
 
   override private[pdbp] def liftProgram[Z, Y](
-      `z>-d->y`: Z `>-D->` Y): Z `>-U->` Y = { z =>
-    liftComputation[Y](`z>-d->y`(z))
-  }
+      `z>-km->y`: Z `>-KM->` Y): Z `>-KN->` Y = { z =>
+    liftComputation[Y](`z>-km->y`(z))
+  }  
 
 }

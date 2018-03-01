@@ -20,7 +20,7 @@ import pdbp.computation.Computation
 
 import pdbp.program.transformer.ProgramTransformer
 
-import pdbp.computation.transformer.ComputationTransformer
+import pdbp.computation.transformer.NaturalComputationTransformer
 
 import pdbp.computation.transformer.reading.ReadingTransformer
 
@@ -29,7 +29,7 @@ import pdbp.program.implicits.active.implicits.implicitActiveProgram
 trait ActiveReadingProgram[R]
     extends Computation[ActiveReading[R]]
     with Program[`>-ar->`[R]]
-    with ComputationTransformer[Active, ActiveReading[R]]
+    with NaturalComputationTransformer[Active, ActiveReading[R]]
     with ProgramTransformer[`>-a->`, `>-ar->`[R]]
     with ReadingTransformer[R, Active]
 

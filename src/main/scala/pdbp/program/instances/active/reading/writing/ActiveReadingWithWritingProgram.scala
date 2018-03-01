@@ -25,13 +25,13 @@ import pdbp.computation.Computation
 
 import pdbp.program.transformer.ProgramTransformer
 
-import pdbp.computation.transformer.ComputationTransformer
+import pdbp.computation.transformer.NaturalComputationTransformer
 
 import pdbp.computation.transformer.reading.writing.ReadingWithWritingTransformer
 
 trait ActiveReadingWithWritingProgram[R, W : Folding]
     extends Computation[ActiveReadingWithWriting[R, W]]
     with Program[`>-arw->`[R, W]]
-    with ComputationTransformer[ActiveWriting[W], ActiveReadingWithWriting[R, W]]
+    with NaturalComputationTransformer[ActiveWriting[W], ActiveReadingWithWriting[R, W]]
     with ProgramTransformer[`>-aw->`[W], `>-arw->`[R, W]]
     with ReadingWithWritingTransformer[R, W, ActiveWriting[W]]

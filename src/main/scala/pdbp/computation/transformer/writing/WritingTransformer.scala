@@ -35,13 +35,13 @@ import pdbp.computation.Computation
 
 import pdbp.program.transformer.ProgramTransformer
 
-import pdbp.computation.transformer.ComputationTransformer
+import pdbp.computation.transformer.NaturalComputationTransformer
 
 private[pdbp] trait WritingTransformer[W: Folding, M[+ _]: Computation]
     extends Computation[WritingTransformed[W, M]]
     with Program[Kleisli[WritingTransformed[W, M]]]
     with Writing[W, Kleisli[WritingTransformed[W, M]]]
-    with ComputationTransformer[M, WritingTransformed[W, M]]
+    with NaturalComputationTransformer[M, WritingTransformed[W, M]]
     with ProgramTransformer[Kleisli[M], Kleisli[WritingTransformed[W, M]]] {
 
   private type WTM = WritingTransformed[W, M]
@@ -55,7 +55,7 @@ private[pdbp] trait WritingTransformer[W: Folding, M[+ _]: Computation]
   import implicitComputation.{bind => bindM}
   import implicitComputation.{result => resultM}
 
-  override private[pdbp] def liftComputation[Z](mz: M[Z]): WTM[Z] = {
+  override private[pdbp] def apply[Z](mz: M[Z]): WTM[Z] = {
     bindM(mz, { z =>
       resultM((start, z))
     })

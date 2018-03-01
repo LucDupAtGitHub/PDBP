@@ -26,7 +26,7 @@ import pdbp.computation.Computation
 
 import pdbp.program.transformer.ProgramTransformer
 
-import pdbp.computation.transformer.ComputationTransformer
+import pdbp.computation.transformer.NaturalComputationTransformer
 
 import pdbp.computation.transformer.writing.writingTransformer._
 
@@ -37,7 +37,7 @@ import pdbp.program.instances.active.free.activeFreeProgram
 trait ActiveWritingWithFreeProgram[W : Folding]
     extends Computation[ActiveWritingWithFree[W]]
     with Program[`>-awf->`[W]]
-    with ComputationTransformer[ActiveFree, ActiveWritingWithFree[W]]
+    with NaturalComputationTransformer[ActiveFree, ActiveWritingWithFree[W]]
     with ProgramTransformer[`>-af->`, `>-awf->`[W]]
     with WritingTransformer[W, ActiveFree] {
 

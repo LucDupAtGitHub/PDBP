@@ -27,7 +27,7 @@ import pdbp.program.transformer.ProgramTransformer
 
 import pdbp.computation.transformer.NaturalTransformer
 
-import pdbp.computation.transformer.ComputationTransformer
+import pdbp.computation.transformer.NaturalComputationTransformer
 
 import pdbp.computation.transformer.writing.WritingTransformer
 
@@ -52,7 +52,7 @@ object activeLogWritingUsingSl4jProgram
     extends ActiveLogWritingUsingSl4jProgram
     with Writing[Log, `>-alw->`]()
     with NaturalTransformer[Active, ActiveLogWriting]()
-    with ComputationTransformer[Active, ActiveLogWriting]()
+    with NaturalComputationTransformer[Active, ActiveLogWriting]()
     with ProgramTransformer[`>-a->`, `>-alw->`]()
     with WritingTransformer[Log, Active]()
     with LogWritingTransformer[Active]()
