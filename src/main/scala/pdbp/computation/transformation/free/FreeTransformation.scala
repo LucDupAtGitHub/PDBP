@@ -58,9 +58,9 @@ private[pdbp] trait FreeTransformation[M[+ _]: ObjectLifting : [M[+ _]] => Execu
 
   private type FTM = FreeTransformed[M]
 
-  override private[pdbp] def liftObject[Z]: Z => FTM[Z] = { z =>
+  override private[pdbp] def liftObject[Z](z: Z): FTM[Z] = // { z =>
     LiftObject[M, Z](z)
-  } 
+  // } 
 
   override private[pdbp] def apply[Z](mz: M[Z]): FTM[Z] =
     TransformComputation[M, Z](mz)

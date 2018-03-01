@@ -19,9 +19,9 @@ private[pdbp] trait Starting[W]
 
   private[pdbp] val start: W
 
-  override private[pdbp] def liftObject[Z]: Z => W = { _ =>
+  override private[pdbp] def liftObject[Z](z: Z): W = //{ _ =>
     start
-  }  
+  //}  
 
 }
 

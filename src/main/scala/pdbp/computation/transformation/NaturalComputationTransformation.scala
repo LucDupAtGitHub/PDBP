@@ -31,9 +31,9 @@ private[pdbp] trait NaturalComputationTransformation[M[+ _]: ObjectLifting: [M[+
 
   private[pdbp] val implicitExecution = implicitly[Execution[Kleisli[M]]]
 
-  override private[pdbp] def liftObject[Z]: Z => N[Z] = { z =>
+  override private[pdbp] def liftObject[Z](z: Z) = // { z =>
     apply(implicitObjectLifting.liftObject(z))
-  }
+  // }
 
   override private[pdbp] def transformComputation[Z](dz: M[Z]): N[Z] = apply(dz)
 

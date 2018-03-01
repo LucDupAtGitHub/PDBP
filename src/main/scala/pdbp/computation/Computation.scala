@@ -34,8 +34,8 @@ private[pdbp] trait Computation[M[+ _]]
 
   // Lifting
 
-  override private[pdbp] def liftObject[Z]: Z => M[Z] =
-    result
+  override private[pdbp] def liftObject[Z](z: Z): M[Z] =
+    result(z)
 
   override private[pdbp] def liftFunction[Z, Y](
       `z=>y`: Z => Y): M[Z] => M[Y] = { mz =>

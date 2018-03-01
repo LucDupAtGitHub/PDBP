@@ -53,9 +53,9 @@ private[pdbp] trait ReadingTransformation[R, M[+ _]: Computation]
   import implicitComputation.{result => resultM}
   import implicitComputation.{bind => bindM}
 
-  override private[pdbp] def liftObject[Z]: Z => RTM[Z]  = { z =>
+  override private[pdbp] def liftObject[Z](z: Z): RTM[Z] = // { z =>
      resultM(z)
-  }   
+  // }   
 
   override private[pdbp] def bind[Z, Y](rtmz: RTM[Z], `z>=rtmy`: Z => RTM[Y]): RTM[Y] =
     bindM(rtmz, { z => `z>=rtmy`(z) })
