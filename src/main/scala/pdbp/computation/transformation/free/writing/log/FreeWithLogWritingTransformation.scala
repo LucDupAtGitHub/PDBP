@@ -19,18 +19,18 @@ import pdbp.program.Execution
 
 import pdbp.program.writing.log.LogWriting
 
-import pdbp.computation.returning.Returning
+import pdbp.computation.resulting.Resulting
 
 import pdbp.computation.transformation.free.freeTransformation._
 
 import pdbp.computation.transformation.free.writing.FreeWithWritingTransformation
 
-import pdbp.computation.transformation.NaturalTransformation
+import pdbp.computation.transformation.Transformation
 
 private[pdbp] trait FreeWithLogWritingTransformation[
-  M[+ _]: Returning : [M[+ _]] => Execution[Kleisli[M]] : [M[+ _]] => LogWriting[Kleisli[M]]]
+  M[+ _]: Resulting : [M[+ _]] => Execution[Kleisli[M]] : [M[+ _]] => LogWriting[Kleisli[M]]]
     extends FreeWithWritingTransformation[Log, M]
-    with NaturalTransformation[FreeTransformed[M], M] {
+    with Transformation[FreeTransformed[M], M] {
 
   private type `>=K=>` = Kleisli[M]  
 
@@ -38,7 +38,7 @@ private[pdbp] trait FreeWithLogWritingTransformation[
 
   private type `>=FTK=>` = Kleisli[FTM]  
 
-  import implicitReturning.{result => resultM}
+  import implicitResulting.{result => resultM}
  
   @annotation.tailrec
   private final def applyHelper[Z](ftmz: FTM[Z]): M[Z] = ftmz match {

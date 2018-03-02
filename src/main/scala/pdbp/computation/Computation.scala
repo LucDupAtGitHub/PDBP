@@ -18,11 +18,11 @@ import pdbp.program.Program
 import pdbp.computation.lifting.Lifting
 import pdbp.computation.lifting.Sequencing
 
-import pdbp.computation.returning.Returning
+import pdbp.computation.resulting.Resulting
 import pdbp.computation.binding.Binding
 
 private[pdbp] trait Computation[M[+ _]]
-    extends Returning[M]
+    extends Resulting[M]
     with Binding[M]
     with Lifting[M]
     with Sequencing[M]

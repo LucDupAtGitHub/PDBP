@@ -24,7 +24,7 @@ import pdbp.program.transformation.ProgramTransformation
 private[pdbp] trait ComputationTransformation[M[+ _]: [M[+ _]] => Execution[Kleisli[M]], N[+ _]]
     extends ProgramTransformation[Kleisli[M], Kleisli[N]] {
 
-  // TODO: would be better in FreeTransformer
+  // TODO: would be better in FreeTransformation
   private[pdbp] val implicitExecution = implicitly[Execution[Kleisli[M]]]
 
   private[pdbp] def transformComputation[Z](dz: M[Z]): N[Z]

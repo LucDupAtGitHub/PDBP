@@ -1,4 +1,4 @@
-package pdbp.computation.returning
+package pdbp.computation.resulting
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -12,7 +12,7 @@ package pdbp.computation.returning
 //  author        Luc Duponcheel        2017-2018
 
 
-private[pdbp] trait Returning[M[+ _]] {
+private[pdbp] trait Resulting[M[+ _]] {
 
   private[pdbp] def result[Z]: Z => M[Z]
 

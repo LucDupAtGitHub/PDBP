@@ -35,7 +35,7 @@ import pdbp.types.kleisli.kleisliFunctionType._
 
 import pdbp.program.Program
 
-import pdbp.computation.returning.Returning
+import pdbp.computation.resulting.Resulting
 
 import pdbp.program.Execution
 
@@ -43,18 +43,18 @@ import pdbp.computation.Computation
 
 import pdbp.program.transformation.ProgramTransformation
 
-import pdbp.computation.transformation.NaturalTransformation
+import pdbp.computation.transformation.Transformation
 
 import pdbp.computation.transformation.ComputationTransformation
 
-private[pdbp] trait FreeTransformation[M[+ _]: Returning: [M[+ _]] => Execution[Kleisli[M]]]
+private[pdbp] trait FreeTransformation[M[+ _]: Resulting: [M[+ _]] => Execution[Kleisli[M]]]
     extends Computation[FreeTransformed[M]]
     with Program[Kleisli[FreeTransformed[M]]]
     with ComputationTransformation[M, FreeTransformed[M]]
-    with NaturalTransformation[FreeTransformed[M], M]
+    with Transformation[FreeTransformed[M], M]
     with ProgramTransformation[Kleisli[M], Kleisli[FreeTransformed[M]]] {
 
-  private[pdbp] val implicitReturning = implicitly[Returning[M]]  
+  private[pdbp] val implicitResulting = implicitly[Resulting[M]]  
 
   private type FTM = FreeTransformed[M]
 
@@ -69,8 +69,8 @@ private[pdbp] trait FreeTransformation[M[+ _]: Returning: [M[+ _]] => Execution[
                                         `z=>ftmy`: Z => FTM[Y]): FTM[Y] =
     Bind[M, Z, Z, Y](ftmz, `z=>ftmy`)
 
-  private[pdbp] def extendNaturalTransformation[N[+ _]: Computation](`M~>N`: NaturalTransformation[M, N]): NaturalTransformation[FTM, N] = 
-    new NaturalTransformation[FTM, N]() {
+  private[pdbp] def extendTransformationToFree[N[+ _]: Computation](`m~>n`: Transformation[M, N]): Transformation[FTM, N] = 
+    new Transformation[FTM, N]() {
     val implicitComputation = implicitly[Computation[N]]
     import implicitComputation.{result => resultN}
     import implicitComputation.{bind => bindN}
@@ -78,12 +78,12 @@ private[pdbp] trait FreeTransformation[M[+ _]: Returning: [M[+ _]] => Execution[
       case Result(z) => 
         resultN(z)
       case TransformComputation(mz) =>
-        `M~>N`(mz)
+        `m~>n`(mz)
       case Bind(my, y2ftmz) =>
         bindN(apply(my), y2ftmz andThen apply)
       case _ =>
         sys.error(
-          "Impossible, since, for 'FreeTransformation', 'extendNaturalTransformation' eliminates this case")          
+          "Impossible, since, for 'FreeTransformation', 'extendTransformationToFree' eliminates this case")          
     }
   }
 
@@ -91,7 +91,7 @@ private[pdbp] trait FreeTransformation[M[+ _]: Returning: [M[+ _]] => Execution[
 
   private type `>=FTK=>` = Kleisli[FTM]
 
-  import implicitReturning.{result => resultM}
+  import implicitResulting.{result => resultM}
 
   import implicitExecution.{Environment => EnvironmentK}
   import implicitExecution.{execute => executeK}
