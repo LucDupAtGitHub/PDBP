@@ -88,7 +88,7 @@ private[pdbp] trait FreeTransformation[M[+ _]: Resulting: [M[+ _]] => Execution[
           "Impossible, since, for 'FreeTransformation', 'extendTransformationToFree' eliminates this case")          
     }
   }
-
+    
   private type `>=K=>` = Kleisli[M]
 
   private type `>=FTK=>` = Kleisli[FTM]

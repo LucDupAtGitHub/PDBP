@@ -1,20 +1,24 @@
-package pdbp.computation.meaning
+// package pdbp.computation.meaning
 
-//       _______         __    __        _______
-//      / ___  /\       / /\  / /\      / ___  /\
-//     / /__/ / / _____/ / / / /_/__   / /__/ / /
-//    / _____/ / / ___  / / / ___  /\ /____  / /
-//   / /\____\/ / /__/ / / / /__/ / / \___/ / /
-//  /_/ /      /______/ / /______/ /     /_/ /
-//  \_\/       \______\/  \______\/      \_\/
-//                                           v1.0
-//  Program Description Based Programming Library
-//  author        Luc Duponcheel        2017-2018
+// //       _______         __    __        _______
+// //      / ___  /\       / /\  / /\      / ___  /\
+// //     / /__/ / / _____/ / / / /_/__   / /__/ / /
+// //    / _____/ / / ___  / / / ___  /\ /____  / /
+// //   / /\____\/ / /__/ / / / /__/ / / \___/ / /
+// //  /_/ /      /______/ / /______/ /     /_/ /
+// //  \_\/       \______\/  \______\/      \_\/
+// //                                           v1.0
+// //  Program Description Based Programming Library
+// //  author        Luc Duponcheel        2017-2018
 
-trait Meaning[M[+ _]] {
+// import pdbp.computation.Computation
 
-  type N[+ _]
+// import pdbp.computation.transformation.~>
+
+// private[pdbp] trait Meaning[M[+ _]] {
+
+//   type N[+Z]
  
-  def maining[Z]: N[Z]
+//   private[pdbp] def meaning(implicit computation: Computation[N]): M ~> N
 
-}
+// }

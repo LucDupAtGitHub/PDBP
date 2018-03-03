@@ -21,13 +21,15 @@ import pdbp.program.Program
 
 import pdbp.computation.Computation
 
+import pdbp.computation.transformation.~>
+
 object activeProgram extends Computation[Active] with Program[`>-a->`] {
 
   override private[pdbp] def result[Z]: Z => Active[Z] = `z=>az`
 
   override private[pdbp] def bind[Z, Y](az: Active[Z],
                                         `z=>ay`: Z => Active[Y]): Active[Y] =
-    `z=>ay`(az)
+    `z=>ay`(az)   
 
   override type Environment = Unit
 

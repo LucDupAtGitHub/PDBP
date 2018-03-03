@@ -17,7 +17,6 @@ trait Program[>-->[- _, + _]]
     with Construction[>-->]
     with Condition[>-->]
     with Aggregation[>-->]
-    // with Meaning[>-->]
     with Execution[>-->]
 
 private trait ProgramWithApply[>-->[- _, + _]] extends Program[>-->] {
