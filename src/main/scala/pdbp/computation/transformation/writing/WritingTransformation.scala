@@ -35,6 +35,8 @@ import pdbp.computation.Computation
 
 import pdbp.program.transformation.ProgramTransformation
 
+import pdbp.computation.transformation.~>
+
 import pdbp.computation.transformation.ComputationTransformation
 
 private[pdbp] trait WritingTransformation[W: Folding, M[+ _]: Computation]
@@ -59,11 +61,12 @@ private[pdbp] trait WritingTransformation[W: Folding, M[+ _]: Computation]
     resultM((start, z))
   }
 
-  override private[pdbp] def transformComputation[Z](mz: M[Z]): WTM[Z] = {
-    bindM(mz, { z =>
-      resultM((start, z))
-    })
-  }
+  override private[pdbp] def transformComputation = new (M ~> WTM) {
+    override private[pdbp] def apply[Z](mz: M[Z]): WTM[Z] = 
+      bindM(mz, { z =>
+        resultM((start, z))
+      }) 
+  }  
 
   override private[pdbp] def bind[Z, Y](wtmz: WTM[Z],
                                         `z=>wtmy`: Z => WTM[Y]): WTM[Y] =

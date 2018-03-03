@@ -33,6 +33,8 @@ import pdbp.computation.Computation
 
 import pdbp.program.transformation.ProgramTransformation
 
+import pdbp.computation.transformation.~>
+
 import pdbp.computation.transformation.ComputationTransformation
 
 private[pdbp] trait ReadingTransformation[R, M[+ _]: Computation]
@@ -42,11 +44,13 @@ private[pdbp] trait ReadingTransformation[R, M[+ _]: Computation]
     with ComputationTransformation[M, ReadingTransformed[R, M]] 
     with ProgramTransformation[Kleisli[M], Kleisli[ReadingTransformed[R, M]]] {
 
-  private type RTM = ReadingTransformed[R, M]      
+  private type RTM = ReadingTransformed[R, M]
 
-  override private[pdbp] def transformComputation[Z](mz: M[Z]): RTM[Z] =
-    sys.error(
-      "Impossible, since, for 'ReadingTransformation', 'transformComputation' is used nowhere")
+  override private[pdbp] def transformComputation = new (M ~> RTM) {
+    override private[pdbp] def apply[Z](mz: M[Z]): RTM[Z] = 
+      sys.error(
+        "Impossible, since, for 'ReadingTransformation', 'transformComputation' is used nowhere")  
+  }      
 
   private[pdbp] val implicitComputation = implicitly[Computation[M]]
 

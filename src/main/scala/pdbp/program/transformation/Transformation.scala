@@ -11,12 +11,8 @@ package pdbp.program.transformation
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.program.Program
+private[pdbp] trait ~>[`>-F->`[- _, + _], `>-T->`[- _, + _]] {
 
-private[pdbp] trait ProgramTransformation[`>-F->`[- _, + _]: Program, `>-T->`[- _, + _]] {
-
-  private[pdbp] val implicitProgram = implicitly[Program[`>-F->`]]
-
-  private[pdbp] def transformProgram: `>-F->` ~> `>-T->`
+  private[pdbp] def apply[Z, Y](`z>-f->y`: Z `>-F->` Y): Z `>-T->` Y
 
 }

@@ -17,6 +17,7 @@ trait Program[>-->[- _, + _]]
     with Construction[>-->]
     with Condition[>-->]
     with Aggregation[>-->]
+    // with Meaning[>-->]
     with Execution[>-->]
 
 private trait ProgramWithApply[>-->[- _, + _]] extends Program[>-->] {
@@ -27,15 +28,6 @@ private trait ProgramWithApply[>-->[- _, + _]] extends Program[>-->] {
   // Application
 
   private[pdbp] def apply[Z, Y]: (Z && (Z >--> Y)) >--> Y
-
-  // Binding
-
-//   private[pdbp] def bind[Z, Y](
-//       `u>-->z`: Unit >--> Z,
-//       `z=>(u>-->y)`: Z => (Unit >--> Y)): Unit >--> Y = {
-//     val `z>-->(u>-->y)` : Z >--> (Unit >--> Y) = function(`z=>(u>-->y)`)
-//     compose(`u>-->z`, compose(product(`z>-->u`, `z>-->(u>-->y)`), apply))
-//   }
 
   private type M[+Y] = Unit >--> Y
 

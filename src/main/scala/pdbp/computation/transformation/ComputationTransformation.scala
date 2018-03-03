@@ -21,22 +21,26 @@ import pdbp.computation.lifting.ObjectLifting
 
 import pdbp.program.transformation.ProgramTransformation
 
-private[pdbp] trait ComputationTransformation[M[+ _]: [M[+ _]] => Execution[Kleisli[M]], N[+ _]]
-    extends ProgramTransformation[Kleisli[M], Kleisli[N]] {
+private[pdbp] trait ComputationTransformation[F[+ _]: [F[+ _]] => Execution[Kleisli[F]], T[+ _]]
+    extends ProgramTransformation[Kleisli[F], Kleisli[T]] {
 
   // TODO: would be better in FreeTransformation
-  private[pdbp] val implicitExecution = implicitly[Execution[Kleisli[M]]]
+  private[pdbp] val implicitExecution = implicitly[Execution[Kleisli[F]]]
 
-  private[pdbp] def transformComputation[Z](dz: M[Z]): N[Z]
+  private[pdbp] def transformComputation: F ~> T
 
-  private type `>-M->` = Kleisli[M]
+  private type `=>F` = Kleisli[F]
 
-  private type `>-N->` = Kleisli[N]  
+  private type `=>T` = Kleisli[T]  
 
-  override private[pdbp] def transformProgram[Z, Y](
-      `z>-km->y`: Z `>-M->` Y): Z `>-N->` Y = { z =>
-    transformComputation[Y](`z>-km->y`(z))
-  }   
+  import pdbp.program.transformation.{ ~> =>  ~~> }
+ 
+  override private[pdbp] def transformProgram: `=>F` ~~> `=>T` = 
+    new ~~> {
+      override def apply[Z, Y](`z=>fy`: Z `=>F` Y): Z `=>T` Y = { z =>
+        transformComputation.apply[Y](`z=>fy`(z))
+      } 
+    }    
 
 }
 

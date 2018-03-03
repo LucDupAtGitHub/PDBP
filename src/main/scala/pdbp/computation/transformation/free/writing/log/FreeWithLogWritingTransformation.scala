@@ -25,12 +25,9 @@ import pdbp.computation.transformation.free.freeTransformation._
 
 import pdbp.computation.transformation.free.writing.FreeWithWritingTransformation
 
-import pdbp.computation.transformation.Transformation
-
 private[pdbp] trait FreeWithLogWritingTransformation[
   M[+ _]: Resulting : [M[+ _]] => Execution[Kleisli[M]] : [M[+ _]] => LogWriting[Kleisli[M]]]
-    extends FreeWithWritingTransformation[Log, M]
-    with Transformation[FreeTransformed[M], M] {
+    extends FreeWithWritingTransformation[Log, M] {
 
   private type `>=K=>` = Kleisli[M]  
 

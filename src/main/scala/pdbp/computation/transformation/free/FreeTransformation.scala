@@ -43,7 +43,7 @@ import pdbp.computation.Computation
 
 import pdbp.program.transformation.ProgramTransformation
 
-import pdbp.computation.transformation.Transformation
+import pdbp.computation.transformation.~>
 
 import pdbp.computation.transformation.ComputationTransformation
 
@@ -51,7 +51,7 @@ private[pdbp] trait FreeTransformation[M[+ _]: Resulting: [M[+ _]] => Execution[
     extends Computation[FreeTransformed[M]]
     with Program[Kleisli[FreeTransformed[M]]]
     with ComputationTransformation[M, FreeTransformed[M]]
-    with Transformation[FreeTransformed[M], M]
+    with (FreeTransformed[M] ~> M)
     with ProgramTransformation[Kleisli[M], Kleisli[FreeTransformed[M]]] {
 
   private[pdbp] val implicitResulting = implicitly[Resulting[M]]  
@@ -62,15 +62,17 @@ private[pdbp] trait FreeTransformation[M[+ _]: Resulting: [M[+ _]] => Execution[
     Result[M, Z](z) 
   }  
 
-  override private[pdbp] def transformComputation[Z](mz: M[Z]): FTM[Z] =
-    TransformComputation[M, Z](mz)
+  override private[pdbp] def transformComputation = new (M ~> FTM) {
+    override private[pdbp] def apply[Z](mz: M[Z]): FTM[Z] = 
+      TransformComputation[M, Z](mz)  
+  }
 
   override private[pdbp] def bind[Z, Y](ftmz: FTM[Z],
                                         `z=>ftmy`: Z => FTM[Y]): FTM[Y] =
     Bind[M, Z, Z, Y](ftmz, `z=>ftmy`)
 
-  private[pdbp] def extendTransformationToFree[N[+ _]: Computation](`m~>n`: Transformation[M, N]): Transformation[FTM, N] = 
-    new Transformation[FTM, N]() {
+  private[pdbp] def extendTransformationToFree[N[+ _]: Computation](`m~>n`: M ~> N): FTM ~> N = 
+    new (FTM ~> N)() {
     val implicitComputation = implicitly[Computation[N]]
     import implicitComputation.{result => resultN}
     import implicitComputation.{bind => bindN}

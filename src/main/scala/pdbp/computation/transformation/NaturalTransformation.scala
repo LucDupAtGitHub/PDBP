@@ -13,8 +13,8 @@ package pdbp.computation.transformation
 
 import pdbp.types.kleisli.kleisliFunctionType._
 
-private[pdbp] trait Transformation[M[+ _], N[+ _]] {
+private[pdbp] trait ~>[M[+ _], N[+ _]] {
 
-  private[pdbp] def apply[Z](dz: M[Z]): N[Z]
+  private[pdbp] def apply[Z](mz: M[Z]): N[Z]
 
 }
